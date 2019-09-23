@@ -1,0 +1,36 @@
+AUTHOR: Clemens M., Max. J, Michel K., NetworkX
+#nodes;8
+#edges;10
+Nodes labelled;False
+Edges labelled;False
+Directed graph;False
+
+(0, 0);
+(0, 1);
+(0, 2);
+(0, 3);
+(1, 0);
+(1, 1);
+(1, 2);
+(1, 3);
+
+0;0
+1;0
+0;0
+0;1
+0;1
+1;1
+0;1
+0;2
+0;2
+1;2
+0;2
+0;3
+0;3
+1;3
+1;0
+1;1
+1;1
+1;2
+1;2
+1;3

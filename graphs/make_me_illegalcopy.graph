@@ -1,0 +1,28 @@
+AUTHOR: Clemens M., Max. J, Michel K.
+nodes;8
+edges;12
+nodes labeled;True
+edges labeled;True
+directed graph;False
+
+1;e
+2;a
+3;d
+4;c
+5;f
+6;b
+7;h
+8;g
+
+2;1;directed graph false/true ändert nichts edges+1 keine fehlermeldung mehr
+1;2;alpha
+2;3;beta
+2;4;gamma
+2;5;delta
+3;4;epsilon
+3;5;pi
+3;6;rho
+4;5;teta 
+5;6;eta
+5;7;teta 
+6;7;omega

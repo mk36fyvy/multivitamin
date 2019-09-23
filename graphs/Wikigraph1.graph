@@ -1,0 +1,13 @@
+AUTHOR: Clemens M., Max. J, Michel K.
+#nodes;3
+#edges;2
+Nodes labelled;True
+Edges labelled;False
+Directed graph;False
+
+1;a1
+2;a2
+3;a3
+
+1;2
+2;3
