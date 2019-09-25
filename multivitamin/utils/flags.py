@@ -11,10 +11,10 @@ parser = argparse.ArgumentParser(
     formatter_class=RawTextHelpFormatter
 )
 
-
+# TODO: Add debug options ( parser, modular product, ?)
 
 # arguments which provide the graph files
-group = parser.add_argument_group('required arguments', 'one of these arguments is required')
+group = parser.add_argument_group('required arguments', 'this argument is required')
 mxg = group.add_mutually_exclusive_group(required=True)
 mxg.add_argument(
     '-f',
@@ -25,14 +25,14 @@ mxg.add_argument(
     help='provide .graph files for the alignment'
 )
 
-mxg.add_argument(
-    '-d',
-    '--dir-path',
-    dest='path',
-    type=process_directory,
-    nargs='+',
-    help='provide a dir which contains the .graph files to be aligned (other files or subdirs are ignored)'
-)
+# mxg.add_argument(
+#     '-d',
+#     '--dir-path',
+#     dest='path',
+#     type=process_directory,
+#     nargs='+',
+#     help='provide a dir which contains the .graph files to be aligned (other files or subdirs are ignored)'
+# )
 
 
 
@@ -52,13 +52,13 @@ parser.add_argument(
     dest='guide',
     type=str,
     default='upgma',
-    help='choose a guide-tree-algorithm (default: upgma)'
+    help='choose a guide-tree-algorithm (default: upgma) - upgma is the only available at the moment'
 )
 
 parser.add_argument(
     '-s',
     '--save-all',
-    dest='save all graphs',
+    dest='save_all',
     action='store_true',
     help='decide whether to save all the graphs produced during the alignment (default: No) - The graphs are saved as "./[newick].graph"'
 )

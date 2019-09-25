@@ -9,5 +9,8 @@ setup(
         'multivitamin.basic',
         'multivitamin.supp',
         'multivitamin.utils'
-    ]
+    ],
+    entry_points={
+        'console_scripts': ['multiVitamin=multivitamin.multiVitamin:main']
+    }
 )

@@ -1,9 +1,10 @@
 setup.py
 multivitamin/__init__.py
-multivitamin/multivitamin.py
+multivitamin/multiVitamin.py
 multivitamin.egg-info/PKG-INFO
 multivitamin.egg-info/SOURCES.txt
 multivitamin.egg-info/dependency_links.txt
+multivitamin.egg-info/entry_points.txt
 multivitamin.egg-info/top_level.txt
 multivitamin/algorithms/__init__.py
 multivitamin/algorithms/bk_pivot_class.py
@@ -18,6 +19,8 @@ multivitamin/supp/generate_random_nx_graph.py
 multivitamin/supp/graph_writer.py
 multivitamin/supp/view_graph.py
 multivitamin/utils/__init__.py
+multivitamin/utils/flags.py
+multivitamin/utils/get_input.py
 multivitamin/utils/guide_tree.py
 multivitamin/utils/modular_product.py
 multivitamin/utils/parser.py
