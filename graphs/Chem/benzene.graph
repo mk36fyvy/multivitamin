@@ -1,0 +1,19 @@
+AUTHOR: Michel K.
+#nodes;6
+#edges;5
+Nodes labelled;True
+Edges labelled;False
+Directed graph;False
+
+1;c
+2;c
+3;c
+4;c
+5;c
+6;c
+
+1;2
+2;3
+3;4
+4;5
+5;6

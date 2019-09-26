@@ -1,0 +1,11 @@
+benzene https://toxnet.nlm.nih.gov/png/71-43-2.png
+c1ccccc1
+
+benzoic acid https://de.wikipedia.org/wiki/Benzoes%C3%A4ure#/media/Datei:Benzoes%C3%A4ure.svg
+c1ccccc1C(=O)O
+
+salicylic acid https://en.wikipedia.org/wiki/Salicylic_acid#/media/File:Salicylic-acid-skeletal.svg
+c1cccc(O)c1C(=O)O
+
+acetylsalicylic acid https://de.wikipedia.org/wiki/Acetylsalicyls%C3%A4ure#/media/Datei:Aspirin-Sructural.svg
+c1cccc(OC(=O)C)c1C(=O)O

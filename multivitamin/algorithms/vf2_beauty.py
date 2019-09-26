@@ -54,9 +54,10 @@ class VF2():
         if self.s_in_small_g():
 
             # print( "\nEND_RESULT: \nType: {} \n\n{}\n".format(self.type, self.core_s ))
+            print("core_s\n{}".format(self.core_s))
             
             if not self.core_s in self.results:
-                self.results.append(self.core_s)
+                self.results.append(make_output_graph())
 
             self.restore_ds( last_mapped[0], last_mapped[1], depth )
             
@@ -273,14 +274,15 @@ if __name__ == "__main__":
 
     vf2 = VF2(large_g, small_g)
     vf2.match()
-    for result in vf2.results:
-        counter = 1
-        print("--- RESULT #{} ------------------------------------------".format(counter))
-        print("")
-        print (result)
-        print("")
-        print("")
-        counter += 1
+    # for result in vf2.results:
+    #     counter = 1
+    #     print("--- RESULT #{} ------------------------------------------".format(counter))
+    #     print("")
+    #     print (result)
+    #     print("")
+    #     print("")
+    #     counter += 1
+
     #     for node in result.nodes:
     #         print(node)
     #     print()
@@ -289,8 +291,7 @@ if __name__ == "__main__":
     #     print()
     #     print()
     #     counter += 1
-    print("--- ELAPSED TIME ----------------------------------------")
     print("")
 
 
-    # pprint.pprint(vf2.results)
+    pprint.pprint(vf2.results)
