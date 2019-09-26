@@ -45,12 +45,13 @@ def parse_graph(doc):
 
                 else:
                     try:
+                        # print(arg)
                         check_list.append( int(arg) ) #indicates number of nodes/edges
 
                     except:
                         print( "Something's wrong with the first paragraph. Please check and try again." )
                         print( "Aborting..." )
-                        return
+                        raise Exception("Parsing one of your graphs was not successful.")
 
 
             #building nodes
@@ -82,7 +83,7 @@ def parse_graph(doc):
             else:
                 print( "Wrong input file format. File contains too many empty lines." )
                 print( "Aborting..." )
-                return
+                raise Exception("Parsing one of your graphs was not successful.")
 
 
 

@@ -21,6 +21,7 @@ multivitamin/supp/view_graph.py
 multivitamin/utils/__init__.py
 multivitamin/utils/flags.py
 multivitamin/utils/get_input.py
+multivitamin/utils/graph_writer.py
 multivitamin/utils/guide_tree.py
 multivitamin/utils/modular_product.py
 multivitamin/utils/parser.py

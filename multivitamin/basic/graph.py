@@ -51,7 +51,7 @@ class Graph():
         for node in self.nodes:
             for neighbour in node.neighbours:
 
-                if not neighbour in done: #done is for undirected #no bjektion
+                if not neighbour in done: #done is for undirected #no bijection
                     cur_edge = Edge(node, neighbour)
                     self.edges.add(cur_edge)
 
@@ -103,15 +103,17 @@ class Graph():
     def __str__( self ):
 
         '''define the way a graph is printed'''
-        p_nodes = ""
-        for node in self.nodes:
-            p_nodes += str(node) + "\n"
+        # p_nodes = ""
+        # for node in self.nodes:
+        #     p_nodes += str(node) + "\n"
         
-        p_edges = ""
-        for edge in self.edges:
-            p_edges += str(edge) + "\n"
+        # p_edges = ""
+        # for edge in self.edges:
+        #     p_edges += str(edge) + "\n"
 
-        return "{} ;\n {} ;\n {};\n Nodes labelled? {}\n Edges labelled? {}\n Directed graph? {}".format(self.id, self.nodes, self.edges, self.nodes_are_labelled, self.edges_are_labelled, self.is_directed)
+        # return "{} ;\n {} ;\n {};\n Nodes labelled? {}\n Edges labelled? {}\n Directed graph? {}".format(self.id, self.nodes, self.edges, self.nodes_are_labelled, self.edges_are_labelled, self.is_directed)
+
+        return str(self.id)
 
     def __repr__( self ):
         return self.__str__()

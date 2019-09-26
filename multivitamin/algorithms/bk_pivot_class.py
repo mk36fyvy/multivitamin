@@ -73,7 +73,7 @@ class BK:
             x_ = x & v.neighbours
             p_ = [n for n in v.neighbours if n in p]
 
-            bk ( r_, p_, x_ ) # recursive call of broknkerbosch
+            self.bk ( r_, p_, x_ ) # recursive call of bronkerbosch
 
             p.remove(v) # taking current node out of canditates
             x.add(v) # adding current node to garbage collection

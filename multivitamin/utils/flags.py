@@ -2,7 +2,7 @@ import argparse, os
 from argparse import RawTextHelpFormatter
 
 from multivitamin.utils.parser import parse_graph
-from multivitamin.utils.get_input import *
+from multivitamin.utils.get_input import process_file
 
 
 parser = argparse.ArgumentParser(
@@ -60,7 +60,7 @@ parser.add_argument(
     '--save-all',
     dest='save_all',
     action='store_true',
-    help='decide whether to save all the graphs produced during the alignment (default: No) - The graphs are saved as "./[newick].graph"'
+    help='decide whether to save all the graphs produced during the alignment (default: No) - The graphs are saved as "[newick].graph"'
 )
 
 parser.add_argument(
@@ -68,5 +68,5 @@ parser.add_argument(
     '--save-guide',
     dest='save_guide',
     action='store_true',
-    help='decide whether to save the guide tree in Newick-format as "./newick.txt" (default: No)'
+    help='decide whether to save the guide tree in Newick-format as "tree.txt" (default: No)'
 )

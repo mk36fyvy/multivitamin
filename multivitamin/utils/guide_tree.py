@@ -2,7 +2,7 @@ import sys
 
 from multivitamin.basic.graph import Graph
 from multivitamin.utils.parser import parse_graph
-from multivitamin.utils.modular_product import *
+from multivitamin.utils.modular_product import mod_product, cart_product
 from multivitamin.algorithms.bk_pivot_class import BK
 from multivitamin.algorithms.vf2_beauty import VF2
 
@@ -11,26 +11,37 @@ class Guide_tree():
 
     def __init__(
         self,
-        graph_list
+        graph_list,
+        algorithm,
+        save_all,
+        
     ):
+        self.algorithm = algorithm
+        self.save_all = save_all
 
-        self.graph_list = []
+        self.graph_list = graph_list
+        self.intermediates = []
+        self.result = Graph()
         self.newick = ""
 
 
     def upgma( self ):
 
         #alignment = Graph('0')
+        # print(len(self.graph_list))
         if len( self.graph_list ) == 1:
             
-            result = self.graph_list[0]
+            res = self.graph_list[0]
             
-            self.make_graph_real( result )
-            result.create_undirected_edges()
-            self.print_alignment( result )
+            # self.make_graph_real( result )
+            res.create_undirected_edges()
             
-            return result
+            self.result = res
 
+            self.newick = self.graph_list[0].id
+            self.print_alignment( self.result )
+
+            return 
         
         maximum = 0 # is used to save 
 
@@ -40,24 +51,22 @@ class Guide_tree():
                 if g1.id == g2.id:
                     continue
 
-                modp = mod_product( cart_product( g1.nodes, g2.nodes ) )
-                bk = BK()
-                x = set()
-                r = set()
-                p = list(modp.nodes)
-
-                bk.bk_pivot( r, p, x)
-
-                if len(max(bk.results)) >= maximum:
-                    alignment = Graph( "({},{})".format( g1.id, g2.id ), max( bk.results ) )
-                    maximum = len(max(bk.results))
+                results = self.apply_algorithm( g1.nodes, g2.nodes)
+    
+                if len(max(results)) >= maximum:
+                    alignment = Graph( "({},{})".format( g1.id, g2.id ), max( results ) )
+                    maximum = len(max(results))
                     alig_one = g1
                     alig_two = g2
 
         self.graph_list.remove(alig_one)
         self.graph_list.remove(alig_two)
-        self.graph_list.append( alignment )
+
+        alignment_graph = self.make_graph_real( alignment )
         
+        self.graph_list.append( alignment_graph )
+        self.intermediates.append( alignment_graph )
+
         self.upgma()
 
 
@@ -66,34 +75,50 @@ class Guide_tree():
             for neighbour in list(node.neighbours)[:]:
                 if not neighbour in graph.nodes:
                     node.remove_neighbour(neighbour)
+        return graph
+
     
+    def apply_algorithm( self, nodes1, nodes2 ):
+        if self.algorithm == "BK":  
+            modp = mod_product( cart_product( nodes1, nodes2 ) )
+            bk = BK()
+            x = set()
+            r = set()
+            p = list(modp.nodes)
+            bk.bk_pivot( r, p, x)
+            return bk.results
+        elif self.algorithm == "VF2":
+            pass
+
 
     def print_alignment( self, graph ):
         
         #OUTPUT----------------------
-        print()
+        print("")
         print("********************************************************************")
         print("*                                                                  *")
         print("*                           RESULTS                                *")
         print("*                                                                  *")
         print("********************************************************************")
-        print()
-        print()
+        print("")
+        print("")
         print("---ALIGNMENT---------")
-        print()
-        print("*NODES (ID, LABEL, NEIGHBOURS")
+        print("")
+        print("*NODES (ID, LABEL, NEIGHBOURS)")
         for node in graph.nodes:
             print("{}".format(node))
-        print()
+        print("")
         print("*EDGES (ID, LABEL)")
         for edge in graph.edges:
             print("{}".format(edge))
-        print()
-        print()
+        print("")
+        print("")
         print("---NEWICK TREE-------")
-        print()
+        print("")
         print(graph.id)
-        print()
+        print("")
+        print("*******************************************************************")
+        print("")
 
 
 if __name__ == '__main__':
@@ -104,7 +129,7 @@ if __name__ == '__main__':
         g = parse_graph(arg)
         g_list.append( g )
 
-    guide_tree = Guide_tree( g_list )
+    guide_tree = Guide_tree( g_list, "BK", False )
 
-    res = guide_tree.upgma()
-    print(res)
+    guide_tree.upgma()
+    print(guide_tree.result)

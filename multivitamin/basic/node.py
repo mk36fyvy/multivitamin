@@ -76,7 +76,7 @@ class Node():
         for neighbour in self.neighbours:
             neighbours_string += neighbour.id
             neighbours_string += ", "
-        return  self.id + "\t'" + self.label + "'\t(" + str(neighbours_string) + ")"
+        return  self.id + " '" + self.label + "' (" + str(neighbours_string) + ")"
 
 
     def __repr__(self):
