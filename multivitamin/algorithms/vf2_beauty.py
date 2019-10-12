@@ -27,13 +27,13 @@ class VF2():
 
         #  '''if the graph is undirected, the inverse edges (1,2 -> 2,1) are
         # constructed to work with the original VF2 algorithm'''
-        if not large_g.is_directed:
-            large_g.create_fake_directions()
-        if not small_g.is_directed:
-            small_g.create_fake_directions()
+        if not self.large_g.is_directed:
+            self.large_g.create_fake_directions()
+        if not self.small_g.is_directed:
+            self.small_g.create_fake_directions()
 
-        large_g.get_inout_neighbours()
-        small_g.get_inout_neighbours()
+        self.large_g.get_inout_neighbours()
+        self.small_g.get_inout_neighbours()
         # Initialiazing the two core dictionaries that store each node of the
         # Corresponding graph as key and the node of the other graph where it maps
         # As soon as it mapps for now we use self.null_n as inital value
@@ -57,7 +57,7 @@ class VF2():
             #print("core_s\n{}".format(self.core_s))
             
             # if not self.core_s in self.results:
-            print("CALL")
+            # print("CALL")
             self.results.append( self.gen_result_graph(self.core_s) )
 
             # self.restore_ds( last_mapped[0], last_mapped[1], depth )
@@ -256,9 +256,9 @@ class VF2():
                 t_dict[node] = 0
 
     def gen_result_graph( self, result ):
-        graph = Graph()
+        graph = Graph("{}_{}".format(self.small_g.id, self.large_g.id))
         for key, value in result.items():
-            print("pair {} {}".format(key, value))
+            # print("pair {} {}".format(key, value))
             cur_node = Node( "{}.{}".format( key.id, value.id), "{} {}".format( key.label, value.label ) )
             graph.nodes.add(cur_node)
         return graph

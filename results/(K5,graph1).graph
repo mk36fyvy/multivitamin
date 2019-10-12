@@ -1,0 +1,18 @@
+AUTHOR: michel
+#nodes;4
+#edges;6
+Nodes labelled;False
+Edges labelled;False
+Directed graph;False
+
+1.1
+2.4
+5.2
+3.5
+
+5.2.4;1.1.2
+3.5.5;2.4.3
+5.2.4;2.4.3
+5.2.4;3.5.5
+1.1.2;2.4.3
+3.5.5;1.1.2

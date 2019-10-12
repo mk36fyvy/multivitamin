@@ -6,6 +6,7 @@ from multivitamin.utils.modular_product import mod_product, cart_product
 from multivitamin.algorithms.bk_pivot_class import BK
 from multivitamin.algorithms.vf2_beauty import VF2
 
+# TODO: what type is bk.results? Make vf2.results the same type
 
 class Guide_tree():
 
@@ -51,7 +52,7 @@ class Guide_tree():
                 if g1.id == g2.id:
                     continue
 
-                results = self.apply_algorithm( g1.nodes, g2.nodes)
+                results = self.apply_algorithm( g1, g2)
     
                 if len(max(results)) >= maximum:
                     alignment = Graph( "({},{})".format( g1.id, g2.id ), max( results ) )
@@ -78,17 +79,18 @@ class Guide_tree():
         return graph
 
     
-    def apply_algorithm( self, nodes1, nodes2 ):
+    def apply_algorithm( self, graph1, graph2 ):
         if self.algorithm == "BK":  
-            modp = mod_product( cart_product( nodes1, nodes2 ) )
+            modp = mod_product( cart_product( graph1.nodes, graph2.nodes ) )
             bk = BK()
             x = set()
             r = set()
             p = list(modp.nodes)
             bk.bk_pivot( r, p, x)
             return bk.results
+
         elif self.algorithm == "VF2":
-            vf2 = VF2(nodes1, nodes2)
+            vf2 = VF2( graph1, graph2 )
             vf2.match()
             return vf2.results
 

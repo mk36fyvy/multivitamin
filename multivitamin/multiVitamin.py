@@ -17,7 +17,7 @@ args = parser.parse_args()
 
 def main():
 
-    print(type(args.files[0]))
+    # print(type(args.files[0]))
 
     if args.files:
         if isinstance(args.files[0], list): #this happens when parsing files from a directory
