@@ -54,14 +54,15 @@ class VF2():
         if self.s_in_small_g():
 
             # print( "\nEND_RESULT: \nType: {} \n\n{}\n".format(self.type, self.core_s ))
-            print("core_s\n{}".format(self.core_s))
+            #print("core_s\n{}".format(self.core_s))
             
-            if not self.core_s in self.results:
-                self.results.append(make_output_graph())
+            # if not self.core_s in self.results:
+            print("CALL")
+            self.results.append( self.gen_result_graph(self.core_s) )
 
-            self.restore_ds( last_mapped[0], last_mapped[1], depth )
+            # self.restore_ds( last_mapped[0], last_mapped[1], depth )
             
-            return
+            return self.results
 
         td = self.set_inout( last_mapped[0], last_mapped[1], depth )
         p = self.compute_p(td)
@@ -254,6 +255,13 @@ class VF2():
             if core[node] == self.null_n and t_dict[node] == depth:
                 t_dict[node] = 0
 
+    def gen_result_graph( self, result ):
+        graph = Graph()
+        for key, value in result.items():
+            print("pair {} {}".format(key, value))
+            cur_node = Node( "{}.{}".format( key.id, value.id), "{} {}".format( key.label, value.label ) )
+            graph.nodes.add(cur_node)
+        return graph
 
 
 if __name__ == "__main__":

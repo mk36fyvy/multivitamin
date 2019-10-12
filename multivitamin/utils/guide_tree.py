@@ -88,7 +88,9 @@ class Guide_tree():
             bk.bk_pivot( r, p, x)
             return bk.results
         elif self.algorithm == "VF2":
-            pass
+            vf2 = VF2(nodes1, nodes2)
+            vf2.match()
+            return vf2.results
 
 
     def print_alignment( self, graph ):
