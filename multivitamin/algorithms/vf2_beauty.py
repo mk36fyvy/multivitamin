@@ -133,7 +133,7 @@ class VF2():
         elif not self.two_look_ahead(depth, td):
             return False
       
-        return self.check_semantics()
+        return self.check_semantics( n, m )
 
     def compute_s_(self, n, m, depth):
 
@@ -246,8 +246,11 @@ class VF2():
         elif self.type == "subgraph":
             return free_n1 >= free_n2
 
-    def check_semantics(self):
-        return True
+    def check_semantics(self, n, m):
+        if n.label == m.label:
+            return True
+        else:
+            return False
 
     def restore_terminals(self, t_dict, dict_key, core, depth):
         for node in t_dict:

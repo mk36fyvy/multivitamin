@@ -71,6 +71,18 @@ def cross_compare_tupels( tup, t ):
 		return True
 	return False
 
+def get_coopt(bk_results):
+	res = []
+	max = 0
+
+	for result in bk_results:
+		if len(result) > max:
+			max = len(result)
+	for result in bk_results:
+		if len(result) == max and not result in res:
+			res.append(result)
+	return res
+
 
 if __name__ == '__main__':
 
@@ -84,7 +96,12 @@ if __name__ == '__main__':
 		p = list(modp.nodes)
 
 		bk = BK()
-		print(bk.bk_pivot( r, p, x))
+		bk.bk_pivot( r, p, x)
+
+		res = get_coopt(bk.results)
+		
+
+		pprint.pprint(res)
 		#create_graph(modp.nodes ,modp.edges)
 
 	except Exception as e:

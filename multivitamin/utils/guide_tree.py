@@ -67,6 +67,8 @@ class Guide_tree():
         self.graph_list.append( alignment_graph )
         self.intermediates.append( alignment_graph )
 
+        print(self.newick)
+
         self.upgma()
 
 
@@ -77,7 +79,7 @@ class Guide_tree():
                     node.remove_neighbour(neighbour)
         return graph
 
-    
+
     def apply_algorithm( self, graph1, graph2 ):
         if self.algorithm == "BK":  
             modp = mod_product( cart_product( graph1.nodes, graph2.nodes ) )
@@ -91,7 +93,9 @@ class Guide_tree():
         elif self.algorithm == "VF2":
             vf2 = VF2( graph1, graph2 )
             vf2.match()
+            print(vf2.results)
             return vf2.results
+
 
 
     def print_alignment( self, graph ):
