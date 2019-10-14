@@ -3,14 +3,18 @@ import os
 from multivitamin.utils.guide_tree import Guide_tree
 from multivitamin.utils.flags import parser
 from multivitamin.utils.graph_writer import write_graph
+from multivitamin.utils.modular_product import mod_product, cart_product
+from multivitamin.algorithms.bk_pivot_class import BK
+from multivitamin.algorithms.vf2_beauty import VF2
 
 ''' 
 FLAGS:
--f -d  save in list as input graphs
 -a BK VF2 
+-c use algorithm for single alignment and save co-optimals
+-f save in list as input graphs
 -g guide
--s save_all
 -n save_guide
+-s save_all
 '''
 
 args = parser.parse_args()
@@ -24,15 +28,36 @@ def main():
             graphs = args.files[0] 
         else:
             graphs = args.files
+
+        guide_tree = Guide_tree( graphs, args.algorithm, args.save_all )
+        print("Calculating multiple alignment with {} algorithm...".format( args.algorithm ))
+        guide_tree.upgma()
+        save_results( guide_tree )
+    
+    # elif args.coopt:
+    #     graphs = args.coopt
+    #     fake_tree = Guide_tree( graphs, args.algorithm, False )
+    #     if args.algorithm == "BK":
+    #         modp = mod_product( cart_product( graphs[0].nodes, graphs[1].nodes ) )
+    #         bk = BK()
+    #         x = set()
+    #         r = set()
+    #         p = list(modp.nodes)
+    #         bk.bk_pivot( r, p, x)
+    #         fake_tree.intermediates = bk.results
+    #         result_graphs = bk.make_graph_real( bk.results )
+    #     if args.algorithm == "VF2":
+    #         vf2 = VF2( graphs[0], graphs[1] )
+    #         vf2.match()
+    #         result_graphs = vf2.result_graphs
+
+        
+        # fake_tree.apply_algorithm( fake_tree.graph_list[0], fake_tree.graph_list[1] )
+
     else:
         raise Exception("No graph was parsed from the command-line")
     
-    guide_tree = Guide_tree( graphs, args.algorithm, args.save_all )
-
-    print("Calculating multiple alignment with {} algorithm...".format( args.algorithm ))
-    guide_tree.upgma()
-
-    save_results( guide_tree )
+    
 
 
 def save_results( guide_tree ):

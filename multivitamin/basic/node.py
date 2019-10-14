@@ -76,6 +76,8 @@ class Node():
         for neighbour in self.neighbours:
             neighbours_string += neighbour.id
             neighbours_string += ", "
+        neighbours_string = neighbours_string[:-2]
+        neighbours_string += " "
         return  self.id + " '" + self.label + "' (" + str(neighbours_string) + ")"
 
 

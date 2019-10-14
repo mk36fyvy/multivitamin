@@ -25,14 +25,14 @@ mxg.add_argument(
     help='provide .graph files for the alignment'
 )
 
-# mxg.add_argument(
-#     '-d',
-#     '--dir-path',
-#     dest='path',
-#     type=process_directory,
-#     nargs='+',
-#     help='provide a dir which contains the .graph files to be aligned (other files or subdirs are ignored)'
-# )
+mxg.add_argument(
+    '-c',
+    '--coopt',
+    dest='coopt',
+    type=process_file,
+    nargs='2',
+    help='provide two graphs which will be aligned. Co-optimals will be saved in ./results'
+)
 
 
 

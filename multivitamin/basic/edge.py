@@ -22,14 +22,14 @@ class Edge():
         if not isinstance(other, Edge):
             return NotImplemented
         else:
-            return all( self.node1 == other.node1, self.node2 == other.node2, self.label == other.label)
+            return all( (self.node1 == other.node1, self.node2 == other.node2, self.label == other.label) )
 
 
     def __ne__( self, other ):
         if not isinstance(other, Edge):
             return NotImplemented
         else:
-            return any( self.node1 != other.node1, self.node2 != other.node2, self.label != other.label)
+            return any( (self.node1 != other.node1, self.node2 != other.node2, self.label != other.label) )
 
 
     def __hash__( self ):
