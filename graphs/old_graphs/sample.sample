@@ -1,9 +1,0 @@
-#nodes;3 
-#edges;2
-Nodes labelled;True
-Edges labelled;True
-Directed graph;True
-
-n1;label;neighbour1;neighbour2
-n2;label;neighbour1;neighbour2;neighbour3
-n3;label;neighbour1

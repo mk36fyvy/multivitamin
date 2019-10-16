@@ -68,7 +68,7 @@ class VF2():
 
                 self.match( tup, depth+1 )
 
-                # print("\n Call! \n\n last_mapped: {} \n\n td: {} \n\n depth: {} \n\n core_l: {} \n\n core_s {} \n\n".format( tup, td, depth+1, self.core_l, self.core_s ) )
+                print("\n Call! \n\n last_mapped: {} \n\n td: {} \n\n depth: {} \n\n core_l: {} \n\n core_s {} \n\n".format( tup, td, depth+1, self.core_l, self.core_s ) )
 
         self.restore_ds( last_mapped[0], last_mapped[1], depth )
 
@@ -263,7 +263,8 @@ class VF2():
         result_graph = Graph("({},{})#{}".format(
             self.small_g.id, 
             self.large_g.id, 
-            len(self.result_graphs)+1), 
+            len(self.result_graphs)+1
+            ), 
             set()
             )
         for key, value in result.items():

@@ -5,9 +5,9 @@ nodes labelled;True
 edges labelled;False
 directed graph;True
 
-1;Regen
-2;Sprinkleranlage
-3;Nasser Rasen
+1;rain
+2;sprinkler
+3;wet grass
 
 1;2
 1;3

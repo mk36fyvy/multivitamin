@@ -73,12 +73,17 @@ class Guide_tree():
             for neighbour in list(node.neighbours)[:]:
                 if not neighbour in graph.nodes:
                     node.remove_neighbour(neighbour)
-        if not graph.edges:
-            graph.create_undirected_edges()
+        graph.edges = set()
+        graph.create_undirected_edges()
         return graph
 
 
     def apply_algorithm( self, graph1, graph2 ):
+        print("")
+        print( "graph1 {}".format(graph1) )
+        print("")
+        print( "graph2 {}".format(graph2))
+        print("")
         if self.algorithm == "BK":  
             modp = mod_product( cart_product( graph1.nodes, graph2.nodes ) )
             bk = BK()

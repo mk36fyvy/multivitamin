@@ -1,8 +1,0 @@
-#nodes;2
-#edges;1
-Nodes labelled;True
-Edges labelled;True
-Directed graph;True
-
-1;future;2
-2;past;1

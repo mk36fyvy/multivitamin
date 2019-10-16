@@ -1,6 +1,6 @@
 AUTHOR: Michel K.
-#nodes;6
-#edges;5
+#nodes;10
+#edges;10
 Nodes labelled;True
 Edges labelled;False
 Directed graph;False
@@ -11,9 +11,18 @@ Directed graph;False
 4;c
 5;c
 6;c
+7;Csp3
+8;Osp2
+9;Osp3
+10;Osp3
 
 1;2
+1;6
 2;3
 3;4
 4;5
 5;6
+5;10
+6;7
+7;8
+7;9
