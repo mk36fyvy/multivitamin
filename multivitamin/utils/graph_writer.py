@@ -16,11 +16,10 @@ def write_graph(graph, path):
 
     f.write("\n")
 
-    if not graph.nodes_are_labelled:
-        for node in (graph.nodes):
+    for node in (graph.nodes):
+        if node.label == "":
             f.write("{}\n".format( node.id ))
-    else:
-        for node in (graph.nodes):
+        else:
             f.write("{};{}\n".format( node.id, node.label ))
 
     f.write("\n")

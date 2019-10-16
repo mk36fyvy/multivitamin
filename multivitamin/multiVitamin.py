@@ -66,6 +66,7 @@ def main():
             vf2 = VF2( graphs[0], graphs[1] )
             vf2.match()
             for result_graph in vf2.result_graphs:
+                result_graph.create_undirected_edges()
                 fake_tree.intermediates.append( result_graph )
             save_results( fake_tree )
 
