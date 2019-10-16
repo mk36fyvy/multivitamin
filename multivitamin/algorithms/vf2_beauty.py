@@ -53,6 +53,7 @@ class VF2():
     def match( self, last_mapped=(Node("0", ""), Node("0", "")), depth=0 ):
 
         if self.s_in_small_g():
+            
 
             #print("core_s\n{}".format(self.core_s))
             # print("CALL")
@@ -62,7 +63,6 @@ class VF2():
             self.restore_ds( last_mapped[0], last_mapped[1], depth )
             
             return 
-
         td = self.set_inout( last_mapped[0], last_mapped[1], depth )
         p = self.compute_p(td)
 
@@ -107,7 +107,6 @@ class VF2():
             # In diff_l are all nodes that are in the large graph, but not mapping
             diff_l = self.large_g.nodes - m_l
             diff_s = self.small_g.nodes - m_s  # see above
-     
             return self.cart_p(diff_l, max(diff_s))
      
         return set()
@@ -122,7 +121,7 @@ class VF2():
         if self.type == "isomorphism":
             # 1-look-ahead
             if not ( td["in_l"] == td["in_s"] or td["out_l"] == td["out_s"] ):
-                #print("1-look-ahead error")
+                # print("1-look-ahead error")
                 return False
       
         elif self.type == "subgraph":
@@ -136,7 +135,6 @@ class VF2():
         return self.check_semantics( n, m )
 
     def compute_s_(self, n, m, depth):
-
         self.core_l[n] = m
         self.core_s[m] = n
 
@@ -247,9 +245,13 @@ class VF2():
             return free_n1 >= free_n2
 
     def check_semantics(self, n, m):
+        # print(n.label)
+        # print(m.label)
         if n.label == m.label:
+            # print("True")
             return True
         else:
+            # print("False")
             return False
 
     def restore_terminals(self, t_dict, dict_key, core, depth):
@@ -267,19 +269,18 @@ class VF2():
         result_graph = Graph("({},{})#{}".format(self.small_g.id, self.large_g.id, len(self.result_graphs)+1), set())
         for key, value in result.items():
             # print("pair {} {}".format(key, value))
-            cur_node = Node( "{}.{}".format( key.id, value.id), "{}.{}".format( key.label, value.label ) )
+            cur_node = Node( "{}.{}".format( key.id, value.id), "{}".format( key.label ) )
             
             
             for node in result_graph.nodes: # f.ex. 1.2
                 orig_node = Node("")
                 for n in result.keys(): # original nodes from small graph
-                    if node.id.split(".")[0] == n.id: # comparing the first part of already mapped node id and original node id
+                    if node.id.split(".")[:-1][0] == n.id: # comparing the first part of already mapped node id and original node id
                         orig_node = n
                         break
                 if key in orig_node.neighbours:
                     node.add_neighbour( cur_node )
                     cur_node.add_neighbour( node )
-
             result_graph.nodes.add(cur_node)
         # print("new")
         # print(self.result_graphs)

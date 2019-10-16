@@ -47,14 +47,13 @@ class Graph():
     def create_undirected_edges( self ):
 
         done = [] #already checked nodes, used to avoid including reverse edges
-
+        
         for node in self.nodes:
             for neighbour in node.neighbours:
-
                 if not neighbour in done: #done is for undirected #no bijection
                     cur_edge = Edge(node, neighbour)
                     self.edges.add(cur_edge)
-
+        
             done.append(node)
 
 

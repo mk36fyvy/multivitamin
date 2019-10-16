@@ -36,8 +36,12 @@ def main():
         save_results( guide_tree )
     
     elif args.coopt:
-        graphs = args.coopt[0]
+        if isinstance(args.coopt[0], list): #this happens when parsing files from a directory
+            graphs = args.coopt[0] 
+        else:
+            graphs = args.coopt
         
+        # print(graphs)
         if not len(graphs) == 2:
             raise Exception("You must provide exactly 2 graph files with '-c' ! Use '-f' if you want to align more graphs.")
 
