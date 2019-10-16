@@ -6,8 +6,7 @@ from multivitamin.basic.edge import Edge
 from multivitamin.basic.graph import Graph
 
 
-def parse_graph(doc):
-
+def parse_graph( doc ):
     check_list = [] #contains #nodes #edges, if they are labelled and if graph is directed
     nodes = set()
     edges = set()
@@ -15,7 +14,6 @@ def parse_graph(doc):
     limit = 5000
 
     with open(doc) as d:
-
         indicator = 0 #counts the empty lines (0: check_list, 1: nodes, 2: edges)
         edge_counter = 0 #counts the processed edges to give some completion feedback
 
@@ -28,8 +26,6 @@ def parse_graph(doc):
                 indicator += 1
                 #print("Accessing block #{}".format(indicator))
                 continue
-
-
 
             #building check_list
             elif indicator == 0:
@@ -53,13 +49,11 @@ def parse_graph(doc):
                         print( "Aborting..." )
                         raise Exception("Parsing one of your graphs was not successful.")
 
-
             #building nodes
             elif indicator == 1:
 
                 cur_node = Node( *split_list )
                 nodes.add( cur_node )
-
 
             #building labeled and/or directed edges
             elif indicator == 2:
@@ -84,7 +78,6 @@ def parse_graph(doc):
                 print( "Wrong input file format. File contains too many empty lines." )
                 print( "Aborting..." )
                 raise Exception("Parsing one of your graphs was not successful.")
-
 
 
     print_if_big(limit, edges, "Some illegalities are tested...")
@@ -142,7 +135,8 @@ def parse_graph(doc):
         exit()
 
 
-#This function works, because is_reverse_of only checks {(n1,n2) and (n2,n1}, not {(n1,n2) and (n1,n2)} (second case is sorted out because edges is a set)
+'''This function works, because is_reverse_of only checks {(n1,n2) and (n2,n1}, 
+not {(n1,n2) and (n1,n2)} (second case is sorted out because edges is a set)'''
 def edges_contain_doubles( edges ):
     for edge1 in edges:
         for edge2 in edges:
@@ -152,12 +146,10 @@ def edges_contain_doubles( edges ):
 
 
 def get_node_neighbours(limit, nodes, edges):
-
     nodes_w_neighbours = nodes
     counter = 0
 
     for cur_edge in edges:
-
         for cur_node in nodes:
 
             if cur_node == cur_edge.node1:
@@ -173,12 +165,14 @@ def get_node_neighbours(limit, nodes, edges):
 
     return nodes_w_neighbours
 
+
 def print_if_big(limit, edges, message):
     if(len(edges)) > limit:
         print( message )
 
+
+
+
 if __name__ == "__main__":
-
-    G = parse_graph(sys.argv[1])
-
-    #pprint.pprint( G )
+    g = parse_graph(sys.argv[1])
+    print(g)

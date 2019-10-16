@@ -1,6 +1,7 @@
 import sys
 import pprint
 
+from multivitamin.custom import check_semantics
 from multivitamin.basic.node import Node
 from multivitamin.basic.graph import Graph
 from multivitamin.utils.parser import parse_graph
@@ -53,16 +54,10 @@ class VF2():
     def match( self, last_mapped=(Node("0", ""), Node("0", "")), depth=0 ):
 
         if self.s_in_small_g():
-            
-
-            #print("core_s\n{}".format(self.core_s))
-            # print("CALL")
-            
             self.append_result_graph( self.core_s )
-
             self.restore_ds( last_mapped[0], last_mapped[1], depth )
-            
             return 
+
         td = self.set_inout( last_mapped[0], last_mapped[1], depth )
         p = self.compute_p(td)
 
@@ -70,25 +65,25 @@ class VF2():
 
             if self.is_feasible(tup[0], tup[1], depth, td):
                 self.compute_s_( tup[0], tup[1], depth )
-        
-                # print(depth)
-        
+
                 self.match( tup, depth+1 )
-        
-                # print("\n Call! \n\n last_mapped: {} \n\n td: {} \n\n depth: {} \n\n core_l: {} \n\n core_s {} \n\n".format( tup, td, depth, self.core_l, self.core_s ) )
-        
+
+                # print("\n Call! \n\n last_mapped: {} \n\n td: {} \n\n depth: {} \n\n core_l: {} \n\n core_s {} \n\n".format( tup, td, depth+1, self.core_l, self.core_s ) )
+
         self.restore_ds( last_mapped[0], last_mapped[1], depth )
+
 
     def s_in_small_g(self):
         """
         checks if every node of the small graph is mapped to a node in the
         large graph and return True or False accordingly
         """
-       
+
         for node in self.core_s:
             if self.core_s[node] == self.null_n:
                 return False
         return True
+
 
     def compute_p(self, td):
 
@@ -99,17 +94,18 @@ class VF2():
             return self.cart_p(self.in_l,  self.legal_max(self.in_s))
 
         elif not any((td["in_l"], td["in_s"], td["out_l"], td["out_s"])):
-     
+
             # all mapped nodes are in m_l (large_g) or m_s (small_g)
             m_l = {n for n in self.core_l if self.core_l[n] != self.null_n}
             m_s = {n for n in self.core_s if self.core_s[n] != self.null_n}
-     
+
             # In diff_l are all nodes that are in the large graph, but not mapping
             diff_l = self.large_g.nodes - m_l
             diff_s = self.small_g.nodes - m_s  # see above
             return self.cart_p(diff_l, max(diff_s))
-     
+
         return set()
+
 
     def is_feasible( self, n ,m, depth, td):
         #0-look-ahead
@@ -121,9 +117,8 @@ class VF2():
         if self.type == "isomorphism":
             # 1-look-ahead
             if not ( td["in_l"] == td["in_s"] or td["out_l"] == td["out_s"] ):
-                # print("1-look-ahead error")
                 return False
-      
+
         elif self.type == "subgraph":
             # 1-look-ahead
             if not ( td["in_l"] >= td["in_s"] or td["out_l"] >= td["out_s"] ):
@@ -131,12 +126,14 @@ class VF2():
 
         elif not self.two_look_ahead(depth, td):
             return False
-      
-        return self.check_semantics( n, m )
+
+        return check_semantics( n, m ) # this method is imported from multivitamin/custom.py
+
 
     def compute_s_(self, n, m, depth):
         self.core_l[n] = m
         self.core_s[m] = n
+
 
     def restore_ds(self, n, m, depth):
 
@@ -147,8 +144,9 @@ class VF2():
 
         self.core_l[n] = self.null_n
         self.core_s[m] = self.null_n
-      
-        #print("Depth: {} \n Restored tup: {}".format(depth, last_mapped))
+
+        # print("Depth: {} \n Restored tup: {}".format(depth, last_mapped))
+
 
 # HELPER FUNCTIONS ------------------------------------------------------------
     def set_inout(self, n, m, depth):
@@ -156,9 +154,9 @@ class VF2():
         Saves number of nodes for each terminal set in td and sets ssr /
         recursion depth, if not set. Used for computing candidate set p.
         '''
-    
+
         td = {"in_l": 0, "out_l": 0, "in_s": 0, "out_s": 0}
-    
+
         # makes sure, the first selected node gets depth
         try:  # This is needed, because the very first try will fail
             if self.in_l[n] == 0 and self.out_l[n] == 0:
@@ -199,12 +197,14 @@ class VF2():
                 if self.out_s[v] == 0: self.out_s[v] = depth
         return td
 
+
     def cart_p( self, node_dict, t_max ):
         """creates the cartesian product """
         cp = set()
         for node in node_dict:
             cp.add( (node, t_max) )
         return cp
+
 
     def legal_max(self, t_dict):
         '''returns node from t_dict with max id'''
@@ -215,6 +215,7 @@ class VF2():
             elif node > max_node:
                 max_node = node
         return max_node
+
 
     def zero_look_ahead( self, n, m, core ):
         '''every neighbour of n has to be mapped to a neighbour of m'''
@@ -235,6 +236,7 @@ class VF2():
                 return False
         return True
 
+
     def two_look_ahead(self, depth, td):
         free_n1 = len(self.large_g.nodes) - depth - td["in_l"] - td["out_l"]
         free_n2 = len(self.small_g.nodes) - depth - td["in_s"] - td["out_s"]
@@ -244,20 +246,12 @@ class VF2():
         elif self.type == "subgraph":
             return free_n1 >= free_n2
 
-    def check_semantics(self, n, m):
-        # print(n.label)
-        # print(m.label)
-        if n.label == m.label:
-            # print("True")
-            return True
-        else:
-            # print("False")
-            return False
 
     def restore_terminals(self, t_dict, dict_key, core, depth):
         for node in t_dict:
             if core[node] == self.null_n and t_dict[node] == depth:
                 t_dict[node] = 0
+
 
 # RESULT PROCESSING -----------------------------------------------------------
 
@@ -265,13 +259,17 @@ class VF2():
         '''creates a graph which contains the concatenated mapped nodes. 
         Then, it adds the neighbours to the new nodes following the 
         original neighbours.'''
-        
-        result_graph = Graph("({},{})#{}".format(self.small_g.id, self.large_g.id, len(self.result_graphs)+1), set())
+
+        result_graph = Graph("({},{})#{}".format(
+            self.small_g.id, 
+            self.large_g.id, 
+            len(self.result_graphs)+1), 
+            set()
+            )
         for key, value in result.items():
             # print("pair {} {}".format(key, value))
             cur_node = Node( "{}.{}".format( key.id, value.id), "{}".format( key.label ) )
-            
-            
+
             for node in result_graph.nodes: # f.ex. 1.2
                 orig_node = Node("")
                 for n in result.keys(): # original nodes from small graph
@@ -282,21 +280,13 @@ class VF2():
                     node.add_neighbour( cur_node )
                     cur_node.add_neighbour( node )
             result_graph.nodes.add(cur_node)
-        # print("new")
-        # print(self.result_graphs)
-        # for res in self.result_graphs:
-        #     print("CALL")
-        #     for res_node in result_graph.nodes:
-        #         print(res_node)
-        #         print(res.nodes)
-                # if not res_node in res.nodes:
-                    # return
-            
+
         # print( "\nEND_RESULT: \nType: {} \n\n{}\n".format(self.type, self.core_s ))
+
         self.result_graphs.append( result_graph )
         self.results.append( result_graph.nodes )
 
-        
+
 
 
 if __name__ == "__main__":
@@ -332,6 +322,3 @@ if __name__ == "__main__":
         print("")
         counter += 1
     print("")
-
-
-    # pprint.pprint(vf2.result_graphs)

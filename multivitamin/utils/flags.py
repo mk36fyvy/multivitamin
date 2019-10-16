@@ -6,19 +6,17 @@ from multivitamin.utils.get_input import process_file
 
 
 parser = argparse.ArgumentParser(
-    description='A multiple alignment tool for graphs',
+    description='multiVitamin - A multiple alignment tool for graphs',
     usage='use "python3 %(prog)s --help" for more information',
     formatter_class=RawTextHelpFormatter
 )
 
-# TODO?: Add debug options ( parser, modular product, ?)
-
-# arguments which provide the graph files
+# one of these args has to be provided, but not both
 group = parser.add_argument_group('required arguments', 'this argument is required')
 mxg = group.add_mutually_exclusive_group(required=True)
 mxg.add_argument(
     '-f',
-    '--files',
+    # '--files',
     dest='files',
     type=process_file,
     nargs='+',
@@ -27,11 +25,11 @@ mxg.add_argument(
 
 mxg.add_argument(
     '-c',
-    '--coopt',
+    # '--coopt',
     dest='coopt',
     type=process_file,
     nargs='+',
-    help='provide *2* graphs which will be aligned. Co-optimals will be saved in ./results (the graphs must be provided explicitly at the moment)'
+    help='provide *2* graphs which will be aligned. Co-optimals will be saved in ./results.'
 )
 
 
@@ -52,7 +50,7 @@ parser.add_argument(
     dest='guide',
     type=str,
     default='upgma',
-    help='choose a guide-tree-algorithm (default: upgma) - upgma is the only available at the moment'
+    help='choose a guide-tree-algorithm (default: upgma) \n upgma is the only one available at the moment'
 )
 
 parser.add_argument(
@@ -60,7 +58,7 @@ parser.add_argument(
     '--save-all',
     dest='save_all',
     action='store_true',
-    help='decide whether to save all the graphs produced during the alignment (default: No) - The graphs are saved as "[newick].graph"'
+    help='decide whether to save all the graphs produced during the alignment (default: No) \n The graphs are saved as "[newick].graph"'
 )
 
 parser.add_argument(

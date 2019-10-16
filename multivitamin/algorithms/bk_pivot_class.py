@@ -39,7 +39,7 @@ class BK:
         # pivot = random.choice( p + list(x) )  # choosing pivot randomly from union of p, x
 
         # loop through canditates p without neighbours of pivot element
-        for v in p[:] :
+        for v in p[:]:
 
             if  v in pivot.neighbours: # bk with pivot only takes
                 continue
@@ -65,7 +65,7 @@ class BK:
             self.results.append( r )
             return r
 
-        for v in p[:] :
+        for v in p[:]:
 
             r_ = r | {v} # concatenate r and v
 
@@ -79,12 +79,12 @@ class BK:
             x.add(v) # adding current node to garbage collection
 
 
+
 # EXECUTION (PIVOT VERSION) ----------------------------------------------------
 
 if __name__ == '__main__':
 
     try:
-
         bk = BK()
         graph = parse_graph(sys.argv[1])
         r = set()

@@ -1,9 +1,10 @@
 import sys
+
 from multivitamin.basic.node import Node
 from multivitamin.basic.edge import Edge
 
-class Graph():
 
+class Graph():
 
     def __init__(
         self,
@@ -33,7 +34,6 @@ class Graph():
 
 
     def get_inout_neighbours( self ):
-
         for cur_node in self.nodes:
             for cur_edge in self.edges:
 
@@ -45,7 +45,6 @@ class Graph():
 
 
     def create_undirected_edges( self ):
-
         done = [] #already checked nodes, used to avoid including reverse edges
         
         for node in self.nodes:
@@ -99,9 +98,8 @@ class Graph():
             return len(self.nodes) <= len(other.nodes)
 
 
+    '''define the way a graph is printed'''
     def __str__( self ):
-
-        '''define the way a graph is printed'''
         p_nodes = ""
         for node in self.nodes:
             p_nodes += str(node) + "\n"
@@ -112,7 +110,7 @@ class Graph():
 
         return "{} ;\n {} ;\n {};\n Nodes labelled? {}\n Edges labelled? {}\n Directed graph? {}".format(self.id, self.nodes, self.edges, self.nodes_are_labelled, self.edges_are_labelled, self.is_directed)
 
-        # return str(self.id)
+        # return str(self.id) # for debugging purposes
 
     def __repr__( self ):
         return self.__str__()

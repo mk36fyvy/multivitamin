@@ -2,7 +2,12 @@
 '''Edge object with a label (str)  and a node1 (Node) connecting to node2 (Node) '''
 class Edge():
 
-    def __init__( self, node1, node2, label="" ):
+    def __init__(
+                    self, 
+                    node1, 
+                    node2, 
+                    label="" 
+                ):
 
         self.node1 = node1
         self.node2 = node2
@@ -34,6 +39,7 @@ class Edge():
 
     def __hash__( self ):
         return hash((self.node1, self.node2, self.label))
+
 
 
     '''define the way an edge is printed'''

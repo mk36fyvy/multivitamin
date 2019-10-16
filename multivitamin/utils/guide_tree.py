@@ -15,8 +15,8 @@ class Guide_tree():
         graph_list,
         algorithm,
         save_all,
-        
     ):
+
         self.algorithm = algorithm
         self.save_all = save_all
 
@@ -27,9 +27,6 @@ class Guide_tree():
 
 
     def upgma( self ):
-
-        #alignment = Graph('0')
-        # print(len(self.graph_list))
         if len( self.graph_list ) == 1:
             
             res = self.graph_list[0]
@@ -42,20 +39,15 @@ class Guide_tree():
             self.newick = self.graph_list[0].id
             self.print_alignment( self.result )
 
-            return 
-        
-        maximum = 0 # is used to save 
+            return
+
+        maximum = 0 # is used to save the maximum number of mapped nodes
 
         for g1 in self.graph_list[:]:
             for g2 in self.graph_list[:]:
 
                 if g1.id == g2.id:
                     continue
-           
-                # print("g1")
-                # print(g1.id)
-                # print("g2")
-                # print(g2.id)
            
                 results = self.apply_algorithm( g1, g2)
 
@@ -72,8 +64,6 @@ class Guide_tree():
         
         self.graph_list.append( alignment_graph )
         self.intermediates.append( alignment_graph )
-
-        # print(self.newick)
 
         self.upgma()
 
@@ -101,19 +91,10 @@ class Guide_tree():
         elif self.algorithm == "VF2":
             vf2 = VF2( graph1, graph2 )
             vf2.match()
-    
-            # print("results")
-            # print(vf2.results)
-            # print("max")
-            # print(max(vf2.results))
-    
             return vf2.results
 
 
-
     def print_alignment( self, graph ):
-        
-        #OUTPUT----------------------
         print("")
         print("********************************************************************")
         print("*                                                                  *")

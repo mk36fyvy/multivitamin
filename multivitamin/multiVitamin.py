@@ -34,19 +34,18 @@ def main():
         print("Calculating multiple alignment with {} algorithm...".format( args.algorithm ))
         guide_tree.upgma()
         save_results( guide_tree )
-    
+
     elif args.coopt:
         if isinstance(args.coopt[0], list): #this happens when parsing files from a directory
             graphs = args.coopt[0] 
         else:
             graphs = args.coopt
         
-        # print(graphs)
         if not len(graphs) == 2:
-            raise Exception("You must provide exactly 2 graph files with '-c' ! Use '-f' if you want to align more graphs.")
+            raise Exception("You must provide exactly 2 graph files with '-c' ! Use '-f' if you want to align multiple graphs.")
 
         fake_tree = Guide_tree( graphs, args.algorithm, False )
-        
+
         if args.algorithm == "BK":
             modp = mod_product( cart_product( graphs[0].nodes, graphs[1].nodes ) )
             bk = BK()
@@ -70,14 +69,12 @@ def main():
                 fake_tree.intermediates.append( result_graph )
             save_results( fake_tree )
 
-        else: 
+        else:
             raise Exception("Invalid algorithm name!")
-        
-    
+
+
     else:
         raise Exception("No graph was parsed from the command-line")
-    
-    
 
 
 def save_results( guide_tree ):

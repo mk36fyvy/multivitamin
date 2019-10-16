@@ -7,10 +7,12 @@ from multivitamin.utils.parser import parse_graph
 from multivitamin.algorithms.bk_pivot_class import BK
 
 
-''' building cartesian product of two graphs and making new node objects out
+'''
+creating the cartesian product of two graphs and making new node objects out
 of the given node objects from each graph. In order do get the neighbour
-relations right we need to save the nodes of the two input graphs to user
-their .neighbour method later'''
+relations right, we need to save the nodes of the two input graphs to get access 
+to their neighbours later
+'''
 
 def cart_product(G,H):
 
@@ -23,11 +25,10 @@ def cart_product(G,H):
 	return cart_product
 
 
-''' this function checks if the two given new nodes (of the cartesian product)
-of two graphs are neighbours according to the rules of the modular product which'''
 
 def neighbours_in_mp ( tup1, tup2 ):
-
+	'''checks if the two given new nodes (of the cartesian product)
+	of two graphs are neighbours according to the rules of the modular product which'''
 
 	if  tup2[0] in tup1[0].neighbours and  tup2[1] in tup1[1].neighbours:
 		return True
@@ -37,11 +38,11 @@ def neighbours_in_mp ( tup1, tup2 ):
 
 	return False
 
-''' this function builds the modular product out of the cartesian product by
-applying the neighbour rules of the modular product'''
 
 
 def mod_product( cartp ):
+	''' this function builds the modular product out of the cartesian product by
+	applying the neighbour rules of the modular product'''
 
 	modular_set = set() # empty set for storing Node objects of modular product
 	for n in cartp.keys() :
@@ -54,14 +55,11 @@ def mod_product( cartp ):
 
 					n.add_neighbour(t)
 
-
-		# add complete consolidated node (with neighbours) at the end of first for loop
-		modular_set.add(n)
+		modular_set.add(n) # add complete consolidated node (with neighbours) at the end of first for loop
 
 	# OUTPUT-------------------------------------------------------------------
 	modular_product_as_graph = Graph('h_g',modular_set) # making graph out of modular product nodes
 	#modular_product_as_graph.create_undirected_edges() #giving the graph edges
-
 
 	return modular_product_as_graph
 
@@ -70,6 +68,7 @@ def cross_compare_tupels( tup, t ):
 	if not  (tup[0].id == t[0].id or tup[1].id == t[1].id):
 		return True
 	return False
+
 
 def get_coopt(bk_results):
 	res = []
@@ -84,8 +83,9 @@ def get_coopt(bk_results):
 	return res
 
 
-if __name__ == '__main__':
 
+
+if __name__ == '__main__':
 	try:
 		g = parse_graph( sys.argv[1] )
 		h = parse_graph( sys.argv[2] )
@@ -99,10 +99,8 @@ if __name__ == '__main__':
 		bk.bk_pivot( r, p, x)
 
 		res = get_coopt(bk.results)
-		
 
 		pprint.pprint(res)
-		#create_graph(modp.nodes ,modp.edges)
 
 	except Exception as e:
 		print(e)

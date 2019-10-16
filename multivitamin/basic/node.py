@@ -3,7 +3,11 @@
 class Node():
 
 
-    def __init__ ( self, id, label="" ):
+    def __init__ ( 
+                    self, 
+                    id, 
+                    label="" 
+                ):
 
         self.id = id
         self.label = label
@@ -12,12 +16,12 @@ class Node():
         self.neighbours = set()
 
 
-    '''add a neighbour to the neighbours set of the node'''
     def add_neighbour(self, node):
+        '''add a neighbour to the neighbours set of the node'''
         self.neighbours.add(node)
 
-    '''remove a neighbour from the neighbours set of the node'''
     def remove_neighbour(self, node):
+        '''remove a neighbour from the neighbours set of the node'''
         self.neighbours.remove(node)
 
     '''allow comparing nodes to each other ( all operations )'''
