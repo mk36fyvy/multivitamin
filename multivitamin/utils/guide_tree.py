@@ -79,11 +79,6 @@ class Guide_tree():
 
 
     def apply_algorithm( self, graph1, graph2 ):
-        print("")
-        print( "graph1 {}".format(graph1) )
-        print("")
-        print( "graph2 {}".format(graph2))
-        print("")
         if self.algorithm == "BK":  
             modp = mod_product( cart_product( graph1.nodes, graph2.nodes ) )
             bk = BK()
