@@ -10,6 +10,7 @@ class Node():
                 ):
 
         self.id = id
+        self.mult_id = ""
         self.label = label
         self.in_neighbours = set()
         self.out_neighbours = set()
@@ -78,11 +79,15 @@ class Node():
         neighbours_string = " "
 
         for neighbour in self.neighbours:
-            neighbours_string += neighbour.id
+            neighbours_string += neighbour.mult_id
             neighbours_string += ", "
         neighbours_string = neighbours_string[:-2]
         neighbours_string += " "
-        return  self.id + " '" + self.label + "' (" + str(neighbours_string) + ")"
+        if self.mult_id == "":
+            node_id = self.id
+        else:
+            node_id = self.mult_id
+        return  node_id + "   '" + self.label + "'   (" + str(neighbours_string) + ")"
 
 
     def __repr__(self):

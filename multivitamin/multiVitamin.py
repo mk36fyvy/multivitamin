@@ -1,10 +1,12 @@
 import os
 
 from multivitamin.basic.graph import Graph
+from multivitamin.utils.parser import parse_graph
 from multivitamin.utils.guide_tree import Guide_tree
 from multivitamin.utils.flags import parser
 from multivitamin.utils.graph_writer import write_graph
 from multivitamin.utils.modular_product import mod_product, cart_product, get_coopt
+from multivitamin.supp.view_graph import create_graph
 from multivitamin.algorithms.bk_pivot_class import BK
 from multivitamin.algorithms.vf2_beauty import VF2
 
@@ -16,9 +18,11 @@ FLAGS:
 -g guide
 -n save_guide
 -s save_all
+-v view
 '''
 
 args = parser.parse_args()
+args.algorithm = args.algorithm.upper()
 
 def main():
 
@@ -73,6 +77,11 @@ def main():
         else:
             raise Exception("Invalid algorithm name!")
 
+    elif args.view:
+        if isinstance(args.view, list): #this happens when parsing files from a directory
+            create_graph( args.view[0].nodes, args.view[0].edges )
+        else:
+            create_graph( args.view.nodes, args.view.edges )
 
     else:
         raise Exception("No graph was parsed from the command-line")

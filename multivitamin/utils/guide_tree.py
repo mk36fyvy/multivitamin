@@ -20,7 +20,8 @@ class Guide_tree():
         self.algorithm = algorithm
         self.save_all = save_all
 
-        self.graph_list = graph_list
+        self.graph_abbreviations = {}
+        self.graph_list = self.make_mult_id( graph_list )
         self.intermediates = []
         self.result = Graph()
         self.newick = ""
@@ -53,6 +54,10 @@ class Guide_tree():
 
                 if len(max(results)) >= maximum:
                     alignment = Graph( "({},{})".format( g1.id, g2.id ), max( results ) )
+
+                    if not list(alignment.nodes)[0].label == "":
+                        alignment.nodes_are_labelled = True
+
                     maximum = len(max(results))
                     alig_one = g1
                     alig_two = g2
@@ -102,8 +107,13 @@ class Guide_tree():
         print("*                                                                  *")
         print("********************************************************************")
         print("")
+        print("---GRAPH ABBREVIATIONS--------------")
         print("")
-        print("---ALIGNMENT---------")
+        for abbrev, id in self.graph_abbreviations.items():
+            print("{}\t>>\t{}".format( abbrev, id) )
+        print("")
+        print("")
+        print("---ALIGNMENT------------------------")
         print("")
         print("*NODES (ID, LABEL, NEIGHBOURS)")
         for node in graph.nodes:
@@ -114,12 +124,35 @@ class Guide_tree():
             print("{}".format(edge))
         print("")
         print("")
-        print("---NEWICK TREE-------")
+        print("---NEWICK TREE----------------------")
         print("")
         print(graph.id)
         print("")
         print("*******************************************************************")
         print("")
+
+
+    def make_mult_id( self, graph_list ):
+        id_list = {}
+
+        for graph in graph_list:
+            if len(graph.id) < 3:
+                # i is the number of occurrences of the short graph id in the id_list dicitonary
+                i = len( [x for x in id_list.values() if x.startswith(graph.id)] ) + 1 
+                id_list[graph.id] = graph.id + str(i)
+
+            else:
+                i = len( [x for x in id_list.values() if x.startswith(graph.id[0:2])] ) + 1
+                id_list[graph.id] = graph.id[0:2] + str(i)
+            self.graph_abbreviations[id_list[graph.id]] = graph.id
+
+        for graph in graph_list:
+            for node in graph.nodes:
+                node.mult_id = "{}.{}".format( id_list[graph.id], node.id )
+
+        return graph_list
+
+
 
 
 if __name__ == '__main__':

@@ -18,18 +18,18 @@ def write_graph(graph, path):
 
     for node in (graph.nodes):
         if node.label == "":
-            f.write("{}\n".format( node.id ))
+            f.write("{}\n".format( node.mult_id ))
         else:
-            f.write("{};{}\n".format( node.id, node.label ))
+            f.write("{};{}\n".format( node.mult_id, node.label ))
 
     f.write("\n")
 
     if not graph.edges_are_labelled:
         for edge in graph.edges:
-            f.write("{};{}\n".format( edge.node1.id, edge.node2.id ))
+            f.write("{};{}\n".format( edge.node1.mult_id, edge.node2.mult_id ))
     else:
         for edge in graph.edges:
-            f.write("{};{};{}\n".format( edge.node1.id, edge.node2.id, edge.label ))
+            f.write("{};{};{}\n".format( edge.node1.mult_id, edge.node2.mult_id, edge.label ))
 
     f.close()
 

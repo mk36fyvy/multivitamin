@@ -4,7 +4,7 @@ import sys
 import pprint
 import networkx as nx
 import matplotlib.pyplot as plt
-from utils.parser import parse_graph
+from multivitamin.utils.parser import parse_graph
 
 
 
@@ -34,10 +34,10 @@ def create_graph(nodes, edges):
     pos = nx.kamada_kawai_layout(G)
     #pos = nx.planar_layout(G) #no edge intersections
 
-    nx.draw_networkx_nodes(G, pos, cmap=plt.get_cmap('jet'), node_size=500)
+    nx.draw_networkx_nodes(G, pos, node_color='#66ffff', cmap=plt.get_cmap('jet'), node_size=500)
     #nx.draw_networkx_nodes(G, pos, node_color='000000', cmap=plt.get_cmap('jet'), node_size=[len(node.id) * 500 for node in nodes])
-    nx.draw_networkx_labels(G, pos, labels=node_label_dict, font_size=9, font_color='w')
-    nx.draw_networkx_edges(G, pos)
+    nx.draw_networkx_labels(G, pos, labels=node_label_dict, font_size=10, font_weight='bold', font_color='black')
+    nx.draw_networkx_edges(G, pos, edge_color='grey')
     #nx.draw_networkx_edge_labels(G, pos, edge_labels=node_label_dict)
     plt.show()
 

@@ -60,11 +60,15 @@ class VF2():
 
         td = self.set_inout( last_mapped[0], last_mapped[1], depth )
         p = self.compute_p(td)
-
+        print("")
+        print("\ndepth {}\n".format(depth))
         for tup in p:
+            print(tup)
 
             if self.is_feasible(tup[0], tup[1], depth, td):
                 self.compute_s_( tup[0], tup[1], depth )
+
+                pprint.pprint(self.core_s)
 
                 self.match( tup, depth+1 )
 
@@ -112,6 +116,7 @@ class VF2():
         if not all((
             self.zero_look_ahead(n, m, self.core_l),
             self.zero_look_ahead(m, n, self.core_s) ) ):
+            print("zero")
             return False
 
         if self.type == "isomorphism":
@@ -121,10 +126,12 @@ class VF2():
 
         elif self.type == "subgraph":
             # 1-look-ahead
+            print("one")
             if not ( td["in_l"] >= td["in_s"] or td["out_l"] >= td["out_s"] ):
                 return False
 
         elif not self.two_look_ahead(depth, td):
+            print("two")
             return False
 
         return check_semantics( n, m ) # this method is imported from multivitamin/custom.py
@@ -270,6 +277,7 @@ class VF2():
         for key, value in result.items():
             # print("pair {} {}".format(key, value))
             cur_node = Node( "{}.{}".format( key.id, value.id), "{}".format( key.label ) )
+            cur_node.mult_id = "{} {}".format( key.mult_id, value.mult_id)
 
             for node in result_graph.nodes: # f.ex. 1.2
                 orig_node = Node("")

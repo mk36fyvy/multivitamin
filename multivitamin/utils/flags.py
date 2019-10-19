@@ -20,7 +20,7 @@ mxg.add_argument(
     dest='files',
     type=process_file,
     nargs='+',
-    help='provide .graph files for the alignment'
+    help='provide .graph files for multiple alignment'
 )
 
 mxg.add_argument(
@@ -30,6 +30,15 @@ mxg.add_argument(
     type=process_file,
     nargs='+',
     help='provide *2* graphs which will be aligned. Co-optimals will be saved in ./results.'
+)
+
+mxg.add_argument(
+    '-v',
+    # '--view',
+    dest='view',
+    type=parse_graph,
+    nargs='1',
+    help='get a visual representation of the given graph'
 )
 
 
@@ -58,7 +67,7 @@ parser.add_argument(
     '--save-all',
     dest='save_all',
     action='store_true',
-    help='decide whether to save all the graphs produced during the alignment (default: No) \n The graphs are saved as "[newick].graph"'
+    help='save all the graphs produced during the alignment \n The graphs are saved as "[newick].graph"'
 )
 
 parser.add_argument(
