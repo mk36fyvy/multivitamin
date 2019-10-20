@@ -60,13 +60,35 @@ class VF2():
 
         td = self.set_inout( last_mapped[0], last_mapped[1], depth )
         p = self.compute_p(td)
+        
+        pprint.pprint(self.core_s)
+
+        print("")
+        pprint.pprint(self.in_l)
+        pprint.pprint(self.out_l)
+        print("")
+        pprint.pprint(self.in_s)
+        pprint.pprint(self.out_s)
+        print("")
+        print("\ndepth {}\n".format(depth))
+        
+        print("p")
+        print(p)
 
         for tup in p:
 
+            print(tup)
+            print("")
+            
+
+
             if self.is_feasible(tup[0], tup[1], depth, td):
                 self.compute_s_( tup[0], tup[1], depth )
+                pprint.pprint(self.core_s)
 
                 self.match( tup, depth+1 )
+
+                # print("\n Call! \n\n last_mapped: {} \n\n td: {} \n\n depth: {} \n\n core_l: {} \n\n core_s {} \n\n".format( tup, td, depth+1, self.core_l, self.core_s ) )
 
         self.restore_ds( last_mapped[0], last_mapped[1], depth )
 
@@ -101,8 +123,11 @@ class VF2():
             diff_l = self.large_g.nodes - m_l
             diff_s = self.small_g.nodes - m_s  # see above
             
+            print("diff")
+            print(diff_s)
             return self.cart_p(diff_l, max(diff_s))
-        return set() # this return is not reached, if diverging from original algorithm description
+        print("case")
+        return set()
 
 
     def is_feasible( self, n ,m, depth, td):
@@ -110,6 +135,7 @@ class VF2():
         if not all((
             self.zero_look_ahead(n, m, self.core_l),
             self.zero_look_ahead(m, n, self.core_s) ) ):
+            print("zero")
             return False
 
         if self.type == "isomorphism":
@@ -119,10 +145,12 @@ class VF2():
 
         elif self.type == "subgraph":
             # 1-look-ahead
+            print("one")
             if not ( td["in_l"] >= td["in_s"] or td["out_l"] >= td["out_s"] ):
                 return False
 
         elif not self.two_look_ahead(depth, td):
+            print("two")
             return False
 
         return check_semantics( n, m ) # this method is imported from multivitamin/custom.py
@@ -142,6 +170,8 @@ class VF2():
 
         self.core_l[n] = self.null_n
         self.core_s[m] = self.null_n
+
+        # print("Depth: {} \n Restored tup: {}".format(depth, last_mapped))
 
 
 # HELPER FUNCTIONS ------------------------------------------------------------
@@ -191,6 +221,7 @@ class VF2():
             if v in m.out_neighbours:
                 td['out_s'] += 1
                 if self.out_s[v] == 0: self.out_s[v] = depth
+        print(td)
         return td
 
 
@@ -264,6 +295,7 @@ class VF2():
             set()
             )
         for key, value in result.items():
+            # print("pair {} {}".format(key, value))
             cur_node = Node( "{}.{}".format( key.id, value.id), "{}".format( key.label ) )
             cur_node.mult_id = "{} {}".format( key.mult_id, value.mult_id)
 
@@ -277,6 +309,8 @@ class VF2():
                     node.add_neighbour( cur_node )
                     cur_node.add_neighbour( node )
             result_graph.nodes.add(cur_node)
+
+        # print( "\nEND_RESULT: \nType: {} \n\n{}\n".format(self.type, self.core_s ))
 
         self.result_graphs.append( result_graph )
         self.results.append( result_graph.nodes )

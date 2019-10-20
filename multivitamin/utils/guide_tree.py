@@ -2,7 +2,7 @@ import sys
 import pprint
 
 from multivitamin.basic.graph import Graph
-from multivitamin.utils.parser import parse_graph
+from multivitamin.utils.parser import parse_graph, edges_contain_doubles
 from multivitamin.utils.modular_product import mod_product, cart_product
 from multivitamin.algorithms.bk_pivot_class import BK
 from multivitamin.algorithms.vf2_beauty import VF2
@@ -55,9 +55,6 @@ class Guide_tree():
                 if len(max(results)) >= maximum:
                     alignment = Graph( "({},{})".format( g1.id, g2.id ), max( results ) )
 
-                    if not list(alignment.nodes)[0].label == "":
-                        alignment.nodes_are_labelled = True
-
                     maximum = len(max(results))
                     alig_one = g1
                     alig_two = g2
@@ -67,6 +64,13 @@ class Guide_tree():
 
         alignment_graph = self.make_graph_real( alignment )
         
+        if not list(alignment_graph.nodes)[0].label == "":
+            alignment_graph.nodes_are_labelled = True
+        if not list(alignment_graph.edges)[0].label == "":
+            alignment_graph.edges_are_labelled = True
+        if edges_contain_doubles( alignment_graph.edges ):
+            alignment_graph.is_directed = True
+
         self.graph_list.append( alignment_graph )
         self.intermediates.append( alignment_graph )
 

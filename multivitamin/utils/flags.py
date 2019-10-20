@@ -37,7 +37,7 @@ mxg.add_argument(
     # '--view',
     dest='view',
     type=parse_graph,
-    nargs='1',
+    nargs=1,
     help='get a visual representation of the given graph'
 )
 

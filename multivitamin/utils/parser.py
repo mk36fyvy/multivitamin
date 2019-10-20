@@ -11,7 +11,7 @@ def parse_graph( doc ):
     nodes = set()
     edges = set()
 
-    limit = 5000
+    limit = 5000 # graphs with an edge amount above this number will trigger additional print statements to indicate progress
 
     with open(doc) as d:
         indicator = 0 #counts the empty lines (0: check_list, 1: nodes, 2: edges)
@@ -107,7 +107,7 @@ def parse_graph( doc ):
             if edges_contain_doubles( edges ):  #(a,b) and (b,a)
                 issues += "Undirected graph can contain any edge only once. \n"
         else:
-            print("Warning: Due to the graph size (number of edges exceeding " + str(limit) + "), it is not controlled wether there are doubled edges. Please make sure your undirected graph does not contain edges as in (n1,n2) and (n2,n1)")
+            print("Warning: Due to the graph size (number of edges exceeding " + str(limit) + "), it is not controlled whether there are doubled edges. Please make sure your undirected graph does not contain edges as in (n1,n2) and (n2,n1)")
 
     print_if_big(limit, edges, "Done.")
 

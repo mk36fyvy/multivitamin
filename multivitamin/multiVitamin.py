@@ -1,5 +1,6 @@
 import os
 
+from multivitamin.custom import get_results_dir
 from multivitamin.basic.graph import Graph
 from multivitamin.utils.parser import parse_graph
 from multivitamin.utils.guide_tree import Guide_tree
@@ -78,6 +79,7 @@ def main():
             raise Exception("Invalid algorithm name!")
 
     elif args.view:
+        print(args.view)
         if isinstance(args.view, list): #this happens when parsing files from a directory
             create_graph( args.view[0].nodes, args.view[0].edges )
         else:
@@ -88,11 +90,12 @@ def main():
 
 
 def save_results( guide_tree ):
-    path = "/results"
-    
-    if not os.path.isdir("{}/{}".format( os.getcwd(), path )):
+    path = get_results_dir()
+
+    # create results directory
+    if not os.path.isdir("{}/{}".format( os.getcwd(), path )): # if results/ does not exist
         try:
-            os.mkdir("{}{}".format( os.getcwd(), path ) )
+            os.mkdir("{}{}".format( os.getcwd(), path ) ) 
         except:
             print ("Creation of the directory %s failed" % path)
         else:
@@ -100,14 +103,26 @@ def save_results( guide_tree ):
     else:
         print("\nAll files will be saved in {}{} \n".format( os.getcwd(), path ))
 
+    # save all intermediate alignment graphs, if flag is set
     if args.save_all or args.coopt:
         for graph in guide_tree.intermediates:
             write_graph( graph, path )
     else:
         write_graph( guide_tree.result, path )
 
+    # save graph abbreviations used for identifying original nodes in node ids
+    f = open("{}{}/{}".format( os.getcwd(), path, "graph_abbreviations.txt" ), 'w+')
+    for abbrev, id in guide_tree.graph_abbreviations.items():
+        f.write("{}\t{}\n".format( abbrev, id))
+    f.close
+
+    print("")
+    print("Saved graph id abbreviations as graph_abbreviations.txt")
+
+    # save newick tree in easily parseable txt file
     if args.save_guide:
         f = open("{}{}/{}".format( os.getcwd(), path, "Newick.txt" ), 'w+')
         f.write(guide_tree.newick)
         f.close
+
         print("Saved the alignment tree in Newick format as tree.txt\n")
