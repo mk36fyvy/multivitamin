@@ -61,23 +61,6 @@ class VF2():
         td = self.set_inout( last_mapped[0], last_mapped[1], depth )
         p = self.compute_p(td)
 
-        pprint.pprint(self.core_s)
-
-        print("")
-        print("td")
-        print(td)
-        print("")
-        pprint.pprint(self.in_l)
-        pprint.pprint(self.out_l)
-        print("")
-        pprint.pprint(self.in_s)
-        pprint.pprint(self.out_s)
-        print("")
-        print("\ndepth {}\n".format(depth))
-        
-        print("p")
-        pprint.pprint(p)
-
         for tup in p:
 
             if self.is_feasible(tup[0], tup[1], depth, td):
@@ -128,7 +111,6 @@ class VF2():
         if not all((
             self.zero_look_ahead(n, m, self.core_l),
             self.zero_look_ahead(m, n, self.core_s) ) ):
-            print("zero")
             return False
 
         if self.type == "isomorphism":
@@ -138,12 +120,10 @@ class VF2():
 
         elif self.type == "subgraph":
             # 1-look-ahead
-            print("one")
             if not ( td["in_l"] >= td["in_s"] and td["out_l"] >= td["out_s"] ):
                 return False
 
         elif not self.two_look_ahead(depth, td):
-            print("two")
             return False
 
         return check_semantics( n, m ) # this method is imported from multivitamin/custom.py
