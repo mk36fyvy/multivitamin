@@ -89,6 +89,5 @@ class Node():
             node_id = self.mult_id
         return  node_id + "   '" + self.label + "'   (" + str(neighbours_string) + ")"
 
-
     def __repr__(self):
         return self.__str__()

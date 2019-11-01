@@ -11,6 +11,7 @@ multivitamin/algorithms/vf2_beauty.py
 multivitamin/basic/edge.py
 multivitamin/basic/graph.py
 multivitamin/basic/node.py
+multivitamin/supp/vf2_debugPrints.py
 multivitamin/supp/view_graph.py
 multivitamin/utils/flags.py
 multivitamin/utils/get_input.py

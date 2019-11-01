@@ -12,7 +12,7 @@ parser = argparse.ArgumentParser(
 )
 
 # one of these args has to be provided, but not both
-group = parser.add_argument_group('required arguments', 'this argument is required')
+group = parser.add_argument_group('required arguments', 'these arguments are mutually exclusive')
 mxg = group.add_mutually_exclusive_group(required=True)
 mxg.add_argument(
     '-f',
@@ -20,7 +20,7 @@ mxg.add_argument(
     dest='files',
     type=process_file,
     nargs='+',
-    help='provide .graph files for multiple alignment'
+    help='provide .graph files for multiple alignment. \'.\' is a valid input'
 )
 
 mxg.add_argument(
@@ -38,7 +38,7 @@ mxg.add_argument(
     dest='view',
     type=parse_graph,
     nargs=1,
-    help='get a visual representation of the given graph'
+    help='get a visual representation of *1* given graph'
 )
 
 

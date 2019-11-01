@@ -63,7 +63,8 @@ class Guide_tree():
         self.graph_list.remove(alig_two)
 
         alignment_graph = self.make_graph_real( alignment )
-        
+
+        #generate graph bools about labels and driectedness
         if not list(alignment_graph.nodes)[0].label == "":
             alignment_graph.nodes_are_labelled = True
         if not list(alignment_graph.edges)[0].label == "":
@@ -107,21 +108,23 @@ class Guide_tree():
         print("")
         print("********************************************************************")
         print("*                                                                  *")
-        print("*                           RESULTS                                *")
+        print("*                        multiVitamin 1.0.0                        *")
+        print("*                                                                  *")
+        print("*                             RESULTS                              *")
         print("*                                                                  *")
         print("********************************************************************")
         print("")
         print("---GRAPH ABBREVIATIONS--------------")
         print("")
         for abbrev, id in self.graph_abbreviations.items():
-            print("{}\t>>\t{}".format( abbrev, id) )
+            print("  {}\t>>\t{}".format( abbrev, id) )
         print("")
         print("")
         print("---ALIGNMENT------------------------")
         print("")
         print("*NODES (ID, LABEL, NEIGHBOURS)")
         for node in graph.nodes:
-            print("{}".format(node))
+            print("  {}".format(node))
         print("")
         print("*EDGES (ID, LABEL)")
         for edge in graph.edges:
@@ -132,7 +135,7 @@ class Guide_tree():
         print("")
         print(graph.id)
         print("")
-        print("*******************************************************************")
+        print("********************************************************************")
         print("")
 
 
@@ -152,7 +155,7 @@ class Guide_tree():
 
         for graph in graph_list:
             for node in graph.nodes:
-                node.mult_id = "{}.{}".format( id_list[graph.id], node.id )
+                node.mult_id = "{}:{}".format( id_list[graph.id], node.id )
 
         return graph_list
 

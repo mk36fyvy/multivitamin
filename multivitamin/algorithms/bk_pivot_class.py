@@ -8,7 +8,7 @@ from multivitamin.utils.parser import parse_graph
 
 
 class BK:
-    ''' implementing Bron-Kerbosch algorithmn where r is the list of possible nodes
+    ''' implementing Bron-Kerbosch algorithm where r is the list of possible nodes
     in a clique, p is the list of canditates and x is the garbage collection'''
 
     def __init__( self ):

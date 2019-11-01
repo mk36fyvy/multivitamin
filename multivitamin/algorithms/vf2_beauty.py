@@ -61,9 +61,27 @@ class VF2():
         td = self.set_inout( last_mapped[0], last_mapped[1], depth )
         p = self.compute_p(td)
 
+        pprint.pprint(self.core_s)
+
+        print("")
+        print("td")
+        print(td)
+        print("")
+        pprint.pprint(self.in_l)
+        pprint.pprint(self.out_l)
+        print("")
+        pprint.pprint(self.in_s)
+        pprint.pprint(self.out_s)
+        print("")
+        print("\ndepth {}\n".format(depth))
+        
+        print("p")
+        pprint.pprint(p)
+
         for tup in p:
 
             if self.is_feasible(tup[0], tup[1], depth, td):
+                print("feasible")
                 self.compute_s_( tup[0], tup[1], depth )
 
                 self.match( tup, depth+1 )
@@ -88,11 +106,11 @@ class VF2():
         if all( ( td["out_l"] ,td["out_s"] ) ):
             return self.cart_p(self.out_l, self.legal_max(self.out_s))
 
-        elif all(( not td['in_l'], not td['in_s'], td['out_l'], td['out_s'] )):
+        elif all(( td['in_l'], td['in_s'], not td['out_l'], not td['out_s'] )):
             return self.cart_p(self.in_l,  self.legal_max(self.in_s))
 
-        # elif not any((td["in_l"], td["in_s"], td["out_l"], td["out_s"])):
-        else:
+        elif not any((td["in_l"], td["in_s"], td["out_l"], td["out_s"])):
+        # else:
             # all mapped nodes are in m_l (large_g) or m_s (small_g)
             m_l = {n for n in self.core_l if self.core_l[n] != self.null_n}
             m_s = {n for n in self.core_s if self.core_s[n] != self.null_n}
@@ -110,19 +128,22 @@ class VF2():
         if not all((
             self.zero_look_ahead(n, m, self.core_l),
             self.zero_look_ahead(m, n, self.core_s) ) ):
+            print("zero")
             return False
 
         if self.type == "isomorphism":
             # 1-look-ahead
-            if not ( td["in_l"] == td["in_s"] or td["out_l"] == td["out_s"] ):
+            if not ( td["in_l"] == td["in_s"] and td["out_l"] == td["out_s"] ):
                 return False
 
         elif self.type == "subgraph":
             # 1-look-ahead
-            if not ( td["in_l"] >= td["in_s"] or td["out_l"] >= td["out_s"] ):
+            print("one")
+            if not ( td["in_l"] >= td["in_s"] and td["out_l"] >= td["out_s"] ):
                 return False
 
         elif not self.two_look_ahead(depth, td):
+            print("two")
             return False
 
         return check_semantics( n, m ) # this method is imported from multivitamin/custom.py
@@ -154,7 +175,7 @@ class VF2():
         td = {"in_l": 0, "out_l": 0, "in_s": 0, "out_s": 0}
 
         # makes sure, the first selected node gets depth
-        try:  # This is needed, because the very first try will fail
+        try:  # This is needed, because the very first try will fail (null_n not in in_l)
             if self.in_l[n] == 0 and self.out_l[n] == 0:
                 self.in_l[n] = depth
                 self.out_l[n] = depth
@@ -172,11 +193,9 @@ class VF2():
 
             if v in n.in_neighbours:
                 # saves current depth for terminal node in case it hasn't depth yet
-                td['in_l'] += 1
                 if self.in_l[v] == 0: self.in_l[v] = depth
 
             if v in n.out_neighbours :
-                td['out_l'] += 1
                 if self.out_l[v] == 0: self.out_l[v] = depth
 
         # compute terminal_dicts for the small graph
@@ -186,11 +205,35 @@ class VF2():
 
             if v in m.in_neighbours:
                 if self.in_s[v] == 0: self.in_s[v] = depth
-                td['in_s'] += 1
 
             if v in m.out_neighbours:
-                td['out_s'] += 1
                 if self.out_s[v] == 0: self.out_s[v] = depth
+
+        for node, node_depth in self.in_s.items():
+            if not self.core_s[node] == self.null_n:
+                continue
+            if node_depth != 0:
+                td["in_s"] += 1
+        
+        for node, node_depth in self.out_s.items():
+            if not self.core_s[node] == self.null_n:
+                continue
+            if node_depth != 0:
+                td["out_s"] += 1
+        
+        for node, node_depth in self.in_l.items():
+            if not self.core_l[node] == self.null_n:
+                continue
+            if node_depth != 0:
+                td["in_l"] += 1
+        
+        for node, node_depth in self.out_l.items():
+            if not self.core_l[node] == self.null_n:
+                continue
+            if node_depth != 0:
+                td["out_l"] += 1
+        
+
         return td
 
 
@@ -198,9 +241,20 @@ class VF2():
         """creates the cartesian product """
         cp = set()
         for node in node_dict:
-            cp.add( (node, t_max) )
+            if self.core_l[node] == self.null_n:
+                cp.add( (node, t_max) )
         return cp
 
+
+    # def legal_max(self, t_dict):
+    #     '''returns node from t_dict with max id'''
+    #     max_node = self.null_n
+    #     for node in t_dict:
+    #         if t_dict[node] > 0 and self.core_s[node] != self.null_n:
+    #             continue
+    #         elif node > max_node:
+    #             max_node = node
+    #     return max_node
 
     def legal_max(self, t_dict):
         '''returns node from t_dict with max id'''
@@ -217,7 +271,7 @@ class VF2():
         '''every neighbour of n has to be mapped to a neighbour of m'''
         for n_ in n.neighbours:
             m_ = core[n_] # Mapping of v
-            if m_ == self.null_n : # If mapping does'n exist take next neighbour
+            if m_ == self.null_n : # If mapping doesn't exist, proceed
                 continue
 
             # If n_ is an in neighbour of n m_ must be an in neighbour of m
@@ -228,7 +282,7 @@ class VF2():
             # Since we only contemplating neighbours of n n_ has to be an in or
             # An out neighbour, it is sufficient to only check it m_ is out
             # Neighbour of m
-            elif not  m_ in m.out_neighbours:
+            elif n_ in n.out_neighbours and not  m_ in m.out_neighbours:
                 return False
         return True
 
@@ -265,7 +319,7 @@ class VF2():
             )
         for key, value in result.items():
             cur_node = Node( "{}.{}".format( key.id, value.id), "{}".format( key.label ) )
-            cur_node.mult_id = "{} {}".format( key.mult_id, value.mult_id)
+            cur_node.mult_id = "{}.{}".format( key.mult_id, value.mult_id)
 
             for node in result_graph.nodes: # f.ex. 1.2
                 orig_node = Node("")

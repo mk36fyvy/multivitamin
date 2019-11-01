@@ -32,16 +32,21 @@ def parse_graph( doc ):
 
                 arg = split_list[-1]  #last element in row is interpreted
 
-                if line.upper().startswith( "AUTHOR" ):
-                    print( "Reading {} from {}".format( doc.split("/")[-1], line.split(" ",1)[1] ) )
+                if arg.upper() == "COMMENT":
                     continue
 
+                elif line.startswith( "//" ):
+                    continue
+                
                 elif arg.upper() in ( "TRUE", "FALSE" ):
                     check_list.append( arg.upper()  == "TRUE" )
 
+                elif line.upper().startswith( "AUTHOR" ):
+                    print( "Reading {} from {}".format( doc.split("/")[-1], line.split(" ",1)[1] ) )
+                    continue
+
                 else:
                     try:
-                        # print(arg)
                         check_list.append( int(arg) ) #indicates number of nodes/edges
 
                     except:
@@ -57,8 +62,6 @@ def parse_graph( doc ):
 
             #building labeled and/or directed edges
             elif indicator == 2:
-
-                #is there a better way to do this?
 
                 for node in nodes:
                     if node.id == split_list[0]:
