@@ -22,6 +22,9 @@ class Graph():
         self.nodes_are_labelled = nodes_labelled
         self.edges_are_labelled = edges_labelled
         self.is_directed = is_directed
+        
+        self.newick = id
+        self.abbrev = ""
 
 
     def set_id( self, id ):
@@ -71,7 +74,8 @@ class Graph():
         if not isinstance(other, Graph):
             return NotImplemented
         else:
-            return len(self.nodes) == len(other.nodes)
+            return self.id == other.id
+            # return len(self.nodes) == len(other.nodes)
 
     def __gt__( self, other ):
         if not isinstance(other, Graph):

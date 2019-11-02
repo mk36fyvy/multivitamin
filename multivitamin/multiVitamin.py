@@ -5,7 +5,7 @@ from multivitamin.basic.graph import Graph
 from multivitamin.utils.parser import parse_graph
 from multivitamin.utils.guide_tree import Guide_tree
 from multivitamin.utils.flags import parser
-from multivitamin.utils.graph_writer import write_graph
+from multivitamin.utils.graph_writer import write_graph, write_shorter_graph
 from multivitamin.utils.modular_product import mod_product, cart_product, get_coopt
 from multivitamin.supp.view_graph import create_graph
 from multivitamin.algorithms.bk_pivot_class import BK
@@ -29,6 +29,20 @@ def main():
 
     # print(type(args.files[0]))
 
+             
+    print("                                                              ")
+    print("                 _ _   _       _  _                   _       ")
+    print("                | | | (_)     (_)| |                 (_)      ")
+    print(" _ __ ___  _   _| | |_ \ \   / / | |_  __ _ _ __ ___  _ _ __  ")
+    print("| '_ ` _ \| | | | | __| \ \ / / ||  _|/ _` | '_ ` _ \| | '_ \ ")
+    print("| | | | | | |_| | | |_| |\ V /| || |_| (_| | | | | | | | | | |")
+    print("|_| |_| |_|\__,_|_|\__|_| \_/ |_| \__|\__,_|_| |_| |_|_|_| |_|")
+    print("                                                              ")
+    print("                                                  v1.0.0      ")
+    print("                                                              ")                                            
+
+
+
     if args.files:
         if isinstance(args.files[0], list): #this happens when parsing files from a directory
             graphs = args.files[0] 
@@ -50,6 +64,7 @@ def main():
             raise Exception("You must provide exactly 2 graph files with '-c' ! Use '-f' if you want to align multiple graphs.")
 
         fake_tree = Guide_tree( graphs, args.algorithm, False )
+        print("Calculating alignment with {} algorithm...".format( args.algorithm ))
 
         if args.algorithm == "BK":
             modp = mod_product( cart_product( graphs[0].nodes, graphs[1].nodes ) )
@@ -62,7 +77,7 @@ def main():
             temp = Graph("")
             counter = 1
             for node_set in res:
-                temp = fake_tree.make_graph_real( Graph( "({},{})#{}".format( graphs[0].id, graphs[1].id, counter ), node_set ) )
+                temp = fake_tree.make_graph_real( Graph( "{}--{}#{}".format( graphs[0].id, graphs[1].id, counter ), node_set ) )
                 fake_tree.intermediates.append( temp )
                 counter += 1
             save_results( fake_tree )
@@ -91,7 +106,7 @@ def main():
 
 def save_results( guide_tree ):
     path = get_results_dir()
-
+    
     # create results directory
     if not os.path.isdir("{}/{}".format( os.getcwd(), path )): # if results/ does not exist
         try:
@@ -109,6 +124,10 @@ def save_results( guide_tree ):
             write_graph( graph, path )
     else:
         write_graph( guide_tree.result, path )
+
+    # save end alignment graph with much shorter node ids
+    if args.save_shorter:
+        write_shorter_graph( guide_tree.result, path )
 
     # save graph abbreviations used for identifying original nodes in node ids
     f = open("{}{}/{}".format( os.getcwd(), path, "graph_abbreviations.txt" ), 'w+')

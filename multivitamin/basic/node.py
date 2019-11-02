@@ -1,4 +1,3 @@
-
 """ Node object with an id (str), a label (str) and neighbours (set) """
 class Node():
 

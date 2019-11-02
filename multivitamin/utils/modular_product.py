@@ -31,7 +31,7 @@ def cart_product(G,H):
 
 def neighbours_in_mp ( tup1, tup2 ):
 	'''checks if the two given new nodes (of the cartesian product)
-	of two graphs are neighbours according to the rules of the modular product which'''
+	of two graphs are neighbours according to the rules of the modular product'''
 
 	if  tup2[0] in tup1[0].neighbours and  tup2[1] in tup1[1].neighbours:
 		return True

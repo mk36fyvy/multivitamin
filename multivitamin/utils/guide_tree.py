@@ -1,6 +1,7 @@
 import sys
 import pprint
 
+from multivitamin.basic.node import Node
 from multivitamin.basic.graph import Graph
 from multivitamin.utils.parser import parse_graph, edges_contain_doubles
 from multivitamin.utils.modular_product import mod_product, cart_product
@@ -28,9 +29,11 @@ class Guide_tree():
 
 
     def upgma( self ):
-        if len( self.graph_list ) == 1:
-            
-            res = self.graph_list[0]
+        if len( self.graph_list ) <= 1:
+            try:
+                res = self.graph_list[0]
+            except:
+                return
 
             res.edges = set()
             res.create_undirected_edges()
@@ -43,37 +46,57 @@ class Guide_tree():
             return
 
         maximum = 0 # is used to save the maximum number of mapped nodes
+        counter = 1 # makes sure that every graph couple is only processed once
 
-        for g1 in self.graph_list[:]:
-            for g2 in self.graph_list[:]:
+        for g1 in self.graph_list[:-1]:
+            
+            for g2 in self.graph_list[counter:]:
 
                 if g1.id == g2.id:
                     continue
            
-                results = self.apply_algorithm( g1, g2)
+                results = self.apply_algorithm( g1, g2 )
+                
+                max_alignment = max(results)
+                
+                if len(max_alignment) >  maximum:
+                   
+                    alignment = Graph( "{}-{}".format( g1.abbrev, g2.abbrev ), max_alignment )
+                    alignment.abbrev = alignment.id
+                    alignment.newick = "({},{})".format( g1.newick, g2.newick)
 
-                if len(max(results)) >= maximum:
-                    alignment = Graph( "({},{})".format( g1.id, g2.id ), max( results ) )
-
-                    maximum = len(max(results))
+                    maximum = len(max_alignment)
                     alig_one = g1
                     alig_two = g2
+
+            counter += 1
+
+        
 
         self.graph_list.remove(alig_one)
         self.graph_list.remove(alig_two)
 
         alignment_graph = self.make_graph_real( alignment )
 
-        #generate graph bools about labels and driectedness
+        #generate graph description bools
         if not list(alignment_graph.nodes)[0].label == "":
             alignment_graph.nodes_are_labelled = True
-        if not list(alignment_graph.edges)[0].label == "":
-            alignment_graph.edges_are_labelled = True
+        if len(alignment_graph.nodes) > 1: 
+            if not list(alignment_graph.edges)[0].label == "":
+                alignment_graph.edges_are_labelled = True
         if edges_contain_doubles( alignment_graph.edges ):
             alignment_graph.is_directed = True
 
         self.graph_list.append( alignment_graph )
         self.intermediates.append( alignment_graph )
+
+        if Node("null", "") in alignment.nodes and not self.save_all:
+            raise Exception("VF2 could not produce a multiple alignment of all the given graphs. \n The classical VF2 algorithm can only process *graph-subgraph*-isomorphism. \n Please consider using BK algorithm or -s to save all intermediate graphs until the error occurrs.")
+        elif Node("null", "") in alignment.nodes and self.save_all:
+            print("Multiple alignment was not successful. VF2 could not align the graphs {} and {} properly. \n Maybe BK is more appropriate for this alignment.".format(alig_one.id, alig_two.id))
+            print("Removing last graph. Continuing alignment...")
+            self.graph_list.remove(alignment_graph)
+            self.intermediates.remove( alignment_graph )
 
         self.upgma()
 
@@ -101,18 +124,18 @@ class Guide_tree():
         elif self.algorithm == "VF2":
             vf2 = VF2( graph1, graph2 )
             vf2.match()
+            if not vf2.results:
+                vf2.results.append([Node("null","")])
             return vf2.results
 
 
     def print_alignment( self, graph ):
         print("")
-        print("********************************************************************")
-        print("*                                                                  *")
-        print("*                        multiVitamin 1.0.0                        *")
-        print("*                                                                  *")
-        print("*                             RESULTS                              *")
-        print("*                                                                  *")
-        print("********************************************************************")
+        print("*****************************************************************")
+        print("*                                                               *")
+        print("*                          RESULTS                              *")
+        print("*                                                               *")
+        print("*****************************************************************")
         print("")
         print("---GRAPH ABBREVIATIONS--------------")
         print("")
@@ -133,7 +156,7 @@ class Guide_tree():
         print("")
         print("---NEWICK TREE----------------------")
         print("")
-        print(graph.id)
+        print(graph.newick)
         print("")
         print("********************************************************************")
         print("")
@@ -146,16 +169,18 @@ class Guide_tree():
             if len(graph.id) < 3:
                 # i is the number of occurrences of the short graph id in the id_list dicitonary
                 i = len( [x for x in id_list.values() if x.startswith(graph.id)] ) + 1 
-                id_list[graph.id] = graph.id + str(i)
+                graph.abbrev = graph.id + str(i) 
+                id_list[graph.id] = graph.abbrev
 
             else:
                 i = len( [x for x in id_list.values() if x.startswith(graph.id[0:2])] ) + 1
-                id_list[graph.id] = graph.id[0:2] + str(i)
+                graph.abbrev = graph.id[0:2] + str(i)
+                id_list[graph.id] = graph.abbrev
             self.graph_abbreviations[id_list[graph.id]] = graph.id
 
         for graph in graph_list:
             for node in graph.nodes:
-                node.mult_id = "{}:{}".format( id_list[graph.id], node.id )
+                node.mult_id = "{}:{}".format( graph.abbrev, node.id )
 
         return graph_list
 

@@ -12,11 +12,13 @@ def check_semantics( n, m ):
     labels are exactly the same.
 
     Insert your scoring logic below:'''
-    if n.label == m.label:
-        return True
-    else:
-        return False
-    # return True
+    
+    # if n.label == m.label:
+    #     return True
+    # else:
+    #     return False
+    
+    return True
 
 def get_results_dir():
     '''define, where the result files will be saved. 

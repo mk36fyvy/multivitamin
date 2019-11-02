@@ -64,7 +64,6 @@ class VF2():
         for tup in p:
 
             if self.is_feasible(tup[0], tup[1], depth, td):
-                print("feasible")
                 self.compute_s_( tup[0], tup[1], depth )
 
                 self.match( tup, depth+1 )
@@ -304,7 +303,7 @@ class VF2():
             for node in result_graph.nodes: # f.ex. 1.2
                 orig_node = Node("")
                 for n in result.keys(): # original nodes from small graph
-                    if node.id.split(".")[:-1][0] == n.id: # comparing the first part of already mapped node id and original node id
+                    if set(n.mult_id.split(".")).issubset( set(node.mult_id.split(".")) ):
                         orig_node = n
                         break
                 if key in orig_node.neighbours:

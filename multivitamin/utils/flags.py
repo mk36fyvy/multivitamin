@@ -15,8 +15,8 @@ parser = argparse.ArgumentParser(
 group = parser.add_argument_group('required arguments', 'these arguments are mutually exclusive')
 mxg = group.add_mutually_exclusive_group(required=True)
 mxg.add_argument(
-    '-f',
-    # '--files',
+    '-m',
+    # '--multiple',
     dest='files',
     type=process_file,
     nargs='+',
@@ -53,14 +53,14 @@ parser.add_argument(
     help='choose an alignment-algorithm (BK or VF2) (default: BK) \n Warning: VF2 is only suited if there is true graph-subgraph isomorphism!'
 )
 
-parser.add_argument(
-    '-g',
-    '--guide-tree',
-    dest='guide',
-    type=str,
-    default='upgma',
-    help='choose a guide-tree-algorithm (default: upgma) \n upgma is the only one available at the moment'
-)
+# parser.add_argument(
+#     '-g',
+#     '--guide-tree',
+#     dest='guide',
+#     type=str,
+#     default='upgma',
+#     help='choose a guide-tree-algorithm (default: upgma) \n upgma is the only one available at the moment'
+# )
 
 parser.add_argument(
     '-s',
@@ -71,9 +71,17 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    '-n',
+    '-t',
+    '--save-shorter',
+    dest='save_shorter',
+    action='store_true',
+    help='save an additional version of the alignment graph with much shorter node ids'
+)
+
+parser.add_argument(
+    '-g',
     '--save-guide',
     dest='save_guide',
     action='store_true',
-    help='decide whether to save the guide tree in Newick-format as "tree.txt" (default: No)'
+    help='save the guide tree in Newick-format as "tree.txt"'
 )
