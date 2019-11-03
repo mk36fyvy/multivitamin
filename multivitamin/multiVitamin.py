@@ -15,8 +15,8 @@ from multivitamin.algorithms.vf2_beauty import VF2
 FLAGS:
 -a BK VF2 
 -c use algorithm for single alignment and save co-optimals
--f save in list as input graphs
 -g guide
+-m save in list as input graphs
 -n save_guide
 -s save_all
 -v view
@@ -61,7 +61,7 @@ def main():
             graphs = args.coopt
         
         if not len(graphs) == 2:
-            raise Exception("You must provide exactly 2 graph files with '-c' ! Use '-f' if you want to align multiple graphs.")
+            raise Exception("You must provide exactly 2 graph files with '-c' ! Use '-m' if you want to align multiple graphs.")
 
         fake_tree = Guide_tree( graphs, args.algorithm, False )
         print("Calculating alignment with {} algorithm...".format( args.algorithm ))
@@ -94,11 +94,14 @@ def main():
             raise Exception("Invalid algorithm name!")
 
     elif args.view:
-        print(args.view)
+        # print(args.view)
         if isinstance(args.view, list): #this happens when parsing files from a directory
+            print("Displaying {}...".format(args.view[0].id))
             create_graph( args.view[0].nodes, args.view[0].edges )
         else:
+            print("Displaying {}...".format(args.view.id))
             create_graph( args.view.nodes, args.view.edges )
+        
 
     else:
         raise Exception("No graph was parsed from the command-line")
@@ -140,8 +143,8 @@ def save_results( guide_tree ):
 
     # save newick tree in easily parseable txt file
     if args.save_guide:
-        f = open("{}{}/{}".format( os.getcwd(), path, "Newick.txt" ), 'w+')
-        f.write(guide_tree.newick)
+        f = open("{}{}/{}".format( os.getcwd(), path, "newick.txt" ), 'w+')
+        f.write("{}\n".format(guide_tree.newick))
         f.close
 
-        print("Saved the alignment tree in Newick format as tree.txt\n")
+        print("Saved the alignment tree in Newick format as newick.txt\n")

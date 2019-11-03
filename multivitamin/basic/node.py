@@ -78,15 +78,17 @@ class Node():
         neighbours_string = " "
 
         for neighbour in self.neighbours:
-            neighbours_string += neighbour.mult_id
+            neighbours_string += self.node_id(neighbour)
             neighbours_string += ", "
         neighbours_string = neighbours_string[:-2]
         neighbours_string += " "
-        if self.mult_id == "":
-            node_id = self.id
-        else:
-            node_id = self.mult_id
-        return  node_id + "   '" + self.label + "'   (" + str(neighbours_string) + ")"
+        return  self.node_id(self) + "   '" + self.label + "'   (" + str(neighbours_string) + ")"
 
+    def node_id( self, node ):
+        if node.mult_id == "" or node.mult_id == ".":
+            return node.id
+        else:
+            return node.mult_id
+        
     def __repr__(self):
         return self.__str__()

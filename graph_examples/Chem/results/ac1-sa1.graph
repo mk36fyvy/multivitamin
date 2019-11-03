@@ -1,0 +1,64 @@
+// (acetylsalicylic_acid,salicylic_acid)
+AUTHOR: micheltower
+#nodes;10
+#edges;45
+Nodes labelled;True
+Edges labelled;False
+Directed graph;False
+
+ac1:9.sa1:8;Osp3
+ac1:5.sa1:5;c
+ac1:6.sa1:6;c
+ac1:7.sa1:7;Csp2
+ac1:1.sa1:1;c
+ac1:4.sa1:4;c
+ac1:10.sa1:10;Osp3
+ac1:3.sa1:3;c
+ac1:2.sa1:2;c
+ac1:8.sa1:9;Osp2
+
+ac1:9.sa1:8;ac1:7.sa1:7
+ac1:6.sa1:6;ac1:1.sa1:1
+ac1:1.sa1:1;ac1:2.sa1:2
+ac1:9.sa1:8;ac1:5.sa1:5
+ac1:7.sa1:7;ac1:8.sa1:9
+ac1:7.sa1:7;ac1:1.sa1:1
+ac1:7.sa1:7;ac1:10.sa1:10
+ac1:9.sa1:8;ac1:6.sa1:6
+ac1:6.sa1:6;ac1:4.sa1:4
+ac1:5.sa1:5;ac1:7.sa1:7
+ac1:9.sa1:8;ac1:2.sa1:2
+ac1:3.sa1:3;ac1:2.sa1:2
+ac1:5.sa1:5;ac1:2.sa1:2
+ac1:7.sa1:7;ac1:2.sa1:2
+ac1:5.sa1:5;ac1:6.sa1:6
+ac1:7.sa1:7;ac1:3.sa1:3
+ac1:6.sa1:6;ac1:3.sa1:3
+ac1:9.sa1:8;ac1:1.sa1:1
+ac1:3.sa1:3;ac1:8.sa1:9
+ac1:6.sa1:6;ac1:8.sa1:9
+ac1:6.sa1:6;ac1:10.sa1:10
+ac1:1.sa1:1;ac1:8.sa1:9
+ac1:1.sa1:1;ac1:10.sa1:10
+ac1:2.sa1:2;ac1:8.sa1:9
+ac1:9.sa1:8;ac1:4.sa1:4
+ac1:5.sa1:5;ac1:1.sa1:1
+ac1:6.sa1:6;ac1:7.sa1:7
+ac1:4.sa1:4;ac1:2.sa1:2
+ac1:1.sa1:1;ac1:4.sa1:4
+ac1:4.sa1:4;ac1:3.sa1:3
+ac1:5.sa1:5;ac1:4.sa1:4
+ac1:9.sa1:8;ac1:3.sa1:3
+ac1:10.sa1:10;ac1:8.sa1:9
+ac1:9.sa1:8;ac1:10.sa1:10
+ac1:9.sa1:8;ac1:8.sa1:9
+ac1:5.sa1:5;ac1:3.sa1:3
+ac1:6.sa1:6;ac1:2.sa1:2
+ac1:4.sa1:4;ac1:8.sa1:9
+ac1:5.sa1:5;ac1:8.sa1:9
+ac1:5.sa1:5;ac1:10.sa1:10
+ac1:4.sa1:4;ac1:10.sa1:10
+ac1:10.sa1:10;ac1:3.sa1:3
+ac1:10.sa1:10;ac1:2.sa1:2
+ac1:7.sa1:7;ac1:4.sa1:4
+ac1:1.sa1:1;ac1:3.sa1:3

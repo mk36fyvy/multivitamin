@@ -100,6 +100,7 @@ if __name__ == '__main__':
 
 		bk = BK()
 		bk.bk_pivot( r, p, x)
+		# bk.bk( r, p, x)
 
 		res = get_coopt(bk.results)
 

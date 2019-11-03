@@ -19,7 +19,7 @@ class BK:
         helper = 0
         piv = Node('0', '')
         for v in p_union_x:
-            cur_len_intersection = len([n for n in v.neighbours if n in p])
+            cur_len_intersection = len([n for n in v.neighbours if n in p_union_x])
             if cur_len_intersection > helper:
                 piv = v
                 helper = cur_len_intersection
@@ -29,7 +29,7 @@ class BK:
 
     def bk_pivot ( self, r, p, x ):
         
-        if not any ( [p, x] ): # when p and x are empty return r as max clique and end
+        if not any ( [p, x] ): # if p and x are empty return r as max clique and end
 
             # print('clique: ', r)
             self.results.append(r)
@@ -38,7 +38,7 @@ class BK:
         pivot = self.find_max_pivot( p, x )
         # pivot = random.choice( p + list(x) )  # choosing pivot randomly from union of p, x
 
-        # loop through canditates p without neighbours of pivot element
+        # loop through candidates p without neighbours of pivot element
         for v in p[:]:
 
             if  v in pivot.neighbours: # bk with pivot only takes
@@ -50,10 +50,11 @@ class BK:
             x_ = x & v.neighbours
             p_ = [n for n in v.neighbours if n in p ]
 
-            self.bk_pivot ( r_, p_, x_ ) # recursive call of broknkerbosch
+            self.bk_pivot ( r_, p_, x_ ) # recursive call of Bron-Kerbosch
 
             p.remove(v) # taking current node out of canditates
             x.add(v) # adding current node to garbage collection
+
 
     '''It is generally recommended to use the pivot version'''
     def bk ( self, r, p, x ):

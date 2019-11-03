@@ -40,7 +40,7 @@ class Guide_tree():
             
             self.result = res
 
-            self.newick = self.graph_list[0].id
+            self.newick = self.graph_list[0].newick
             self.print_alignment( self.result )
 
             return
@@ -56,8 +56,8 @@ class Guide_tree():
                     continue
            
                 results = self.apply_algorithm( g1, g2 )
-                
-                max_alignment = max(results)
+                # pprint.pprint(results)
+                max_alignment = max(results, key=len)
                 
                 if len(max_alignment) >  maximum:
                    
@@ -77,15 +77,7 @@ class Guide_tree():
         self.graph_list.remove(alig_two)
 
         alignment_graph = self.make_graph_real( alignment )
-
-        #generate graph description bools
-        if not list(alignment_graph.nodes)[0].label == "":
-            alignment_graph.nodes_are_labelled = True
-        if len(alignment_graph.nodes) > 1: 
-            if not list(alignment_graph.edges)[0].label == "":
-                alignment_graph.edges_are_labelled = True
-        if edges_contain_doubles( alignment_graph.edges ):
-            alignment_graph.is_directed = True
+        alignment_graph = self.generate_graph_bools( alignment_graph )
 
         self.graph_list.append( alignment_graph )
         self.intermediates.append( alignment_graph )
@@ -128,6 +120,16 @@ class Guide_tree():
                 vf2.results.append([Node("null","")])
             return vf2.results
 
+
+    def generate_graph_bools( self, graph ):
+        if not list(graph.nodes)[0].label == "":
+            graph.nodes_are_labelled = True
+        if len(graph.nodes) > 1: 
+            if not list(graph.edges)[0].label == "":
+                graph.edges_are_labelled = True
+        if edges_contain_doubles( graph.edges ):
+            graph.is_directed = True
+        return graph
 
     def print_alignment( self, graph ):
         print("")

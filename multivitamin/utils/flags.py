@@ -83,5 +83,5 @@ parser.add_argument(
     '--save-guide',
     dest='save_guide',
     action='store_true',
-    help='save the guide tree in Newick-format as "tree.txt"'
+    help='save the guide tree in Newick-format as "newick.txt"'
 )
