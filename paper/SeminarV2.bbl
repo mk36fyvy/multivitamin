@@ -1,0 +1,112 @@
+\begin{thebibliography}{10}
+
+\bibitem{franklin2011computational}
+David~W Franklin and Daniel~M Wolpert.
+\newblock Computational mechanisms of sensorimotor control.
+\newblock {\em Neuron}, 72(3):425--442, 2011.
+
+\bibitem{faisal2008noise}
+A~Aldo Faisal, Luc~PJ Selen, and Daniel~M Wolpert.
+\newblock Noise in the nervous system.
+\newblock {\em Nature reviews neuroscience}, 9(4):292, 2008.
+
+\bibitem{gordon1994accuracy}
+James Gordon, Maria~Felice Ghilardi, Scott~E Cooper, and Claude Ghez.
+\newblock Accuracy of planar reaching movements.
+\newblock {\em Experimental brain research}, 99(1):112--130, 1994.
+
+\bibitem{vindras1998frames}
+Philippe Vindras and Paolo Viviani.
+\newblock Frames of reference and control parameters in visuomanual pointing.
+\newblock {\em Journal of Experimental Psychology: Human Perception and
+  Performance}, 24(2):569, 1998.
+
+\bibitem{churchland2006central}
+Mark~M Churchland, Afsheen Afshar, and Krishna~V Shenoy.
+\newblock A central source of movement variability.
+\newblock {\em Neuron}, 52(6):1085--1096, 2006.
+
+\bibitem{van2009motor}
+Robert~J van Beers.
+\newblock Motor learning is optimally tuned to the properties of motor noise.
+\newblock {\em Neuron}, 63(3):406--417, 2009.
+
+\bibitem{jones2002sources}
+Kelvin~E Jones, Antonia F de~C Hamilton, and Daniel~M Wolpert.
+\newblock Sources of signal-dependent noise during isometric force production.
+\newblock {\em Journal of neurophysiology}, 88(3):1533--1544, 2002.
+
+\bibitem{slifkin1999noise}
+Andrew~B Slifkin and Karl~M Newell.
+\newblock Noise, information transmission, and force variability.
+\newblock {\em Journal of Experimental Psychology: Human Perception and
+  Performance}, 25(3):837, 1999.
+
+\bibitem{yuille2006vision}
+Alan Yuille and Daniel Kersten.
+\newblock Vision as bayesian inference: analysis by synthesis?
+\newblock {\em Trends in cognitive sciences}, 10(7):301--308, 2006.
+
+\bibitem{mcgurk1976hearing}
+Harry McGurk and John MacDonald.
+\newblock Hearing lips and seeing voices.
+\newblock {\em Nature}, 264(5588):746, 1976.
+
+\bibitem{ernst2002humans}
+Marc~O Ernst and Martin~S Banks.
+\newblock Humans integrate visual and haptic information in a statistically
+  optimal fashion.
+\newblock {\em Nature}, 415(6870):429, 2002.
+
+\bibitem{kording2007causal}
+Konrad~P K{\"o}rding, Ulrik Beierholm, Wei~Ji Ma, Steven Quartz, Joshua~B
+  Tenenbaum, and Ladan Shams.
+\newblock Causal inference in multisensory perception.
+\newblock {\em PLoS one}, 2(9):e943, 2007.
+
+\bibitem{alais2004ventriloquist}
+David Alais and David Burr.
+\newblock The ventriloquist effect results from near-optimal bimodal
+  integration.
+\newblock {\em Current biology}, 14(3):257--262, 2004.
+
+\bibitem{mehta2002forward}
+Biren Mehta and Stefan Schaal.
+\newblock Forward models in visuomotor control.
+\newblock {\em Journal of Neurophysiology}, 88(2):942--953, 2002.
+
+\bibitem{ariff2002real}
+Gregory Ariff, Opher Donchin, Thrishantha Nanayakkara, and Reza Shadmehr.
+\newblock A real-time state predictor in motor control: study of saccadic eye
+  movements during unseen reaching movements.
+\newblock {\em Journal of Neuroscience}, 22(17):7721--7729, 2002.
+
+\bibitem{nanayakkara2003saccade}
+Thrishantha Nanayakkara and Reza Shadmehr.
+\newblock Saccade adaptation in response to altered arm dynamics.
+\newblock {\em Journal of Neurophysiology}, 90(6):4016--4021, 2003.
+
+\bibitem{wolpert2001motor}
+Daniel~M Wolpert and J~Randall Flanagan.
+\newblock Motor prediction.
+\newblock {\em Current biology}, 11(18):R729--R732, 2001.
+
+\bibitem{blakemore1999spatio}
+Sarah-J Blakemore, Chris~D Frith, and Daniel~M Wolpert.
+\newblock Spatio-temporal prediction modulates the perception of self-produced
+  stimuli.
+\newblock {\em Journal of cognitive neuroscience}, 11(5):551--559, 1999.
+
+\bibitem{roy2001selective}
+Jefferson~E Roy and Kathleen~E Cullen.
+\newblock Selective processing of vestibular reafference during self-generated
+  head motion.
+\newblock {\em Journal of Neuroscience}, 21(6):2131--2142, 2001.
+
+\bibitem{cullen2004signal}
+Kathleen~E Cullen and Jefferson~E Roy.
+\newblock Signal processing in the vestibular system during active versus
+  passive head movements.
+\newblock {\em Journal of neurophysiology}, 91(5):1919--1933, 2004.
+
+\end{thebibliography}
