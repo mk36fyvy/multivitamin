@@ -16,7 +16,7 @@ yet to be implemented:
     graph name in pic
     graphs change their appearance upon recomputation (do we have to change that?)
 '''
-def create_graph(nodes, edges):
+def create_graph( nodes, edges):
     G = nx.Graph()
 
     G.add_nodes_from(nodes)
@@ -39,13 +39,15 @@ def create_graph(nodes, edges):
     nx.draw_networkx_labels(G, pos, labels=node_label_dict, font_size=10, font_weight='bold', font_color='black')
     nx.draw_networkx_edges(G, pos, edge_color='grey')
     #nx.draw_networkx_edge_labels(G, pos, edge_labels=node_label_dict)
+    #plt.title(str(id))
     plt.show()
 
 
 if __name__ == "__main__":
 
     g = parse_graph(sys.argv[1])
+#    print(str(g.id))
     # g = sys.argv[1]
     # print(g)
 
-    create_graph(g.nodes, g.edges)
+    create_graph(g.id, g.nodes, g.edges)

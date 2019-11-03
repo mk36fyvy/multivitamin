@@ -1,20 +1,20 @@
-AUTHOR: Michel K.
+AUTHOR: Max
 #nodes;6
 #edges;6
 Nodes labelled;True
 Edges labelled;False
 Directed graph;False
 
-1;c
-2;c
-3;c
-4;c
-5;c
-6;c
+1
+2
+3
+4
+5
+6
 
 1;2
-1;6
 2;3
 3;4
 4;5
 5;6
+6;1

@@ -1,0 +1,27 @@
+// (benzoic_acid,(salicylic_acid,acetylsalicylic_acid))
+AUTHOR: max
+#nodes;9
+#edges;9
+Nodes labelled;True
+Edges labelled;False
+Directed graph;False
+
+be1:6.sa1:6.ac1:6;c
+be1:4.sa1:4.ac1:4;c
+be1:3.sa1:3.ac1:3;c
+be1:8.sa1:9.ac1:8;Osp2
+be1:5.sa1:5.ac1:5;c
+be1:2.sa1:2.ac1:2;c
+be1:7.sa1:7.ac1:7;Csp2
+be1:9.sa1:8.ac1:9;Osp3
+be1:1.sa1:1.ac1:1;c
+
+be1:2.sa1:2.ac1:2;be1:1.sa1:1.ac1:1
+be1:7.sa1:7.ac1:7;be1:9.sa1:8.ac1:9
+be1:3.sa1:3.ac1:3;be1:2.sa1:2.ac1:2
+be1:4.sa1:4.ac1:4;be1:3.sa1:3.ac1:3
+be1:4.sa1:4.ac1:4;be1:5.sa1:5.ac1:5
+be1:6.sa1:6.ac1:6;be1:7.sa1:7.ac1:7
+be1:6.sa1:6.ac1:6;be1:1.sa1:1.ac1:1
+be1:8.sa1:9.ac1:8;be1:7.sa1:7.ac1:7
+be1:6.sa1:6.ac1:6;be1:5.sa1:5.ac1:5

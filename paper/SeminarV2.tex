@@ -303,16 +303,52 @@ In case of directed graphs one can distingush between in and out neighbours. Thu
 An Edge consits of two node objects and an optional label. For each Edge canbe checked if it is the reverse of another edge. This only makes sense for directed graphs.
 \subsection{Graph Class}
 Besides the obvious attributes of nodes, edges and an id, a graph objects also as an
-abbrev which is TODO. Since the Vf2 only works with directed graphs, we 
-gave our graphs the possibility to give the graph directions. Consider the Edge A-B. The 
+abbrev which is TODO. Since the Vf2 only works with directed graphs, we
+gave our graphs the possibility to give the graph directions. Consider the Edge A-B. The
 create\_fake\_directions method now points node A to B and node B to A.\\
 The method create\_undirected\_edges fills the edge set of the Graph with help of the neighbour set of the node class. The method get\_inout\_neighbours fills the in and outneighbour sets of the node objects in the node set.\\\\
-All classes have build in print mehtods for more readable output as well as build in 
-methods to compare the objects. So you can determine which graph is larger by the amount of 
+All classes have build in print mehtods for more readable output as well as build in
+methods to compare the objects. So you can determine which graph is larger by the amount of
 nodes in the nodes sets and also determine if two graphs are equal based on their id.\\
 Nodes can be also compared by its id and edges by the ids of their nodes.
-\section{Theoretical Foundations of the Algorithmns}
+\section{Theoretical Foundations of the Algorithms}
+
+\subsection{Bron Kerbosch}
+The Bron Kerbosch algorithm solves the problem of finding a maximal common induced subgraphs of two graphs G and H indirectly. This is done by finding the maximal clique in the modular product of G and H s. The set of nodes of the modular product of G and H  is the cartesian N(G) x N(H), with N beeing the set of al vertices of the corresponding graph. Any nodes (u,v) and (x,y), with u,x $\in$ G and v,y $\in$ H in the modular product are adjacemt if:
+\begin{itemize}
+  \item u and x were neighbours in G and y and x were neighbours in H
+  \item u and x were not neighbours in G and y and x were not neighbours in H
+\end{itemize}
+Before giving two graphs to the Bron Kerbosch to align them we need to build the modular product of these graphs. The rest of our implementaton is straight forward:
+\begin{verbatim}
+    def bk_pivot ( self, r, p, x ):
+        if not any ( [p, x] ):
+            self.results.append(r)
+            return r
+        pivot = self.find_max_pivot( p, x )
+        for v in p[:]:
+            if  v in pivot.neighbours:
+                continue
+            r_ = r | {v}
+            x_ = x & v.neighbours
+            p_ = [n for n in v.neighbours if n in p ]
+            self.bk_pivot ( r_, p_, x_ )
+            p.remove(v)
+            x.add(v)
+
+
+\end{verbatim}
+The goal of the Bron Kerbosch ,is as mentioned, to find the maximal clique in the modular product. A clique is a subgraph where every node is connected to every other node (=complete graph). A maximal clique is a clique so that no node can added to the subgraph such that the subgraph remains complete.\\
+At the beginning r and x are empty sets and theset p that contains all nodes of the modular product of the two input graphs. All nodes in p are candiates for extending the clique.
+
+\subsection{VF2}
 \section{Profiling}
+To get an idea which algorithm is better sutied for which kind of graph (size, structure),
+we did a profiling study. Therefore we used three different kind of graphs:
+random graphs, wheel graphs and tree graphs. The graphs where generate with the help of
+the python package networkx \cite{}. We did the profiling for the follwoing number of nodes:
+(3,8,13,18,23,XX TODO).
+In case of the random graphs we created 10 different random graphs for each node count and took the average time per node count. The following figures show the results of our profiling study.
 
 
 

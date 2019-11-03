@@ -3,10 +3,10 @@
 class Edge():
 
     def __init__(
-                    self, 
-                    node1, 
-                    node2, 
-                    label="" 
+                    self,
+                    node1,
+                    node2,
+                    label=""
                 ):
 
         self.node1 = node1
@@ -50,7 +50,7 @@ class Edge():
             node1_id = self.node1.mult_id
         if self.node2.mult_id == "":
             node2_id = self.node2.id
-        else: 
+        else:
             node2_id = self.node2.mult_id
         return " ( {},   {} )   '{}'".format( node1_id, node2_id, self.label )
 

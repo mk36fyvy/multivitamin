@@ -1,0 +1,5 @@
+digraph "classes" {
+charset="utf-8"
+rankdir=BT
+"0" [label="{Graph|abbrev : str\ledges : set\ledges_are_labelled : bool\lid : str\lis_directed : bool\lnewick : str\lnodes : set\lnodes_are_labelled : bool\l|create_fake_directions()\lcreate_undirected_edges()\lgen_dict()\lget_graph()\lget_inout_neighbours()\lint_size()\lset_id()\l}", shape="record"];
+}

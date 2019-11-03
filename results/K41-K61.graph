@@ -1,0 +1,19 @@
+// (K4,K6)
+AUTHOR: max
+#nodes;4
+#edges;6
+Nodes labelled;False
+Edges labelled;False
+Directed graph;False
+
+K41:4.K61:6
+K41:1.K61:5
+K41:3.K61:4
+K41:2.K61:3
+
+K41:1.K61:5;K41:2.K61:3
+K41:4.K61:6;K41:2.K61:3
+K41:4.K61:6;K41:1.K61:5
+K41:4.K61:6;K41:3.K61:4
+K41:1.K61:5;K41:3.K61:4
+K41:3.K61:4;K41:2.K61:3
