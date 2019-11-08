@@ -10,6 +10,10 @@ setup(
         'multivitamin.supp',
         'multivitamin.utils'
     ],
+    install_requires=[
+        'matplotlib',
+        'networkx'
+    ],
     entry_points={
         'console_scripts': ['multiVitamin=multivitamin.multiVitamin:main']
     }

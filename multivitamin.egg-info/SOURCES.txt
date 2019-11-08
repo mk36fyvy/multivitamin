@@ -5,6 +5,7 @@ multivitamin.egg-info/PKG-INFO
 multivitamin.egg-info/SOURCES.txt
 multivitamin.egg-info/dependency_links.txt
 multivitamin.egg-info/entry_points.txt
+multivitamin.egg-info/requires.txt
 multivitamin.egg-info/top_level.txt
 multivitamin/algorithms/bk_pivot_class.py
 multivitamin/algorithms/vf2_beauty.py

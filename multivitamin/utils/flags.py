@@ -7,7 +7,7 @@ from multivitamin.utils.get_input import process_file
 
 parser = argparse.ArgumentParser(
     description='multiVitamin - A multiple alignment tool for graphs',
-    usage='use "python3 %(prog)s --help" for more information',
+    usage='use "%(prog)s --help" for more information',
     formatter_class=RawTextHelpFormatter
 )
 
