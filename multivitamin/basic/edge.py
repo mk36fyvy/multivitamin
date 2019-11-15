@@ -6,12 +6,12 @@ class Edge():
                     self,
                     node1,
                     node2,
-                    label=""
+                    label=None
                 ):
 
         self.node1 = node1
         self.node2 = node2
-        self.label = label
+        self.label = label if label else ""
 
 
     '''checks if edge is the reverse (as in a,b to b,a) of another edge'''

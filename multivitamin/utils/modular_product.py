@@ -7,21 +7,21 @@ from multivitamin.utils.parser import parse_graph
 from multivitamin.algorithms.bk_pivot_class import BK
 
 
-'''
-creating the cartesian product of two graphs and making new node objects out
-of the given node objects from each graph. In order do get the neighbour
-relations right, we need to save the nodes of the two input graphs to get access 
-to their neighbours later
-'''
 
 def cart_product(G,H):
+	'''
+	creating the cartesian product of two graphs and making new node objects out
+	of the given node objects from each graph. In order do get the neighbour
+	relations right, we need to save the nodes of the two input graphs to get access 
+	to their neighbours later
+	'''
 
 	cart_product = {} # empty dict to store consolidated nodes as keys and tupel of old nodes as values
 	for g in G:
 		for h in H:
 			#check_semantics here?
 			# cur_node = Node( "{}.{}".format( g.id, h.id), "{} {}".format( g.label, h.label ) )
-			cur_node = Node( "{}.{}".format( g.id, h.id), "{}".format( g.label ) )
+			cur_node = Node( "{}.{}".format( g.id, h.id), "{}.{}".format( g.label, h.label ) )
 			cur_node.mult_id = "{}.{}".format( g.mult_id, h.mult_id)
 			cart_product[cur_node] = (g,h)
 
@@ -84,6 +84,8 @@ def get_coopt(bk_results):
 		if len(result) == max and not result in res:
 			res.append(result)
 	return res
+
+
 
 
 

@@ -1,4 +1,5 @@
 import os
+import pprint
 
 from multivitamin.custom import get_results_dir
 from multivitamin.basic.graph import Graph
@@ -6,7 +7,7 @@ from multivitamin.utils.parser import parse_graph
 from multivitamin.utils.guide_tree import Guide_tree
 from multivitamin.utils.flags import parser
 from multivitamin.utils.graph_writer import write_graph, write_shorter_graph
-from multivitamin.utils.modular_product import mod_product, cart_product, get_coopt
+from multivitamin.utils.modular_product_class import MP
 from multivitamin.supp.view_graph import create_graph
 from multivitamin.algorithms.bk_pivot_class import BK
 from multivitamin.algorithms.vf2_beauty import VF2
@@ -64,20 +65,22 @@ def main():
             raise Exception("You must provide exactly 2 graph files with '-c' ! Use '-m' if you want to align multiple graphs.")
 
         fake_tree = Guide_tree( graphs, args.algorithm, False )
-        print("Calculating alignment with {} algorithm...".format( args.algorithm ))
+        print("Calculating alignment using {} algorithm...".format( args.algorithm ))
 
         if args.algorithm == "BK":
-            modp = mod_product( cart_product( graphs[0].nodes, graphs[1].nodes ) )
-            bk = BK()
+            mp = MP( graphs[0], graphs[1] )
+            bk = BK( mp.g, mp.h )
             x = set()
             r = set()
-            p = list(modp.nodes)
-            bk.bk_pivot( r, p, x)
-            res = get_coopt( bk.results )
+            p = list(mp.modp)
+            bk.bk_pivot( r, p, x )
+            # res = bk.results
+            res = bk.clique_to_node_set()
             temp = Graph("")
             counter = 1
             for node_set in res:
-                temp = fake_tree.make_graph_real( Graph( "{}--{}#{}".format( graphs[0].id, graphs[1].id, counter ), node_set ) )
+                temp = fake_tree.make_graph_real( Graph( "{}--{}#{}".format(graphs[0].id, graphs[1].id, counter), node_set) )
+                print(temp)
                 fake_tree.intermediates.append( temp )
                 counter += 1
             save_results( fake_tree )

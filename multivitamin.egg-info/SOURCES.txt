@@ -19,4 +19,5 @@ multivitamin/utils/get_input.py
 multivitamin/utils/graph_writer.py
 multivitamin/utils/guide_tree.py
 multivitamin/utils/modular_product.py
+multivitamin/utils/modular_product_class.py
 multivitamin/utils/parser.py

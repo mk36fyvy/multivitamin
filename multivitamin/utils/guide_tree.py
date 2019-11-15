@@ -4,7 +4,7 @@ import pprint
 from multivitamin.basic.node import Node
 from multivitamin.basic.graph import Graph
 from multivitamin.utils.parser import parse_graph, edges_contain_doubles
-from multivitamin.utils.modular_product import mod_product, cart_product
+from multivitamin.utils.modular_product_class import MP
 from multivitamin.algorithms.bk_pivot_class import BK
 from multivitamin.algorithms.vf2_beauty import VF2
 
@@ -98,20 +98,22 @@ class Guide_tree():
             for neighbour in list(node.neighbours)[:]:
                 if not neighbour in graph.nodes:
                     node.remove_neighbour(neighbour)
+        
         graph.edges = set()
         graph.create_undirected_edges()
         return graph
 
 
     def apply_algorithm( self, graph1, graph2 ):
-        if self.algorithm == "BK":  
-            modp = mod_product( cart_product( graph1.nodes, graph2.nodes ) )
+        if self.algorithm == "BK":
+            mp = MP( graph1, graph2 )
             bk = BK()
             x = set()
             r = set()
-            p = list(modp.nodes)
+            p = list(mp.modp)
             bk.bk_pivot( r, p, x)
-            return bk.results
+            results = bk.clique_to_node_set()
+            return results
 
         elif self.algorithm == "VF2":
             vf2 = VF2( graph1, graph2 )

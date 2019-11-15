@@ -5,31 +5,36 @@ class Node():
     def __init__ ( 
                     self, 
                     id, 
-                    label="" 
+                    label=None,
+                    neighbours=None
                 ):
 
         self.id = id
         self.mult_id = ""
-        self.label = label
+        self.label = label if label else ""
+        self.neighbours = neighbours if neighbours else set()
         self.in_neighbours = set()
         self.out_neighbours = set()
-        self.neighbours = set()
 
 
     def add_neighbour(self, node):
         '''add a neighbour to the neighbours set of the node'''
         self.neighbours.add(node)
 
+
     def remove_neighbour(self, node):
         '''remove a neighbour from the neighbours set of the node'''
         self.neighbours.remove(node)
+
 
     '''allow comparing nodes to each other ( all operations )'''
     def __eq__( self, other ):
         if not isinstance(other, Node):
             return NotImplemented
         else:
-            return all( (self.id == other.id, self.label == other.label, self.neighbours == other.neighbours) )
+            # return all( (self.id == other.id, self.label == other.label, self.neighbours == other.neighbours) )
+            return all( (self.id == other.id, self.label == other.label) )
+
 
 
     def __ne__( self, other ):
@@ -71,6 +76,12 @@ class Node():
         return hash((self.id, self.label))
 
 
+    def node_id( self, node ):
+        if node.mult_id == "" or node.mult_id == ".":
+            return node.id
+        else:
+            return node.mult_id
+
 
     '''define the way, a node is printed'''
     def __str__( self ):
@@ -84,11 +95,8 @@ class Node():
         neighbours_string += " "
         return  self.node_id(self) + "   '" + self.label + "'   (" + str(neighbours_string) + ")"
 
-    def node_id( self, node ):
-        if node.mult_id == "" or node.mult_id == ".":
-            return node.id
-        else:
-            return node.mult_id
-        
+
     def __repr__(self):
         return self.__str__()
+
+

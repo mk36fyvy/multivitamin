@@ -9,19 +9,19 @@ class Graph():
     def __init__(
         self,
         id = "",
-        nodes = set(),
-        edges = set(),
-        nodes_labelled=False,
-        edges_labelled=False,
-        is_directed=False
+        nodes=None,
+        edges=None,
+        nodes_labelled=None,
+        edges_labelled=None,
+        is_directed=None
     ):
 
         self.id = id
-        self.nodes = nodes
-        self.edges = edges
-        self.nodes_are_labelled = nodes_labelled
-        self.edges_are_labelled = edges_labelled
-        self.is_directed = is_directed
+        self.nodes = nodes if nodes else set()
+        self.edges = edges if edges else set()
+        self.nodes_are_labelled = nodes_labelled if nodes_labelled else False
+        self.edges_are_labelled = edges_labelled if edges_labelled else False
+        self.is_directed = is_directed if is_directed else False
         
         self.newick = id
         self.abbrev = ""
