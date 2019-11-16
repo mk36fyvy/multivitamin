@@ -12,7 +12,7 @@ class BK:
     ''' implementing Bron-Kerbosch algorithm where r is the list of possible nodes
     in a clique, p is the list of canditates and x is the garbage collection'''
 
-    def __init__( 
+    def __init__(
         self,
         g,
         h,
@@ -95,11 +95,11 @@ class BK:
             p.remove(v) # taking current node out of canditates
             x.add(v) # adding current node to garbage collection
 
-    
+
     def clique_to_node_set( self ):
-        '''repairs the edges from clique to real alignment graph, 
+        '''repairs the edges from clique to real alignment graph,
         because cliques may contain more edges than the original graph(s)'''
-        
+
         results = self.get_coopt()
         res_list = []
 
@@ -109,15 +109,15 @@ class BK:
                 for neighbour in list(node.neighbours)[:]:
                     if not neighbour in clique:
                         node.remove_neighbour(neighbour)
-                
-            curr_node_set = set()   
+
+            curr_node_set = set()
             for node in clique:
-                
+
                 corr_n = self.get_corr_node( node )
                 new_neighbours = set()
-                
+
                 for neighbour in node.neighbours:
-                    
+
                     for corr_neighbour in corr_n.neighbours:
                         print("")
                         print(node.neighbours)
@@ -131,7 +131,7 @@ class BK:
                         print("new n")
                         print(new_neighbours)
                         print("")
-                
+
                 print(new_neighbours)
                 curr_node = Node( node.id, node.label, new_neighbours)
                 curr_node.mult_id = node.mult_id
@@ -141,12 +141,12 @@ class BK:
             print("")
             print("NEXT")
 
-            res_list.append(curr_node_set) 
-            
+            res_list.append(curr_node_set)
+
         return res_list
 
 
-    def get_coopt( self ):    
+    def get_coopt( self ):
 
         res = []
         cur_max = 0
@@ -156,13 +156,13 @@ class BK:
                 cur_max = len(result)
         for result in self.results:
             if len(result) == cur_max and not result in res:
-                res.append(result)        
+                res.append(result)
         return res
 
 
     def get_corr_node( self, clique_node ):
         old_id = clique_node.mult_id.split(".")
-        
+
         # print("g")
         # pprint.pprint(self.g)
         # print("")
@@ -185,7 +185,7 @@ class BK:
 if __name__ == '__main__':
 
     try:
-        mp = MP (parse_graph(sys.argv[0]), parse_graph([1]))
+        mp = MP (parse_graph(sys.argv[1]), parse_graph([2]))
         bk = BK(mp.g, mp.h)
         r = set()
         x = set()
