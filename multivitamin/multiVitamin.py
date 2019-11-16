@@ -74,13 +74,13 @@ def main():
             r = set()
             p = list(mp.modp)
             bk.bk_pivot( r, p, x )
-            # res = bk.results
+            res = bk.get_coopt()
             res = bk.clique_to_node_set()
             temp = Graph("")
             counter = 1
             for node_set in res:
                 temp = fake_tree.make_graph_real( Graph( "{}--{}#{}".format(graphs[0].id, graphs[1].id, counter), node_set) )
-                print(temp)
+                # print(temp)
                 fake_tree.intermediates.append( temp )
                 counter += 1
             save_results( fake_tree )

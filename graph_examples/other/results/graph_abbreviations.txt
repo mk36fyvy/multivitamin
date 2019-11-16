@@ -1,3 +1,0 @@
-gr1	graph1
-gr2	graph2
-gr3	graph3

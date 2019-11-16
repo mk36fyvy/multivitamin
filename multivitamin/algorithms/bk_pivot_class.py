@@ -103,52 +103,64 @@ class BK:
         res_list = []
 
         for clique in results:
-            
-            # print("")
-            # print("next")
-            
-            curr_node_set = set()
+
             for node in clique:
-                # print(node)
+                for neighbour in list(node.neighbours)[:]:
+                    if not neighbour in clique:
+                        node.remove_neighbour(neighbour)
+                
+            curr_node_set = set()   
+            for node in clique:
+                
                 corr_n = self.get_corr_node( node )
-                # new_neighbours = node.neighbours & corr_n.neighbours
                 new_neighbours = set()
+                
                 for neighbour in node.neighbours:
+                    
                     for corr_neighbour in corr_n.neighbours:
-                        # if neighbour.mult_id.split(".")[0] == corr_neighbour.mult_id:
-                        # if set(corr_neighbour.mult_id.split(".")).issubset( set(neighbour.mult_id.split(".")) ):
+                        print("")
+                        print(node.neighbours)
+                        print(corr_n.neighbours)
+                        print("")
+                        print(corr_neighbour.mult_id.split("."))
+                        print(neighbour.mult_id.split("."))
+                        print("")
                         if set(corr_neighbour.mult_id.split(".")).issubset(set(neighbour.mult_id.split("."))):
-                            # print("yup")
-                            # print("")
                             new_neighbours.add(neighbour)
-                # print(node.neighbours)
-                # print(corr_n.neighbours)
-                # print(new_neighbours)
+                        print("new n")
+                        print(new_neighbours)
+                        print("")
+                
+                print(new_neighbours)
                 curr_node = Node( node.id, node.label, new_neighbours)
-                # print(curr_node)
                 curr_node.mult_id = node.mult_id
                 curr_node_set.add(curr_node)
-            res_list.append(curr_node_set)
-        # print(res_list)
-        
+            print("")
+            print("")
+            print("")
+            print("NEXT")
+
+            res_list.append(curr_node_set) 
+            
         return res_list
 
 
     def get_coopt( self ):    
+
         res = []
-        max = 0
+        cur_max = 0
 
         for result in self.results:
-            if len(result) > max:
-                max = len(result)
+            if len(result) > cur_max:
+                cur_max = len(result)
         for result in self.results:
-            if len(result) == max and not result in res:
-                res.append(result)
+            if len(result) == cur_max and not result in res:
+                res.append(result)        
         return res
 
 
     def get_corr_node( self, clique_node ):
-        old_id = clique_node.id.split(".")
+        old_id = clique_node.mult_id.split(".")
         
         # print("g")
         # pprint.pprint(self.g)
@@ -159,7 +171,7 @@ class BK:
         # print(old_id)
 
         for node in self.g.nodes:
-            if set( node.id.split(".") ).issubset(set( old_id )):
+            if set( node.mult_id.split(".") ).issubset(set( old_id )):
                 return node
 
         # for node in self.h.nodes:

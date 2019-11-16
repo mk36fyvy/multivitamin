@@ -55,10 +55,9 @@ class Guide_tree():
                 if g1.id == g2.id:
                     continue
            
-                results = self.apply_algorithm( g1, g2 )
+                max_alignment = self.apply_algorithm( g1, g2 )
                 # pprint.pprint(results)
                 # max_alignment = max(results, key=len)
-                max_alignment = max(results)
                 # pprint.pprint(max_alignment)
                 
                 if len(max_alignment) >  maximum:
@@ -96,10 +95,10 @@ class Guide_tree():
 
 
     def make_graph_real( self, graph ):
-        for node in graph.nodes:
-            for neighbour in list(node.neighbours)[:]:
-                if not neighbour in graph.nodes:
-                    node.remove_neighbour(neighbour)
+        # for node in graph.nodes:
+        #     for neighbour in list(node.neighbours)[:]:
+        #         if not neighbour in graph.nodes:
+        #             node.remove_neighbour(neighbour)
         
         graph.edges = set()
         graph.create_undirected_edges()
@@ -109,21 +108,35 @@ class Guide_tree():
     def apply_algorithm( self, graph1, graph2 ):
         if self.algorithm == "BK":
             mp = MP( graph1, graph2 )
-            print(graph2)
+            # print(graph2)
             bk = BK( graph1, graph2 )
             x = set()
             r = set()
             p = list(mp.modp)
             bk.bk_pivot( r, p, x)
             results = bk.clique_to_node_set()
-            return results
+
+            max_res = results[0]
+            max_res_neighbour_sum = 0
+            for res in results:
+                for max_node in max_res:
+                    max_res_neighbour_sum += len(max_node.neighbours)
+                neighbour_sum = 0
+                for node in res:
+                    neighbour_sum += len(node.neighbours)
+                if neighbour_sum > max_res_neighbour_sum:
+                    max_res = res
+                    max_res_neighbour_sum = neighbour_sum
+            return max_res
+
+           
 
         elif self.algorithm == "VF2":
             vf2 = VF2( graph1, graph2 )
             vf2.match()
             if not vf2.results:
                 vf2.results.append([Node("null","")])
-            return vf2.results
+            return max(vf2.results)
 
 
     def generate_graph_bools( self, graph ):
