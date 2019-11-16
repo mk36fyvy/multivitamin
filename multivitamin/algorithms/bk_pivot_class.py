@@ -185,7 +185,7 @@ class BK:
 if __name__ == '__main__':
 
     try:
-        mp = MP (parse_graph(sys.argv[1]), parse_graph([2]))
+        mp = MP (parse_graph(sys.argv[1]), parse_graph(sys.argv[2]))
         bk = BK(mp.g, mp.h)
         r = set()
         x = set()
