@@ -57,7 +57,9 @@ class Guide_tree():
            
                 results = self.apply_algorithm( g1, g2 )
                 # pprint.pprint(results)
-                max_alignment = max(results, key=len)
+                # max_alignment = max(results, key=len)
+                max_alignment = max(results)
+                # pprint.pprint(max_alignment)
                 
                 if len(max_alignment) >  maximum:
                    
@@ -107,7 +109,8 @@ class Guide_tree():
     def apply_algorithm( self, graph1, graph2 ):
         if self.algorithm == "BK":
             mp = MP( graph1, graph2 )
-            bk = BK()
+            print(graph2)
+            bk = BK( graph1, graph2 )
             x = set()
             r = set()
             p = list(mp.modp)

@@ -11,8 +11,8 @@ setup(
         'multivitamin.utils'
     ],
     install_requires=[
-        'matplotlib',
-        'networkx'
+        'matplotlib>=3.1.1',
+        'networkx>=2.4'
     ],
     entry_points={
         'console_scripts': ['multiVitamin=multivitamin.multiVitamin:main']

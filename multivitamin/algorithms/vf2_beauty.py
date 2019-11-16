@@ -225,16 +225,6 @@ class VF2():
         return cp
 
 
-    # def legal_max(self, t_dict):
-    #     '''returns node from t_dict with max id'''
-    #     max_node = self.null_n
-    #     for node in t_dict:
-    #         if t_dict[node] > 0 and self.core_s[node] != self.null_n:
-    #             continue
-    #         elif node > max_node:
-    #             max_node = node
-    #     return max_node
-
     def legal_max(self, t_dict):
         '''returns node from t_dict with max id'''
         max_node = self.null_n

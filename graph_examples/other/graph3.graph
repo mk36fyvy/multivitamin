@@ -2,7 +2,7 @@ AUTHOR: Clemens M., Max. J, Michel K.
 #nodes;8
 #edges;11
 nodes labeled;True
-edges labeled;False
+edges labeled;True
 directed graph;False
 
 1;e

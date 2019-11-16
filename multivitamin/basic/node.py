@@ -32,8 +32,9 @@ class Node():
         if not isinstance(other, Node):
             return NotImplemented
         else:
+            return self.node_id() == other.node_id()
             # return all( (self.id == other.id, self.label == other.label, self.neighbours == other.neighbours) )
-            return all( (self.id == other.id, self.label == other.label) )
+            # return all( (self.id == other.id, self.label == other.label) )
 
 
 
@@ -76,11 +77,11 @@ class Node():
         return hash((self.id, self.label))
 
 
-    def node_id( self, node ):
-        if node.mult_id == "" or node.mult_id == ".":
-            return node.id
+    def node_id( self ):
+        if self.mult_id == "" or self.mult_id == ".":
+            return self.id
         else:
-            return node.mult_id
+            return self.mult_id
 
 
     '''define the way, a node is printed'''
@@ -89,11 +90,11 @@ class Node():
         neighbours_string = " "
 
         for neighbour in self.neighbours:
-            neighbours_string += self.node_id(neighbour)
+            neighbours_string += neighbour.node_id()
             neighbours_string += ", "
         neighbours_string = neighbours_string[:-2]
         neighbours_string += " "
-        return  self.node_id(self) + "   '" + self.label + "'   (" + str(neighbours_string) + ")"
+        return  self.node_id() + "   '" + self.label + "'   (" + str(neighbours_string) + ")"
 
 
     def __repr__(self):

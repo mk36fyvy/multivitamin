@@ -1,0 +1,20 @@
+// (graph1,(graph2,graph3))
+AUTHOR: michel
+#nodes;5
+#edges;6
+Nodes labelled;True
+Edges labelled;False
+Directed graph;False
+
+gr1:5.gr2:2.gr3:2;e
+gr1:1.gr2:5.gr3:5;a
+gr1:2.gr2:3.gr3:3;b
+gr1:4.gr2:4.gr3:4;d
+gr1:3.gr2:6.gr3:6;c
+
+gr1:1.gr2:5.gr3:5;gr1:4.gr2:4.gr3:4
+gr1:1.gr2:5.gr3:5;gr1:2.gr2:3.gr3:3
+gr1:5.gr2:2.gr3:2;gr1:1.gr2:5.gr3:5
+gr1:5.gr2:2.gr3:2;gr1:3.gr2:6.gr3:6
+gr1:5.gr2:2.gr3:2;gr1:4.gr2:4.gr3:4
+gr1:1.gr2:5.gr3:5;gr1:3.gr2:6.gr3:6

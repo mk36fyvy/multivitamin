@@ -1,2 +1,3 @@
-Wi1	Wikigraph1
-Wi2	Wikigraph2
+gr1	graph1
+gr2	graph2
+gr3	graph3

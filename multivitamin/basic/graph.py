@@ -81,24 +81,32 @@ class Graph():
         if not isinstance(other, Graph):
             return NotImplemented
         else:
+            if len(self.nodes) == len(other.nodes):
+                return len(self.edges) > len(other.edges)
             return len(self.nodes) > len(other.nodes)
 
     def __lt__( self, other ):
         if not isinstance(other, Graph):
             return NotImplemented
         else:
+            if len(self.nodes) == len(other.nodes):
+                return len(self.edges) < len(other.edges)
             return len(self.nodes) < len(other.nodes)
 
     def __ge__( self, other ):
         if not isinstance(other, Graph):
             return NotImplemented
         else:
+            if len(self.nodes) == len(other.nodes):
+                return len(self.edges) >= len(other.edges)
             return len(self.nodes) >= len(other.nodes)
 
     def __le__( self, other ):
         if not isinstance(other, Graph):
             return NotImplemented
         else:
+            if len(self.nodes) == len(other.nodes):
+                return len(self.edges) <= len(other.edges)
             return len(self.nodes) <= len(other.nodes)
 
 

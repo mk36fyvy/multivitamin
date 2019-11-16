@@ -13,13 +13,13 @@ class BK:
 
     def __init__( 
         self,
-        g=None,
-        h=None,
+        g,
+        h,
         # modp=None
         ):
 
-        self.g = g if g else Graph("")
-        self.h = h if g else Graph("")
+        self.g = g
+        self.h = h
         #self.modp = modp if modp else set()
 
         # self.r = set()
@@ -104,8 +104,8 @@ class BK:
 
         for clique in results:
             
-            print("")
-            print("next")
+            # print("")
+            # print("next")
             
             curr_node_set = set()
             for node in clique:
@@ -114,22 +114,18 @@ class BK:
                 # new_neighbours = node.neighbours & corr_n.neighbours
                 new_neighbours = set()
                 for neighbour in node.neighbours:
-                    try:
-                        for corr_neighbour in corr_n.neighbours:
-                            print(neighbour.mult_id.split(".")[0])
-                            print(corr_neighbour.mult_id)
-                            if neighbour.mult_id.split(".")[0] == corr_neighbour.mult_id:
-                                print("yup")
-                                print("")
-                                new_neighbours.add(neighbour)
-                    except:
-                        print(node)
-                        print(corr_n)
+                    for corr_neighbour in corr_n.neighbours:
+                        # if neighbour.mult_id.split(".")[0] == corr_neighbour.mult_id:
+                        # if set(corr_neighbour.mult_id.split(".")).issubset( set(neighbour.mult_id.split(".")) ):
+                        if set(corr_neighbour.mult_id.split(".")).issubset(set(neighbour.mult_id.split("."))):
+                            # print("yup")
+                            # print("")
+                            new_neighbours.add(neighbour)
                 # print(node.neighbours)
                 # print(corr_n.neighbours)
                 # print(new_neighbours)
                 curr_node = Node( node.id, node.label, new_neighbours)
-                print(curr_node)
+                # print(curr_node)
                 curr_node.mult_id = node.mult_id
                 curr_node_set.add(curr_node)
             res_list.append(curr_node_set)
@@ -152,10 +148,23 @@ class BK:
 
 
     def get_corr_node( self, clique_node ):
-        old_id = clique_node.id.split(".")[0]
+        old_id = clique_node.id.split(".")
+        
+        # print("g")
+        # pprint.pprint(self.g)
+        # print("")
+        # print("h")
+        # pprint.pprint(self.h)
+        # print("")
+        # print(old_id)
+
         for node in self.g.nodes:
-            if node.id == old_id:
+            if set( node.id.split(".") ).issubset(set( old_id )):
                 return node
+
+        # for node in self.h.nodes:
+        #     if set( node.id.split(".") ).issubset(set( old_id )):
+        #         return node
 
 
 # EXECUTION (PIVOT VERSION) ----------------------------------------------------
