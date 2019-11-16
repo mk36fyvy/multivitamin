@@ -9,18 +9,20 @@ from multivitamin.utils.flags import parser
 from multivitamin.utils.graph_writer import write_graph, write_shorter_graph
 from multivitamin.utils.modular_product_class import MP
 from multivitamin.supp.view_graph import create_graph
+from multivitamin.supp.view_graph import create_graphs
 from multivitamin.algorithms.bk_pivot_class import BK
 from multivitamin.algorithms.vf2_beauty import VF2
 
-''' 
+'''
 FLAGS:
--a BK VF2 
+-a BK VF2
 -c use algorithm for single alignment and save co-optimals
 -g guide
 -m save in list as input graphs
 -n save_guide
 -s save_all
 -v view
+-vm view seperate
 '''
 
 args = parser.parse_args()
@@ -30,7 +32,7 @@ def main():
 
     # print(type(args.files[0]))
 
-             
+
     print("                                                              ")
     print("                 _ _   _       _  _                   _       ")
     print("                | | | (_)     (_)| |                 (_)      ")
@@ -40,13 +42,13 @@ def main():
     print("|_| |_| |_|\__,_|_|\__|_| \_/ |_| \__|\__,_|_| |_| |_|_|_| |_|")
     print("                                                              ")
     print("                                                  v1.0.0      ")
-    print("                                                              ")                                            
+    print("                                                              ")
 
 
 
     if args.files:
         if isinstance(args.files[0], list): #this happens when parsing files from a directory
-            graphs = args.files[0] 
+            graphs = args.files[0]
         else:
             graphs = args.files
 
@@ -57,10 +59,10 @@ def main():
 
     elif args.coopt:
         if isinstance(args.coopt[0], list): #this happens when parsing files from a directory
-            graphs = args.coopt[0] 
+            graphs = args.coopt[0]
         else:
             graphs = args.coopt
-        
+
         if not len(graphs) == 2:
             raise Exception("You must provide exactly 2 graph files with '-c' ! Use '-m' if you want to align multiple graphs.")
 
@@ -99,12 +101,25 @@ def main():
     elif args.view:
         # print(args.view)
         if isinstance(args.view, list): #this happens when parsing files from a directory
-            print("Displaying {}...".format(args.view[0].id))
-            create_graph( args.view[0].id, args.view[0].nodes, args.view[0].edges )
+            for i in range(len(args.view)):
+                print("Displaying {}...".format(args.view[i].id))
+            create_graph( args.view )
         else:
             print("Displaying {}...".format(args.view.id))
-            create_graph( args.view.id, args.view.nodes, args.view.edges )
-        
+            create_graph( args.view )
+
+    elif args.view_multiple:
+            # print(args.view_multiple)
+            if isinstance(args.view_multiple, list): #this happens when parsing files from a directory
+                for i in range(len(args.view_multiple)):
+                    print("Displaying {}...".format(args.view_multiple[i].id))
+                create_graphs( args.view_multiple )
+            else:
+                print("Displaying {}...".format(args.view_multiple.id))
+                create_graphs( args.view_multiple )
+
+
+
 
     else:
         raise Exception("No graph was parsed from the command-line")
@@ -112,11 +127,11 @@ def main():
 
 def save_results( guide_tree ):
     path = get_results_dir()
-    
+
     # create results directory
     if not os.path.isdir("{}/{}".format( os.getcwd(), path )): # if results/ does not exist
         try:
-            os.mkdir("{}{}".format( os.getcwd(), path ) ) 
+            os.mkdir("{}{}".format( os.getcwd(), path ) )
         except:
             print ("Creation of the directory %s failed" % path)
         else:

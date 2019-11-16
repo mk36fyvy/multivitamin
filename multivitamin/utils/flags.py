@@ -37,10 +37,19 @@ mxg.add_argument(
     # '--view',
     dest='view',
     type=parse_graph,
-    nargs=1,
-    help='get a visual representation of *1* given graph'
+    nargs='+',
+    help='get a visual representation of the given graphs in one window. This can get incomprehesible for large graphs and many graphs \n Use -vm if you want to see many graphs'
 )
 
+mxg.add_argument(
+    '-vm',
+    '-view_multiple',
+    # '--coopt',
+    dest='view_multiple',
+    type=parse_graph,
+    nargs='+',
+    help='get a visual representation of the given graphs in one window per graphs.'
+)
 
 
 # optional parameters
