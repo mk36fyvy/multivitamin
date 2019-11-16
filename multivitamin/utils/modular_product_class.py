@@ -4,7 +4,7 @@ import pprint
 from multivitamin.basic.node import Node
 from multivitamin.basic.graph import Graph
 from multivitamin.utils.parser import parse_graph
-from multivitamin.algorithms.bk_pivot_class import BK
+
 
 class MP:
 
@@ -89,19 +89,8 @@ class MP:
 if __name__ == '__main__':
 	try:
 		mp = MP( sys.argv[1], sys.argv[2] )
-		#print(list(modp.nodes)[1].neighbours)
-		x = set()
-		r = set()
-		p = list(mp.modp)
-
-		bk = BK( mp.g, mp.h )
-		bk.bk_pivot( r, p, x )
-		# bk.bk( r, p, x)
-
-		res = bk.get_coopt()
-
-		pprint.pprint(res)
+		print(mp.modp)
 
 	except Exception as e:
 		print(e)
-		print( "please provide the two graphs you want to build the modular product with \n example: python3 modular_product.py graph1.graph graph2.graph" )
+		print( "Please provide the two graphs you want to build the modular product with \n example: python3 modular_product_class.py graph1.graph graph2.graph" )

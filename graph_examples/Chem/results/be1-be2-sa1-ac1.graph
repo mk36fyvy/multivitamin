@@ -1,0 +1,21 @@
+// (benzene,(benzoic_acid,(salicylic_acid,acetylsalicylic_acid)))
+AUTHOR: michel
+#nodes;6
+#edges;6
+Nodes labelled;True
+Edges labelled;False
+Directed graph;False
+
+be1:4.be2:6.sa1:6.ac1:6;c
+be1:1.be2:3.sa1:3.ac1:3;c
+be1:5.be2:1.sa1:1.ac1:1;c
+be1:3.be2:5.sa1:5.ac1:5;c
+be1:2.be2:4.sa1:4.ac1:4;c
+be1:6.be2:2.sa1:2.ac1:2;c
+
+be1:5.be2:1.sa1:1.ac1:1;be1:6.be2:2.sa1:2.ac1:2
+be1:1.be2:3.sa1:3.ac1:3;be1:6.be2:2.sa1:2.ac1:2
+be1:4.be2:6.sa1:6.ac1:6;be1:5.be2:1.sa1:1.ac1:1
+be1:1.be2:3.sa1:3.ac1:3;be1:2.be2:4.sa1:4.ac1:4
+be1:4.be2:6.sa1:6.ac1:6;be1:3.be2:5.sa1:5.ac1:5
+be1:3.be2:5.sa1:5.ac1:5;be1:2.be2:4.sa1:4.ac1:4

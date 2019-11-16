@@ -5,6 +5,7 @@ import pprint
 from multivitamin.basic.node import Node
 from multivitamin.basic.graph import Graph
 from multivitamin.utils.parser import parse_graph
+from multivitamin.utils.modular_product_class import MP
 
 
 class BK:
@@ -184,11 +185,11 @@ class BK:
 if __name__ == '__main__':
 
     try:
-        bk = BK()
-        graph = parse_graph(sys.argv[1])
+        mp = MP (parse_graph(sys.argv[0]), parse_graph([1]))
+        bk = BK(mp.g, mp.h)
         r = set()
         x = set()
-        p = list(graph.nodes)
+        p = list(mp.modp)
         bk.bk_pivot ( r, p, x )
         pprint.pprint(bk.results)
 

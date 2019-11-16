@@ -203,19 +203,3 @@ class Guide_tree():
                 node.mult_id = "{}:{}".format( graph.abbrev, node.id )
 
         return graph_list
-
-
-
-
-if __name__ == '__main__':
-
-    g_list = []
-
-    for arg in sys.argv[1:]:
-        g = parse_graph(arg)
-        g_list.append( g )
-
-    guide_tree = Guide_tree( g_list, "BK", False )
-
-    guide_tree.upgma()
-    print(guide_tree.result)

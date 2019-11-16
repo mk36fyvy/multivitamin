@@ -100,10 +100,10 @@ def main():
         # print(args.view)
         if isinstance(args.view, list): #this happens when parsing files from a directory
             print("Displaying {}...".format(args.view[0].id))
-            create_graph( args.view[0].nodes, args.view[0].edges )
+            create_graph( args.view[0].id, args.view[0].nodes, args.view[0].edges )
         else:
             print("Displaying {}...".format(args.view.id))
-            create_graph( args.view.nodes, args.view.edges )
+            create_graph( args.view.id, args.view.nodes, args.view.edges )
         
 
     else:

@@ -8,7 +8,7 @@ class Graph():
 
     def __init__(
         self,
-        id = "",
+        id=None,
         nodes=None,
         edges=None,
         nodes_labelled=None,
@@ -16,7 +16,7 @@ class Graph():
         is_directed=None
     ):
 
-        self.id = id
+        self.id = id if id else ""
         self.nodes = nodes if nodes else set()
         self.edges = edges if edges else set()
         self.nodes_are_labelled = nodes_labelled if nodes_labelled else False
