@@ -1,0 +1,27 @@
+AUTHOR: Clemens M., Max. J, Michel K.
+#nodes;8
+#edges;11
+nodes labeled;True
+edges labeled;True
+directed graph;False
+
+0;e
+1;a
+2;d
+3;c
+4;f
+5;b
+6;h
+7;g
+
+0;1;alpha
+1;2;beta
+1;3;gamma
+1;4;delta
+2;3;epsilon
+2;4;pi
+2;5;rho
+3;4;teta
+4;5;eta
+4;6;teta
+5;6;omega

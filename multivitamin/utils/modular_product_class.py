@@ -13,17 +13,17 @@ class MP:
 		g,
 		h,
 	):
-		self.g = g 
+		self.g = g
 		self.h = h
 		self.modp = self.mod_product( self.g.nodes, self.h.nodes )
 
 
 	def cart_product( self, g_nodes, h_nodes ):
 		'''
-		creating the cartesian product of two graphs and making new node objects out
-		of the given node objects from each graph. In order do get the neighbour
-		relations right, we need to save the nodes of the two input graphs to get access 
-		to their neighbours later
+		creating the cartesian product of two graphs and making new node objects
+		out of the given node objects from each graph. In order do get the
+		neighbour relations right, we need to save the nodes of the two input
+		graphs to get access to their neighbours later
 		'''
 
 		cart_product = {} # empty dict to store consolidated nodes as keys and tupel of old nodes as values
@@ -71,10 +71,6 @@ class MP:
 
 			modular_set.add(n) # add complete consolidated node (with neighbours) at the end of first for loop
 
-		# OUTPUT-------------------------------------------------------------------
-		# modular_product_as_graph = Graph('h_g',modular_set) # making graph out of modular product nodes
-		#modular_product_as_graph.create_undirected_edges() #giving the graph edges
-		# pprint.pprint(modular_set)
 		return modular_set
 
 
@@ -82,7 +78,6 @@ class MP:
 		if not  (tup[0].id == t[0].id or tup[1].id == t[1].id):
 			return True
 		return False
-
 
 
 

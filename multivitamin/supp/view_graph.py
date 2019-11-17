@@ -54,4 +54,3 @@ def create_graphs( graph_list):
         nx.draw_networkx_edges(G, pos, edge_color='grey')
         plt.title(str(graph_list[i-1].id))
     plt.show()
-

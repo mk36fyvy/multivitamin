@@ -1,6 +1,6 @@
 
-'''Edge object with a label (str)  and a node1 (Node) connecting to node2 (Node) '''
 class Edge():
+    '''Edge object with a label (str)  and a node1 (Node) connecting to node2 (Node) '''
 
     def __init__(
                     self,
@@ -14,8 +14,8 @@ class Edge():
         self.label = label if label else ""
 
 
-    '''checks if edge is the reverse (as in a,b to b,a) of another edge'''
     def is_reverse_of( self, e2 ):
+        '''checks if edge is the reverse (as in a,b to b,a) of another edge'''
         if self.node1 == e2.node2 and self.node2 == e2.node1:
             return True
         else:

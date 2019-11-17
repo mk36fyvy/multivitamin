@@ -2,9 +2,9 @@
 class Node():
 
 
-    def __init__ ( 
-                    self, 
-                    id, 
+    def __init__ (
+                    self,
+                    id,
                     label=None,
                     neighbours=None
                 ):

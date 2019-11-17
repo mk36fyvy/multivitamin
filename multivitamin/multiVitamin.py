@@ -118,9 +118,6 @@ def main():
                 print("Displaying {}...".format(args.view_multiple.id))
                 create_graphs( args.view_multiple )
 
-
-
-
     else:
         raise Exception("No graph was parsed from the command-line")
 

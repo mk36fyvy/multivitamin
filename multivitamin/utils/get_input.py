@@ -9,7 +9,7 @@ def process_file( filename ):
         return process_directory(filename)
     else:
         if not filename.endswith('.graph'):
-            raise Exception("{} is not a valid input (not a .graph file)!".format(filename)) 
+            raise Exception("{} is not a valid input (not a .graph file)!".format(filename))
         return parse_graph( filename ) # this is what is done to the parsed command-line arguments (graphs)
 
 

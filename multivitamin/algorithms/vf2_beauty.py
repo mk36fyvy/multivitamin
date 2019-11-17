@@ -11,7 +11,7 @@ class VF2():
 
     def __init__(self, g, h):
 
-        self.null_n = Node("0", "")
+        self.null_n = Node("-1", "")
 
         self.g = g
         self.h = h
@@ -26,8 +26,8 @@ class VF2():
             self.small_g = h
             self.large_g = g
 
-        #  '''if the graph is undirected, the inverse edges (1,2 -> 2,1) are
-        # constructed to work with the original VF2 algorithm'''
+        # if the graph is undirected, the inverse edges (1,2 -> 2,1) are
+        # constructed to work with the original VF2 algorithm
         if not self.large_g.is_directed:
             self.large_g.create_fake_directions()
         if not self.small_g.is_directed:
@@ -35,6 +35,7 @@ class VF2():
 
         self.large_g.get_inout_neighbours()
         self.small_g.get_inout_neighbours()
+
         # Initialiazing the two core dictionaries that store each node of the
         # Corresponding graph as key and the node of the other graph where it maps
         # As soon as it mapps for now we use self.null_n as inital value
@@ -51,7 +52,7 @@ class VF2():
         self.results = []
 
 
-    def match( self, last_mapped=(Node("0", ""), Node("0", "")), depth=0 ):
+    def match( self, last_mapped=(Node("-1", ""), Node("-1", "")), depth=0 ):
 
         if self.s_in_small_g():
             self.append_result_graph( self.core_s )
@@ -92,7 +93,7 @@ class VF2():
             return self.cart_p(self.in_l,  self.legal_max(self.in_s))
 
         elif not any((td["in_l"], td["in_s"], td["out_l"], td["out_s"])):
-        # else:
+
             # all mapped nodes are in m_l (large_g) or m_s (small_g)
             m_l = {n for n in self.core_l if self.core_l[n] != self.null_n}
             m_s = {n for n in self.core_s if self.core_s[n] != self.null_n}

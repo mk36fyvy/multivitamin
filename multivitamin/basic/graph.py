@@ -22,7 +22,7 @@ class Graph():
         self.nodes_are_labelled = nodes_labelled if nodes_labelled else False
         self.edges_are_labelled = edges_labelled if edges_labelled else False
         self.is_directed = is_directed if is_directed else False
-        
+
         self.newick = id
         self.abbrev = ""
 
@@ -49,13 +49,13 @@ class Graph():
 
     def create_undirected_edges( self ):
         done = [] #already checked nodes, used to avoid including reverse edges
-        
+
         for node in self.nodes:
             for neighbour in node.neighbours:
                 if not neighbour in done: #done is for undirected #no bijection
                     cur_edge = Edge(node, neighbour)
                     self.edges.add(cur_edge)
-        
+
             done.append(node)
 
 
@@ -115,7 +115,7 @@ class Graph():
         p_nodes = ""
         for node in self.nodes:
             p_nodes += str(node) + "\n"
-        
+
         p_edges = ""
         for edge in self.edges:
             p_edges += str(edge) + "\n"

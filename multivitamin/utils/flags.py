@@ -4,19 +4,12 @@ from argparse import RawTextHelpFormatter
 from multivitamin.utils.parser import parse_graph
 from multivitamin.utils.get_input import process_file
 
-class CapitalisedHelpFormatter(argparse.HelpFormatter):
-    def add_usage(self, usage, actions, groups, prefix=None):
-        if prefix is None:
-            prefix = 'Usage: '
-        return super(CapitalisedHelpFormatter, self).add_usage(
-            usage, actions, groups, prefix)
 
 parser = argparse.ArgumentParser(
     description='multiVitamin - A multiple alignment tool for graphs',
     usage='%(prog)s [ -h | -m | -c | -v | -d ] [-a] [-s] [-t] [-g]\nfor example: multiVitamin -ga VF2 -m g1.graph g2.graph g3.graph',
     add_help=False,
     formatter_class=argparse.RawDescriptionHelpFormatter
-    # formatter_class=CapitalisedHelpFormatter
 )
 
 # one of these args has to be provided, but not more
@@ -30,9 +23,9 @@ group = parser.add_argument_group(
 -c, --coopt <files...>      provide 2 graphs which will be aligned. Co-optimals
                               will be saved in ./results
 -v, --view <files...>       get a visual representation of the given graphs in
-                              one window. This can get incomprehesible for large
-                              graphs and many graphs. Use -vm if you want to see
-                              one window per graph.
+                              one window. This can get confusing for large or
+                              many graphs. Use -d if you want to see one window
+                              per graph.
 -d, --disp-mult <files...>  get a visual representation of the given graphs in
                               one window per graph.
 '''
@@ -117,7 +110,7 @@ opt.add_argument(
 # opt.add_argument(
 #     '-g',
 #     '--guide-tree',
-    # dest='guide',
+#     dest='guide',
 #     type=str,
 #     default='upgma',
 #     help='choose a guide-tree-algorithm (default: upgma) \n upgma is the only one available at the moment'

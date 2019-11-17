@@ -56,7 +56,7 @@ class VF2():
         if self.s_in_small_g():
             self.append_result_graph( self.core_s )
             self.restore_ds( last_mapped[0], last_mapped[1], depth )
-            return 
+            return
 
         td = self.set_inout( last_mapped[0], last_mapped[1], depth )
         p = self.compute_p(td)
@@ -74,7 +74,7 @@ class VF2():
         pprint.pprint(self.out_s)
         print("")
         print("\ndepth {}\n".format(depth))
-        
+
         print("p")
         pprint.pprint(p)
 
@@ -118,7 +118,7 @@ class VF2():
             # In diff_l are all nodes that are in the large graph, but not mapping
             diff_l = self.large_g.nodes - m_l
             diff_s = self.small_g.nodes - m_s  # see above
-            
+
             return self.cart_p(diff_l, max(diff_s))
         return set() # this return is not reached, if diverging from original algorithm description
 
@@ -214,25 +214,24 @@ class VF2():
                 continue
             if node_depth != 0:
                 td["in_s"] += 1
-        
+
         for node, node_depth in self.out_s.items():
             if not self.core_s[node] == self.null_n:
                 continue
             if node_depth != 0:
                 td["out_s"] += 1
-        
+
         for node, node_depth in self.in_l.items():
             if not self.core_l[node] == self.null_n:
                 continue
             if node_depth != 0:
                 td["in_l"] += 1
-        
+
         for node, node_depth in self.out_l.items():
             if not self.core_l[node] == self.null_n:
                 continue
             if node_depth != 0:
                 td["out_l"] += 1
-        
 
         return td
 
@@ -306,15 +305,15 @@ class VF2():
 # RESULT PROCESSING -----------------------------------------------------------
 
     def append_result_graph( self, result ):
-        '''creates a graph which contains the concatenated mapped nodes. 
-        Then, it adds the neighbours to the new nodes following the 
+        '''creates a graph which contains the concatenated mapped nodes.
+        Then, it adds the neighbours to the new nodes following the
         original neighbours.'''
 
         result_graph = Graph("({},{})#{}".format(
-            self.small_g.id, 
-            self.large_g.id, 
+            self.small_g.id,
+            self.large_g.id,
             len(self.result_graphs)+1
-            ), 
+            ),
             set()
             )
         for key, value in result.items():
@@ -357,7 +356,7 @@ if __name__ == "__main__":
 
     counter = 1
     for result in vf2.result_graphs:
-        
+
         print("--- RESULT #{} ------------------------------------------".format(counter))
         print("")
         print (result.id)

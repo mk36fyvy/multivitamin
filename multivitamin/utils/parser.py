@@ -37,7 +37,7 @@ def parse_graph( doc ):
 
                 elif line.startswith( "//" ):
                     continue
-                
+
                 elif arg.upper() in ( "TRUE", "FALSE" ):
                     check_list.append( arg.upper()  == "TRUE" )
 
@@ -138,7 +138,7 @@ def parse_graph( doc ):
         exit()
 
 
-'''This function works, because is_reverse_of only checks {(n1,n2) and (n2,n1}, 
+'''This function works, because is_reverse_of only checks {(n1,n2) and (n2,n1},
 not {(n1,n2) and (n1,n2)} (second case is sorted out because edges is a set)'''
 def edges_contain_doubles( edges ):
     for edge1 in edges:
@@ -172,7 +172,6 @@ def get_node_neighbours(limit, nodes, edges):
 def print_if_big(limit, edges, message):
     if(len(edges)) > limit:
         print( message )
-
 
 
 

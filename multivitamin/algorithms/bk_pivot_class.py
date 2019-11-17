@@ -16,16 +16,10 @@ class BK:
         self,
         g,
         h,
-        # modp=None
         ):
 
         self.g = g
         self.h = h
-        #self.modp = modp if modp else set()
-
-        # self.r = set()
-        # self.x =set()
-        # self.p = self.modp
 
         self.results = []
 
@@ -33,7 +27,8 @@ class BK:
     def find_max_pivot( self, p, x ):
         p_union_x = p + list(x)
         helper = 0
-        piv = Node('0', '')
+        piv = Node('-1', '')
+
         for v in p_union_x:
             cur_len_intersection = len([n for n in v.neighbours if n in p_union_x])
             if cur_len_intersection > helper:
@@ -119,27 +114,11 @@ class BK:
                 for neighbour in node.neighbours:
 
                     for corr_neighbour in corr_n.neighbours:
-                        print("")
-                        print(node.neighbours)
-                        print(corr_n.neighbours)
-                        print("")
-                        print(corr_neighbour.mult_id.split("."))
-                        print(neighbour.mult_id.split("."))
-                        print("")
                         if set(corr_neighbour.mult_id.split(".")).issubset(set(neighbour.mult_id.split("."))):
                             new_neighbours.add(neighbour)
-                        print("new n")
-                        print(new_neighbours)
-                        print("")
-
-                print(new_neighbours)
                 curr_node = Node( node.id, node.label, new_neighbours)
                 curr_node.mult_id = node.mult_id
                 curr_node_set.add(curr_node)
-            print("")
-            print("")
-            print("")
-            print("NEXT")
 
             res_list.append(curr_node_set)
 
@@ -163,24 +142,11 @@ class BK:
     def get_corr_node( self, clique_node ):
         old_id = clique_node.mult_id.split(".")
 
-        # print("g")
-        # pprint.pprint(self.g)
-        # print("")
-        # print("h")
-        # pprint.pprint(self.h)
-        # print("")
-        # print(old_id)
-
         for node in self.g.nodes:
             if set( node.mult_id.split(".") ).issubset(set( old_id )):
                 return node
 
-        # for node in self.h.nodes:
-        #     if set( node.id.split(".") ).issubset(set( old_id )):
-        #         return node
 
-
-# EXECUTION (PIVOT VERSION) ----------------------------------------------------
 
 if __name__ == '__main__':
 

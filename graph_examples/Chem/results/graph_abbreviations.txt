@@ -1,4 +1,0 @@
-sa1	salicylic_acid
-ac1	acetylsalicylic_acid
-be1	benzene
-be2	benzoic_acid

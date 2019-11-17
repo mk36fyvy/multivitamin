@@ -37,7 +37,7 @@ class Guide_tree():
 
             res.edges = set()
             res.create_undirected_edges()
-            
+
             self.result = res
 
             self.newick = self.graph_list[0].newick
@@ -49,19 +49,16 @@ class Guide_tree():
         counter = 1 # makes sure that every graph couple is only processed once
 
         for g1 in self.graph_list[:-1]:
-            
+
             for g2 in self.graph_list[counter:]:
 
                 if g1.id == g2.id:
                     continue
-           
+
                 max_alignment = self.apply_algorithm( g1, g2 )
-                # pprint.pprint(results)
-                # max_alignment = max(results, key=len)
-                # pprint.pprint(max_alignment)
-                
+
                 if len(max_alignment) >  maximum:
-                   
+
                     alignment = Graph( "{}-{}".format( g1.abbrev, g2.abbrev ), max_alignment )
                     alignment.abbrev = alignment.id
                     alignment.newick = "({},{})".format( g1.newick, g2.newick)
@@ -72,7 +69,7 @@ class Guide_tree():
 
             counter += 1
 
-        
+
 
         self.graph_list.remove(alig_one)
         self.graph_list.remove(alig_two)
@@ -99,7 +96,7 @@ class Guide_tree():
         #     for neighbour in list(node.neighbours)[:]:
         #         if not neighbour in graph.nodes:
         #             node.remove_neighbour(neighbour)
-        
+
         graph.edges = set()
         graph.create_undirected_edges()
         return graph
@@ -129,7 +126,7 @@ class Guide_tree():
                     max_res_neighbour_sum = neighbour_sum
             return max_res
 
-           
+
 
         elif self.algorithm == "VF2":
             vf2 = VF2( graph1, graph2 )
@@ -142,12 +139,16 @@ class Guide_tree():
     def generate_graph_bools( self, graph ):
         if not list(graph.nodes)[0].label == "":
             graph.nodes_are_labelled = True
-        if len(graph.nodes) > 1: 
+
+        if len(graph.nodes) > 1:
             if not list(graph.edges)[0].label == "":
                 graph.edges_are_labelled = True
+
         if edges_contain_doubles( graph.edges ):
             graph.is_directed = True
+
         return graph
+
 
     def print_alignment( self, graph ):
         print("")
@@ -188,8 +189,8 @@ class Guide_tree():
         for graph in graph_list:
             if len(graph.id) < 3:
                 # i is the number of occurrences of the short graph id in the id_list dicitonary
-                i = len( [x for x in id_list.values() if x.startswith(graph.id)] ) + 1 
-                graph.abbrev = graph.id + str(i) 
+                i = len( [x for x in id_list.values() if x.startswith(graph.id)] ) + 1
+                graph.abbrev = graph.id + str(i)
                 id_list[graph.id] = graph.abbrev
 
             else:
