@@ -1,0 +1,22 @@
+// (graph1,graph2)
+AUTHOR: micheltower
+#nodes;5
+#edges;8
+Nodes labelled;True
+Edges labelled;False
+Directed graph;False
+
+gr1:4.gr2:2;d
+gr1:1.gr2:5;a
+gr1:2.gr2:3;b
+gr1:3.gr2:6;c
+gr1:5.gr2:4;e
+
+gr1:2.gr2:3;gr1:3.gr2:6
+gr1:4.gr2:2;gr1:2.gr2:3
+gr1:1.gr2:5;gr1:3.gr2:6
+gr1:1.gr2:5;gr1:2.gr2:3
+gr1:4.gr2:2;gr1:1.gr2:5
+gr1:4.gr2:2;gr1:5.gr2:4
+gr1:1.gr2:5;gr1:5.gr2:4
+gr1:2.gr2:3;gr1:5.gr2:4

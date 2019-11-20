@@ -45,8 +45,10 @@ class VF2():
         # initialiazing the terminal sets for each graph. These are dictionaries
         # that store the node as values and the recursion depth as keys where the
         # nodes entered the corresponding set. For now we initialiazing them with 0 '''
-        self.in_s = self.out_s = self.small_g.gen_dict( 0 )
-        self.in_l = self.out_l = self.large_g.gen_dict( 0 )
+        self.in_s = self.small_g.gen_dict( 0 )
+        self.out_s = self.small_g.gen_dict( 0 )
+        self.in_l = self.large_g.gen_dict( 0 )
+        self.out_l = self.large_g.gen_dict( 0 )
 
         self.result_graphs = []
         self.results = []
@@ -65,7 +67,7 @@ class VF2():
         for tup in p:
 
             if self.is_feasible(tup[0], tup[1], depth, td):
-                self.compute_s_( tup[0], tup[1], depth )
+                self.compute_s_( tup[0], tup[1] )
 
                 self.match( tup, depth+1 )
 
@@ -87,10 +89,10 @@ class VF2():
     def compute_p(self, td):
 
         if all( ( td["out_l"] ,td["out_s"] ) ):
-            return self.cart_p(self.out_l, self.legal_max(self.out_s))
+            return self.cart_p1(self.out_l, self.legal_max(self.out_s))
 
         elif all(( td['in_l'], td['in_s'], not td['out_l'], not td['out_s'] )):
-            return self.cart_p(self.in_l,  self.legal_max(self.in_s))
+            return self.cart_p1(self.in_l,  self.legal_max(self.in_s))
 
         elif not any((td["in_l"], td["in_s"], td["out_l"], td["out_s"])):
 
@@ -102,8 +104,8 @@ class VF2():
             diff_l = self.large_g.nodes - m_l
             diff_s = self.small_g.nodes - m_s  # see above
 
-            return self.cart_p(diff_l, max(diff_s))
-        return set() # this return is not reached, if diverging from original algorithm description
+            return self.cart_p2(diff_l, max(diff_s))
+        return set()
 
 
     def is_feasible( self, n ,m, depth, td):
@@ -129,7 +131,7 @@ class VF2():
         return check_semantics( n, m ) # this method is imported from multivitamin/custom.py
 
 
-    def compute_s_(self, n, m, depth):
+    def compute_s_(self, n, m):
         self.core_l[n] = m
         self.core_s[m] = n
 
@@ -217,13 +219,21 @@ class VF2():
         return td
 
 
-    def cart_p( self, node_dict, t_max ):
+    def cart_p1( self, node_dict, t_max ):
         """creates the cartesian product """
         cp = set()
         for node in node_dict:
-            if self.core_l[node] == self.null_n:
+            if self.core_l[node] == self.null_n and not node_dict[node] == 0:
                 cp.add( (node, t_max) )
         return cp
+
+    def cart_p2( self, node_dict, t_max ):
+            """creates the cartesian product """
+            cp = set()
+            for node in node_dict:
+                if self.core_l[node] == self.null_n:
+                    cp.add( (node, t_max) )
+            return cp
 
 
     def legal_max(self, t_dict):
@@ -258,8 +268,8 @@ class VF2():
 
 
     def two_look_ahead(self, depth, td):
-        free_n1 = len(self.large_g.nodes) - depth - td["in_l"] - td["out_l"]
-        free_n2 = len(self.small_g.nodes) - depth - td["in_s"] - td["out_s"]
+        free_n1 = len(self.large_g.nodes) - td["in_l"] - td["out_l"]
+        free_n2 = len(self.small_g.nodes) - td["in_s"] - td["out_s"]
 
         if self.type == "isomorphism":
             return free_n1 == free_n2
