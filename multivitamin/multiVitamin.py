@@ -54,7 +54,7 @@ def main():
 
         guide_tree = Guide_tree( graphs, args.algorithm, args.save_all )
         print("Calculating multiple alignment with {} algorithm...".format( args.algorithm ))
-        guide_tree.upgma()
+        guide_tree.multalign()
         save_results( guide_tree )
 
     elif args.coopt:

@@ -28,7 +28,7 @@ class Guide_tree():
         self.newick = ""
 
 
-    def upgma( self ):
+    def multalign( self ):
         if len( self.graph_list ) <= 1:
             try:
                 res = self.graph_list[0]
@@ -88,7 +88,7 @@ class Guide_tree():
             self.graph_list.remove(alignment_graph)
             self.intermediates.remove( alignment_graph )
 
-        self.upgma()
+        self.multalign()
 
 
     def make_graph_real( self, graph ):
