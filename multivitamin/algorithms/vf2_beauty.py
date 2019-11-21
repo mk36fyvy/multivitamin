@@ -290,7 +290,8 @@ class VF2():
         Then, it adds the neighbours to the new nodes following the
         original neighbours.'''
 
-        result_graph = Graph("({},{})#{}".format(
+        # result_graph = Graph("({},{})#{}".format(
+        result_graph = Graph("{}-{}#{}".format(
             self.small_g.id,
             self.large_g.id,
             len(self.result_graphs)+1
