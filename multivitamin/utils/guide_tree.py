@@ -62,7 +62,7 @@ class Guide_tree():
                 else:
                     max_alignment = self.apply_algorithm( g1, g2 )
                     self.already_done[( g1.id, g2.id )] = max_alignment
-                    print(self.already_done)
+                    # print(self.already_done)
 
                 if len(max_alignment) >  maximum:
 
