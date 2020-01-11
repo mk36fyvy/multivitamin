@@ -42,4 +42,4 @@ Examples on how the graph file looks like can be found in graph_examples inside 
 
 ## Further reading
 
-More information on how to use the module can be found here soon.
+More information on how to use the module can be found [here](multivitaminReadme.pdf).

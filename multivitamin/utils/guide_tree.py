@@ -27,6 +27,8 @@ class Guide_tree():
         self.result = Graph()
         self.newick = ""
 
+        self.already_done = {}
+
 
     def multalign( self ):
         if len( self.graph_list ) <= 1:
@@ -55,7 +57,12 @@ class Guide_tree():
                 if g1.id == g2.id:
                     continue
 
-                max_alignment = self.apply_algorithm( g1, g2 )
+                if ( g1.id, g2.id ) in self.already_done.keys():
+                    max_alignment = self.already_done[( g1.id, g2.id )]
+                else:
+                    max_alignment = self.apply_algorithm( g1, g2 )
+                    self.already_done[( g1.id, g2.id )] = max_alignment
+                    print(self.already_done)
 
                 if len(max_alignment) >  maximum:
 
@@ -73,6 +80,7 @@ class Guide_tree():
 
         self.graph_list.remove(alig_one)
         self.graph_list.remove(alig_two)
+        self.remove_element( self.already_done, ( alig_one.id, alig_two.id) )
 
         alignment_graph = self.make_graph_real( alignment )
         alignment_graph = self.generate_graph_bools( alignment_graph )
@@ -149,6 +157,11 @@ class Guide_tree():
 
         return graph
 
+    def remove_element( self, dictionary, key):
+        """Returns a **shallow** copy of the dictionary without a key."""
+        _dict = dictionary.copy()
+        _dict.pop(key, None)
+        return _dict
 
     def print_alignment( self, graph ):
         print("")

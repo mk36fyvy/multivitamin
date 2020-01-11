@@ -44,8 +44,10 @@ class VF2():
         # initialiazing the terminal sets for each graph. These are dictionaries
         # that store the node as values and the recursion depth as keys where the
         # nodes entered the corresponding set. For now we initialiazing them with 0 '''
-        self.in_s = self.out_s = self.small_g.gen_dict( 0 )
-        self.in_l = self.out_l = self.large_g.gen_dict( 0 )
+        self.in_s = self.small_g.gen_dict( 0 )
+        self.out_s = self.small_g.gen_dict( 0 )
+        self.in_l = self.large_g.gen_dict( 0 )
+        self.out_l = self.large_g.gen_dict( 0 )
 
         self.result_graphs = []
         self.results = []

@@ -36,7 +36,7 @@ class VF2():
         self.large_g.get_inout_neighbours()
         self.small_g.get_inout_neighbours()
 
-        # Initialiazing the two core dictionaries that store each node of the
+        # Initializing the two core dictionaries that store each node of the
         # Corresponding graph as key and the node of the other graph where it maps
         # As soon as it mapps for now we use self.null_n as inital value
         self.core_s = self.small_g.gen_dict( self.null_n )
@@ -91,7 +91,7 @@ class VF2():
         if all( ( td["out_l"] ,td["out_s"] ) ):
             return self.cart_p1(self.out_l, self.legal_max(self.out_s))
 
-        elif all(( td['in_l'], td['in_s'], not td['out_l'], not td['out_s'] )):
+        elif all(( td['in_l'], td['in_s'] )):
             return self.cart_p1(self.in_l,  self.legal_max(self.in_s))
 
         elif not any((td["in_l"], td["in_s"], td["out_l"], td["out_s"])):
