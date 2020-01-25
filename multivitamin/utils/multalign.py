@@ -7,18 +7,21 @@ from multivitamin.utils.parser import parse_graph, edges_contain_doubles
 from multivitamin.utils.modular_product_class import MP
 from multivitamin.algorithms.bk_pivot_class import BK
 from multivitamin.algorithms.vf2_beauty import VF2
+from multivitamin.algorithms.vf2_subsub import subVF2
 
 
-class Guide_tree():
+class Multalign():
 
     def __init__(
         self,
         graph_list,
         algorithm,
+        method,
         save_all,
     ):
 
         self.algorithm = algorithm
+        self.method = method
         self.save_all = save_all
 
         self.graph_abbreviations = {}
@@ -30,8 +33,77 @@ class Guide_tree():
         self.already_done = {}
 
 
+    # def multalign( self ):
+    #     if len( self.graph_list ) <= 1:
+    #         try:
+    #             res = self.graph_list[0]
+    #         except:
+    #             return
+
+    #         res.edges = set()
+    #         res.create_undirected_edges()
+
+    #         self.result = res
+
+    #         self.newick = self.graph_list[0].newick
+    #         self.print_alignment( self.result )
+
+    #         return
+
+    #     maximum = 0 # is used to save the maximum number of mapped nodes
+    #     counter = 1 # makes sure that every graph couple is only processed once
+
+    #     for g1 in self.graph_list[:-1]:
+
+    #         for g2 in self.graph_list[counter:]:
+
+    #             if g1.id == g2.id:
+    #                 continue
+
+    #             if ( g1.id, g2.id ) in self.already_done.keys():
+    #                 max_alignment = self.already_done[( g1.id, g2.id )]
+    #             else:
+    #                 max_alignment = self.apply_algorithm( g1, g2 )
+    #                 self.already_done[( g1.id, g2.id )] = max_alignment
+    #                 # print(self.already_done)
+
+    #             if len(max_alignment) >  maximum:
+
+    #                 alignment = Graph( "{}-{}".format( g1.abbrev, g2.abbrev ), max_alignment )
+    #                 alignment.abbrev = alignment.id
+    #                 alignment.newick = "({},{})".format( g1.newick, g2.newick)
+
+    #                 maximum = len(max_alignment)
+    #                 alig_one = g1
+    #                 alig_two = g2
+
+    #         counter += 1
+
+
+
+    #     self.graph_list.remove(alig_one)
+    #     self.graph_list.remove(alig_two)
+    #     self.remove_element( self.already_done, ( alig_one.id, alig_two.id) )
+
+    #     alignment_graph = self.make_graph_real( alignment )
+    #     alignment_graph = self.generate_graph_bools( alignment_graph )
+
+    #     self.graph_list.append( alignment_graph )
+    #     self.intermediates.append( alignment_graph )
+
+    #     if Node("null", "") in alignment.nodes and not self.save_all:
+    #         raise Exception("VF2 could not produce a multiple alignment of all the given graphs. \n The classical VF2 algorithm can only process *graph-subgraph*-isomorphism. \n Please consider using BK algorithm or -s to save all intermediate graphs until the error occurrs.")
+    #     elif Node("null", "") in alignment.nodes and self.save_all:
+    #         print("Multiple alignment was not successful. VF2 could not align the graphs {} and {} properly. \n Maybe BK is more appropriate for this alignment.".format(alig_one.id, alig_two.id))
+    #         print("Removing last graph. Continuing alignment...")
+    #         self.graph_list.remove(alignment_graph)
+    #         self.intermediates.remove( alignment_graph )
+
+    #     self.multalign()
+
     def multalign( self ):
-        if len( self.graph_list ) <= 1:
+
+        if len( self.graph_list ) <= 1: # getting trivial cases out of the way
             try:
                 res = self.graph_list[0]
             except:
@@ -46,6 +118,15 @@ class Guide_tree():
             self.print_alignment( self.result )
 
             return
+        
+        if self.method == "GREEDY":
+            self.greedy()
+
+        elif self.method == "PROGRESSIVE":
+            pass
+
+
+    def greedy( self ):
 
         maximum = 0 # is used to save the maximum number of mapped nodes
         counter = 1 # makes sure that every graph couple is only processed once
@@ -62,9 +143,8 @@ class Guide_tree():
                 else:
                     max_alignment = self.apply_algorithm( g1, g2 )
                     self.already_done[( g1.id, g2.id )] = max_alignment
-                    # print(self.already_done)
 
-                if len(max_alignment) >  maximum:
+                if len(max_alignment) > maximum:
 
                     alignment = Graph( "{}-{}".format( g1.abbrev, g2.abbrev ), max_alignment )
                     alignment.abbrev = alignment.id
@@ -73,13 +153,16 @@ class Guide_tree():
                     maximum = len(max_alignment)
                     alig_one = g1
                     alig_two = g2
+                else:
+                    print(max_alignment)
 
             counter += 1
-
-
-
-        self.graph_list.remove(alig_one)
+        try:
+            self.graph_list.remove(alig_one)
+        except:
+            print(max_alignment)
         self.graph_list.remove(alig_two)
+
         self.remove_element( self.already_done, ( alig_one.id, alig_two.id) )
 
         alignment_graph = self.make_graph_real( alignment )
@@ -88,16 +171,12 @@ class Guide_tree():
         self.graph_list.append( alignment_graph )
         self.intermediates.append( alignment_graph )
 
-        if Node("null", "") in alignment.nodes and not self.save_all:
-            raise Exception("VF2 could not produce a multiple alignment of all the given graphs. \n The classical VF2 algorithm can only process *graph-subgraph*-isomorphism. \n Please consider using BK algorithm or -s to save all intermediate graphs until the error occurrs.")
-        elif Node("null", "") in alignment.nodes and self.save_all:
-            print("Multiple alignment was not successful. VF2 could not align the graphs {} and {} properly. \n Maybe BK is more appropriate for this alignment.".format(alig_one.id, alig_two.id))
-            print("Removing last graph. Continuing alignment...")
-            self.graph_list.remove(alignment_graph)
-            self.intermediates.remove( alignment_graph )
+        if Node("null", "") in alignment.nodes and self.algorithm == "VF2":
+            raise Exception("VF2 could not produce a multiple alignment of all the given graphs. \n The classical VF2 algorithm can only process *graph-subgraph*-isomorphism. \n Please consider using subVF2 algorithm instead.")
 
-        self.multalign()
+        self.greedy()
 
+    # ---- HELPER METHODS ------------------------------------------------------------------------------------
 
     def make_graph_real( self, graph ):
         # for node in graph.nodes:
@@ -142,6 +221,13 @@ class Guide_tree():
             if not vf2.results:
                 vf2.results.append([Node("null","")])
             return max(vf2.results)
+
+        elif self.algorithm == "SUBVF2":
+            subvf2 = subVF2( graph1, graph2 )
+            subvf2.match()
+            if not subvf2.results:
+                subvf2.results.append([Node("null","")])
+            return max(subvf2.results)
 
 
     def generate_graph_bools( self, graph ):

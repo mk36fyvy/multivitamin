@@ -7,7 +7,7 @@ from multivitamin.utils.get_input import process_file
 
 parser = argparse.ArgumentParser(
     description='multiVitamin - A multiple alignment tool for graphs',
-    usage='%(prog)s [ -h | -m | -c | -v | -d ] [-a] [-s] [-t] [-g]\nfor example: multiVitamin -ga VF2 -m g1.graph g2.graph g3.graph',
+    usage='%(prog)s [ -h | -i | -c | -v | -d ] [-a] [-s] [-t] [-g] [-m]\nfor example: multiVitamin -ga VF2 -i g1.graph g2.graph g3.graph',
     add_help=False,
     formatter_class=argparse.RawDescriptionHelpFormatter
 )
@@ -16,18 +16,18 @@ parser = argparse.ArgumentParser(
 group = parser.add_argument_group(
     title='Required arguments (These arguments are mutually exclusive)',
     description='''
--h, --help                  show this help message and exit
--m, --multiple <files...>   provide .graph files for multiple alignment. \'.\'
-                              takes all .graph files in the directory as
-                              arguments
--c, --coopt <files...>      provide 2 graphs which will be aligned. Co-optimals
-                              will be saved in ./results
--v, --view <files...>       get a visual representation of the given graphs in
-                              one window. This can get confusing for large or
-                              many graphs. Use -d if you want to see one window
-                              per graph.
--d, --disp-mult <files...>  get a visual representation of the given graphs in
-                              one window per graph.
+-h, --help                          show this help message and exit
+-i, --input <files...>              provide .graph files for multiple alignment. 
+                                      \'.\' takes all .graph files in the directory as
+                                      arguments
+-c, --coopt <files...>              provide 2 graphs which will be aligned. Co-optimals
+                                      will be saved in ./results
+-v, --view <files...>               get a visual representation of the given graphs in
+                                      one window. This can get confusing for large or
+                                      many graphs. Use -d if you want to see one window
+                                      per graph.
+-d, --disp-mult <files...>          get a visual representation of the given graphs in
+                                      one window per graph.
 '''
 )
 mxg = group.add_mutually_exclusive_group(required=True)
@@ -40,8 +40,8 @@ mxg.add_argument(
 )
 
 mxg.add_argument(
-    '-m',
-    '--multiple',
+    '-i',
+    '--input',
     dest='files',
     type=process_file,
     nargs='+',
@@ -85,14 +85,16 @@ mxg.add_argument(
 group2 = parser.add_argument_group(
     title='Optional arguments',
     description='''
--a, --algorithm <BK|VF2>    indicate an alignment-algorithm (default: BK)
-                              Warning: VF2 is only suited if there is true
-                              graph-subgraph isomorphism!
--s, --save-all              save all the graphs produced during the alignment.
-                              The graphs are saved as "[newick].graph"
--t, --save-shorter          save an additional version of the alignment graph
-                              with much shorter node ids
--g, --save-guide            save the guide tree in Newick-format as "newick.txt"
+-a, --algorithm <BK|VF2|subVF2>     indicate an alignment-algorithm (default: BK)
+                                      Warning: VF2 is only suited if there is true
+                                      graph-subgraph isomorphism!
+-m, --mult <greedy>                 indicate the multiple alignment method. "greedy"
+                                      is the default and only one available as of now.
+-s, --save-all                      save all the graphs produced during the alignment.
+                                      The graphs are saved as "[newick].graph"
+-t, --save-shorter                  save an additional version of the alignment graph
+                                      with much shorter node ids
+-g, --save-guide                    save the guide tree in Newick-format as "newick.txt"
 '''
 )
 opt = group2.add_argument_group()
@@ -102,19 +104,20 @@ opt.add_argument(
     '--algorithm',
     dest='algorithm',
     type=str,
-    default='BK',
-    # help='indicate an alignment-algorithm (BK or VF2) (default: BK) \n Warning: VF2 is only suited if there is true graph-subgraph isomorphism!'
+    default='subVF2',
+    # help='indicate an alignment-algorithm (BK | VF2 | subVF2) (default: subVF2) \n Warning: VF2 is only suited if there is true graph-subgraph isomorphism!'
     help=argparse.SUPPRESS
 )
 
-# opt.add_argument(
-#     '-g',
-#     '--guide-tree',
-#     dest='guide',
-#     type=str,
-#     default='upgma',
-#     help='choose a guide-tree-algorithm (default: upgma) \n upgma is the only one available at the moment'
-# )
+opt.add_argument(
+    '-m',
+    '--mult',
+    dest='mult',
+    type=str,
+    default='GREEDY',
+    # help='choose a multiple alignment method (default: greedy) \n greedy is the only one available at the moment'
+    help=argparse.SUPPRESS
+)
 
 opt.add_argument(
     '-s',

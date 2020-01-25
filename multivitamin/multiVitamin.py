@@ -4,7 +4,7 @@ import pprint
 from multivitamin.custom import get_results_dir
 from multivitamin.basic.graph import Graph
 from multivitamin.utils.parser import parse_graph
-from multivitamin.utils.guide_tree import Guide_tree
+from multivitamin.utils.multalign import Multalign
 from multivitamin.utils.flags import parser
 from multivitamin.utils.graph_writer import write_graph, write_shorter_graph
 from multivitamin.utils.modular_product_class import MP
@@ -12,10 +12,11 @@ from multivitamin.supp.view_graph import create_graph
 from multivitamin.supp.view_graph import create_graphs
 from multivitamin.algorithms.bk_pivot_class import BK
 from multivitamin.algorithms.vf2_beauty import VF2
+from multivitamin.algorithms.vf2_subsub import subVF2
 
 '''
 FLAGS:
--a BK VF2
+-a BK VF2 SUBVF2
 -c use algorithm for single alignment and save co-optimals
 -g guide
 -m save in list as input graphs
@@ -27,6 +28,7 @@ FLAGS:
 
 args = parser.parse_args()
 args.algorithm = args.algorithm.upper()
+args.mult = args.mult.upper()
 
 def main():
 
@@ -52,10 +54,10 @@ def main():
         else:
             graphs = args.files
 
-        guide_tree = Guide_tree( graphs, args.algorithm, args.save_all )
+        multalign = Multalign( graphs, args.algorithm, args.mult, args.save_all )
         print("Calculating multiple alignment with {} algorithm...".format( args.algorithm ))
-        guide_tree.multalign()
-        save_results( guide_tree )
+        multalign.multalign()
+        save_results( multalign )
 
     elif args.coopt:
         if isinstance(args.coopt[0], list): #this happens when parsing files from a directory
@@ -66,7 +68,7 @@ def main():
         if not len(graphs) == 2:
             raise Exception("You must provide exactly 2 graph files with '-c' ! Use '-m' if you want to align multiple graphs.")
 
-        fake_tree = Guide_tree( graphs, args.algorithm, False )
+        fake_align = Multalign( graphs, args.algorithm, args.mult, False )
         print("Calculating alignment using {} algorithm...".format( args.algorithm ))
 
         if args.algorithm == "BK":
@@ -81,19 +83,27 @@ def main():
             temp = Graph("")
             counter = 1
             for node_set in res:
-                temp = fake_tree.make_graph_real( Graph( "{}--{}#{}".format(graphs[0].id, graphs[1].id, counter), node_set) )
+                temp = fake_align.make_graph_real( Graph( "{}--{}#{}".format(graphs[0].id, graphs[1].id, counter), node_set) )
                 # print(temp)
-                fake_tree.intermediates.append( temp )
+                fake_align.intermediates.append( temp )
                 counter += 1
-            save_results( fake_tree )
+            save_results( fake_align )
 
         elif args.algorithm == "VF2":
             vf2 = VF2( graphs[0], graphs[1] )
             vf2.match()
             for result_graph in vf2.result_graphs:
                 result_graph.create_undirected_edges()
-                fake_tree.intermediates.append( result_graph )
-            save_results( fake_tree )
+                fake_align.intermediates.append( result_graph )
+            save_results( fake_align )
+
+        elif args.algorithm == "SUBVF2":
+            subvf2 = subVF2( graphs[0], graphs[1] )
+            subvf2.match()
+            for result_graph in subvf2.result_graphs:
+                result_graph.create_undirected_edges()
+                fake_align.intermediates.append( result_graph )
+            save_results( fake_align )
 
         else:
             raise Exception("Invalid algorithm name!")
@@ -122,7 +132,7 @@ def main():
         raise Exception("No graph was parsed from the command-line")
 
 
-def save_results( guide_tree ):
+def save_results( multalign ):
     path = get_results_dir()
 
     # create results directory
@@ -138,18 +148,18 @@ def save_results( guide_tree ):
 
     # save all intermediate alignment graphs, if flag is set
     if args.save_all or args.coopt:
-        for graph in guide_tree.intermediates:
+        for graph in multalign.intermediates:
             write_graph( graph, path )
     else:
-        write_graph( guide_tree.result, path )
+        write_graph( multalign.result, path )
 
     # save end alignment graph with much shorter node ids
     if args.save_shorter:
-        write_shorter_graph( guide_tree.result, path )
+        write_shorter_graph( multalign.result, path )
 
     # save graph abbreviations used for identifying original nodes in node ids
     f = open("{}{}/{}".format( os.getcwd(), path, "graph_abbreviations.txt" ), 'w+')
-    for abbrev, id in guide_tree.graph_abbreviations.items():
+    for abbrev, id in multalign.graph_abbreviations.items():
         f.write("{}\t{}\n".format( abbrev, id))
     f.close
 
@@ -159,7 +169,7 @@ def save_results( guide_tree ):
     # save newick tree in easily parseable txt file
     if args.save_guide:
         f = open("{}{}/{}".format( os.getcwd(), path, "newick.txt" ), 'w+')
-        f.write("{}\n".format(guide_tree.newick))
+        f.write("{}\n".format(multalign.newick))
         f.close
 
         print("Saved the alignment tree in Newick format as newick.txt\n")
