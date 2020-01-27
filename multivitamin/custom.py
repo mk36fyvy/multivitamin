@@ -13,10 +13,10 @@ def check_semantics( n, m ):
 
     Insert your scoring logic below:'''
 
-#    if n.label == m.label:
-#        return True
-#    else:
-#        return False
+    if set(n.label).issubset( set(m.label)) or set(m.label).issubset( set(n.label)):
+       return True
+    else:
+       return False
 
     return True
 

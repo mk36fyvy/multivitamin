@@ -120,12 +120,12 @@ class Multalign():
             return
 
         if self.method == "GREEDY":
-            for graph in self.graph_list:
-                print(graph.id)
-            print()
-            print(next(iter(self.graph_list[-1].nodes)))
-            print()
-            print()
+            # for graph in self.graph_list:
+            #     print(graph.id)
+            # print()
+            # print(next(iter(self.graph_list[-1].nodes)))
+            # print()
+            # print()
             self.greedy()
 
         elif self.method == "PROGRESSIVE":
@@ -140,13 +140,18 @@ class Multalign():
         for g1 in self.graph_list[:-1]:
 
             for g2 in self.graph_list[counter:]:
-
+                # print(maximum)
                 if g1.id == g2.id:
                     continue
 
                 if ( g1.id, g2.id ) in self.already_done.keys():
                     max_alignment = self.already_done[( g1.id, g2.id )]
                 else:
+                    # print()
+                    # print("Aligning {} and {}...".format(g1.id,g2.id))
+                    # print(g1)
+                    # print(g2)
+                    # print()
                     max_alignment = self.apply_algorithm( g1, g2 )
                     self.already_done[( g1.id, g2.id )] = max_alignment
 
@@ -225,9 +230,8 @@ class Multalign():
         elif self.algorithm == "SUBVF2":
             subvf2 = subVF2( graph1, graph2 )
             subvf2.match()
-            if not subvf2.results:
-                subvf2.results.append([Node("null","")])
-            return max(subvf2.results)
+            # best_result = scoring( results )
+            return max(subvf2.results) # best_result
 
 
     def generate_graph_bools( self, graph ):
