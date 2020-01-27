@@ -343,7 +343,7 @@ class subVF2():
         node_dict = {}
 
         for node in result_graph.nodes.copy():
-            
+
             cur_node = Node( node.id, node.label )
             cur_node.mult_id = node.mult_id
             node_dict[node] = cur_node
@@ -356,7 +356,7 @@ class subVF2():
                 else:
                     cur_node.id = "{}.x".format( cur_node.id )
                     cur_node.label = "{}-".format( cur_node.label )
-                    cur_node.mult_id = "{}.{}:x".format( cur_node.mult_id, self.large_g.abbrev )
+                    cur_node.mult_id = "{}.x".format( cur_node.mult_id )
             else:
                 # if self.core_l[cur_node]!= self.null_n:
                 if node in result.values():
@@ -365,11 +365,11 @@ class subVF2():
                 else:
                     cur_node.id = "x.{}".format( cur_node.id )
                     cur_node.label = "-{}".format( cur_node.label )
-                    cur_node.mult_id = "{}:x.{}".format( self.small_g.abbrev, cur_node.mult_id )
+                    cur_node.mult_id = "x.{}".format( cur_node.mult_id )
             result_graph.nodes.remove(node)
             result_graph.nodes.add(cur_node)
 
-        
+
         i = 1
         for node1 in list(node_dict.keys())[:-1]:
             for node2 in list(node_dict.keys())[i:]:

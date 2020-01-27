@@ -261,12 +261,12 @@ class Multalign():
             if len(graph.id) < 3:
                 # i is the number of occurrences of the short graph id in the id_list dictionary
                 i = len( [x for x in id_list.values() if x.startswith(graph.id)] ) + 1
-                graph.abbrev = graph.id + "_" + str(i)
+                graph.abbrev = graph.id + str(i)
                 id_list[graph.id] = graph.abbrev
 
             else:
                 i = len( [x for x in id_list.values() if x.startswith(graph.id[0:2])] ) + 1
-                graph.abbrev = graph.id[0:2] + "_" + str(i)
+                graph.abbrev = graph.id[0:2] + str(i)
                 id_list[graph.id] = graph.abbrev
             self.graph_abbreviations[id_list[graph.id]] = graph.id
 
