@@ -103,7 +103,7 @@ class Multalign():
 
     def multalign( self ):
 
-        if len( self.graph_list ) <= 1: # getting trivial cases out of the way
+        if len( self.graph_list ) <= 1:
             try:
                 res = self.graph_list[0]
             except:
@@ -118,8 +118,14 @@ class Multalign():
             self.print_alignment( self.result )
 
             return
-        
+
         if self.method == "GREEDY":
+            for graph in self.graph_list:
+                print(graph.id)
+            print()
+            print(next(iter(self.graph_list[-1].nodes)))
+            print()
+            print()
             self.greedy()
 
         elif self.method == "PROGRESSIVE":
@@ -153,14 +159,10 @@ class Multalign():
                     maximum = len(max_alignment)
                     alig_one = g1
                     alig_two = g2
-                else:
-                    print(max_alignment)
 
             counter += 1
-        try:
-            self.graph_list.remove(alig_one)
-        except:
-            print(max_alignment)
+
+        self.graph_list.remove(alig_one)
         self.graph_list.remove(alig_two)
 
         self.remove_element( self.already_done, ( alig_one.id, alig_two.id) )
@@ -174,7 +176,7 @@ class Multalign():
         if Node("null", "") in alignment.nodes and self.algorithm == "VF2":
             raise Exception("VF2 could not produce a multiple alignment of all the given graphs. \n The classical VF2 algorithm can only process *graph-subgraph*-isomorphism. \n Please consider using subVF2 algorithm instead.")
 
-        self.greedy()
+        self.multalign()
 
     # ---- HELPER METHODS ------------------------------------------------------------------------------------
 
@@ -213,8 +215,6 @@ class Multalign():
                     max_res_neighbour_sum = neighbour_sum
             return max_res
 
-
-
         elif self.algorithm == "VF2":
             vf2 = VF2( graph1, graph2 )
             vf2.match()
@@ -235,19 +235,47 @@ class Multalign():
             graph.nodes_are_labelled = True
 
         if len(graph.nodes) > 1:
-            if not list(graph.edges)[0].label == "":
-                graph.edges_are_labelled = True
+            try:
+                if not list(graph.edges)[0].label == "":
+                    graph.edges_are_labelled = True
+            except: #graph has no edges
+                graph.nodes_are_labelled = False
 
         if edges_contain_doubles( graph.edges ):
             graph.is_directed = True
 
         return graph
 
+
     def remove_element( self, dictionary, key):
         """Returns a **shallow** copy of the dictionary without a key."""
         _dict = dictionary.copy()
         _dict.pop(key, None)
         return _dict
+
+
+    def make_mult_id( self, graph_list ):
+        id_list = {}
+
+        for graph in graph_list:
+            if len(graph.id) < 3:
+                # i is the number of occurrences of the short graph id in the id_list dictionary
+                i = len( [x for x in id_list.values() if x.startswith(graph.id)] ) + 1
+                graph.abbrev = graph.id + "_" + str(i)
+                id_list[graph.id] = graph.abbrev
+
+            else:
+                i = len( [x for x in id_list.values() if x.startswith(graph.id[0:2])] ) + 1
+                graph.abbrev = graph.id[0:2] + "_" + str(i)
+                id_list[graph.id] = graph.abbrev
+            self.graph_abbreviations[id_list[graph.id]] = graph.id
+
+        for graph in graph_list:
+            for node in graph.nodes:
+                node.mult_id = "{}:{}".format( graph.abbrev, node.id )
+
+        return graph_list
+
 
     def print_alignment( self, graph ):
         print("")
@@ -281,25 +309,3 @@ class Multalign():
         print("********************************************************************")
         print("")
 
-
-    def make_mult_id( self, graph_list ):
-        id_list = {}
-
-        for graph in graph_list:
-            if len(graph.id) < 3:
-                # i is the number of occurrences of the short graph id in the id_list dicitonary
-                i = len( [x for x in id_list.values() if x.startswith(graph.id)] ) + 1
-                graph.abbrev = graph.id + str(i)
-                id_list[graph.id] = graph.abbrev
-
-            else:
-                i = len( [x for x in id_list.values() if x.startswith(graph.id[0:2])] ) + 1
-                graph.abbrev = graph.id[0:2] + str(i)
-                id_list[graph.id] = graph.abbrev
-            self.graph_abbreviations[id_list[graph.id]] = graph.id
-
-        for graph in graph_list:
-            for node in graph.nodes:
-                node.mult_id = "{}:{}".format( graph.abbrev, node.id )
-
-        return graph_list

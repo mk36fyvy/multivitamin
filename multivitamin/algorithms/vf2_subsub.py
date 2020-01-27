@@ -54,14 +54,16 @@ class subVF2():
         self.results = []
 
         # The following attributes are used for subgraph-subgraph matching.
+        self.found_complete_matching = False # to turn off subsub search
         self.max_depth_matching = -1
-        self.biggest_match = self.core_s
+        self.biggest_matches = [] #saves all co-optimals
 
 
     def match( self, last_mapped=(Node("-1", ""), Node("-1", "")), depth=0 ):
 
         if self.s_in_small_g():
-            self.append_result_graph( self.core_s )
+            self.found_complete_matching = True
+            self.append_result_subgraph( self.core_s )
             self.restore_ds( last_mapped[0], last_mapped[1], depth )
             return
 
@@ -77,16 +79,22 @@ class subVF2():
 
                 self.match( tup, depth+1 )
 
-        if not found_pair and depth > self.max_depth_matching:
-            self.max_depth_matching = depth
-            self.biggest_match = self.core_s
+        # if the matching isn't continued and the current depth is higher than/
+        # equal to the max depth reached until now: save the subgraph
+        if not found_pair and not self.found_complete_matching:
+            if depth > self.max_depth_matching:
+                self.max_depth_matching = depth
+                self.biggest_matches = []
+                self.biggest_matches.append(self.core_s)
+            elif depth == self.max_depth_matching:
+                self.biggest_matches.append(self.core_s)
 
         self.restore_ds( last_mapped[0], last_mapped[1], depth )
 
-        if depth == 0:
-            self.append_result_graph( self.core_s )
-            return 
-        
+        if depth == 0 and not self.found_complete_matching: #if we returned to the start and no "complete" matching has been found
+            self.found_complete_matching = True
+            self.append_result_subgraph( self.biggest_matches[0] )
+            return
 
 
     def s_in_small_g(self):
@@ -116,8 +124,8 @@ class subVF2():
             m_s = {n for n in self.core_s if self.core_s[n] != self.null_n}
 
             # In diff_l are all nodes that are in the large graph, but not mapping
-            diff_l = self.large_g.nodes - m_l
-            diff_s = self.small_g.nodes - m_s  # see above
+            diff_l = set(self.large_g.nodes) - m_l
+            diff_s = set(self.small_g.nodes) - m_s  # see above
 
             return self.cart_p2(diff_l, max(diff_s))
         return set()
@@ -252,7 +260,12 @@ class subVF2():
     def zero_look_ahead( self, n, m, core ):
         '''every neighbour of n has to be mapped to a neighbour of m'''
         for n_ in n.neighbours:
-            m_ = core[n_] # Mapping of v
+            try:
+                m_ = core[n_] # Mapping of v
+            except:
+                print(self.core_s)
+                print("{} not found.".format(n_))
+                exit()
             if m_ == self.null_n : # If mapping doesn't exist, proceed
                 continue
 
@@ -291,7 +304,7 @@ class subVF2():
             set()
             )
         for key, value in result.items():
-            cur_node = Node( "{}.{}".format( key.id, value.id), "{}".format( key.label ) )
+            cur_node = Node( "{}.{}".format( key.id, value.id), "{}{}".format( key.label, value.label ) )
             cur_node.mult_id = "{}.{}".format( key.mult_id, value.mult_id)
 
             for node in result_graph.nodes: # f.ex. 1.2
@@ -307,7 +320,126 @@ class subVF2():
 
         self.result_graphs.append( result_graph )
         self.results.append( result_graph.nodes )
+        #print(result_graph.nodes.pop())
 
+    def append_result_subgraph( self, result ):
+        '''creates a graph which contains the concatenated mapped nodes from
+        subgraph. Then, it adds the neighbours to the new nodes following the
+        original neighbours.'''
+
+        node_set1 = set(self.core_s.keys()).copy()
+        node_set2 = set(self.core_l.keys()).copy()
+
+        compl_node_set = node_set1 | node_set2
+
+        result_graph = Graph("{}-{}#{}".format(
+                self.small_g.id,
+                self.large_g.id,
+                len(self.result_graphs)+1
+            ),
+            compl_node_set
+        )
+
+        node_dict = {}
+
+        for node in result_graph.nodes.copy():
+            
+            cur_node = Node( node.id, node.label )
+            cur_node.mult_id = node.mult_id
+            node_dict[node] = cur_node
+
+            if node in self.core_s.keys():
+                if self.core_s[cur_node] != self.null_n:
+                    cur_node.id = "{}.{}".format( cur_node.id, result[node].id)
+                    cur_node.label = "{}{}".format( cur_node.label, result[node].label)
+                    cur_node.mult_id = "{}.{}".format( cur_node.mult_id, result[node].mult_id)
+                else:
+                    cur_node.id = "{}.x".format( cur_node.id )
+                    cur_node.label = "{}-".format( cur_node.label )
+                    cur_node.mult_id = "{}.{}:x".format( cur_node.mult_id, self.large_g.abbrev )
+            else:
+                # if self.core_l[cur_node]!= self.null_n:
+                if node in result.values():
+                    result_graph.nodes.remove(node)
+                    continue
+                else:
+                    cur_node.id = "x.{}".format( cur_node.id )
+                    cur_node.label = "-{}".format( cur_node.label )
+                    cur_node.mult_id = "{}:x.{}".format( self.small_g.abbrev, cur_node.mult_id )
+            result_graph.nodes.remove(node)
+            result_graph.nodes.add(cur_node)
+
+        
+        i = 1
+        for node1 in list(node_dict.keys())[:-1]:
+            for node2 in list(node_dict.keys())[i:]:
+                if node2 in node1.neighbours:
+                    node_dict[node1].neighbours.add(node_dict[node2])
+
+            i += 1
+
+        
+        self.result_graphs.append( result_graph )
+        self.results.append( result_graph.nodes )
+
+        # pprint.pprint(result_graph)
+
+
+    # def append_result_subgraph( self, result ):
+    #         '''creates a graph which contains the concatenated mapped nodes from
+    #         subgraph. Then, it adds the neighbours to the new nodes following the
+    #         original neighbours.'''
+
+    #         # result_graph = Graph("({},{})#{}".format(
+    #         result_graph = Graph("{}-{}#{}".format(
+    #             self.small_g.id,
+    #             self.large_g.id,
+    #             len(self.result_graphs)+1
+    #             ),
+    #             set()
+    #             )
+
+    #         for key, value in result.items(): #processing core_s
+    #             if value == self.null_n:
+    #                 cur_node= Node("{}.x".format( key.id ), "{}-".format( key.label ))
+    #                 cur_node.mult_id = "{}.{}:x".format( key.mult_id, self.large_g.abbrev)
+    #             else:
+    #                 cur_node = Node( "{}.{}".format( key.id, value.id), "{}{}".format( key.label, value.label ) )
+    #                 cur_node.mult_id = "{}.{}".format( key.mult_id, value.mult_id)
+
+    #             for node in result_graph.nodes: # f.ex. 1.2
+    #                 orig_node = Node("")
+    #                 for n in result.keys(): # original nodes from small graph
+    #                     if set(n.mult_id.split(".")).issubset( set(node.mult_id.split(".")) ):
+    #                         orig_node = n
+    #                         break
+    #                 if key in orig_node.neighbours:
+    #                     node.add_neighbour( cur_node )
+    #                     cur_node.add_neighbour( node )
+    #             result_graph.nodes.add(cur_node)
+
+    #         for key in self.core_l.keys():
+    #             if self.core_l[key] == self.null_n:
+    #                 cur_node= Node("x.{}".format( key.id ), "-{}".format( key.label ))
+    #                 cur_node.mult_id = "{}:x.{}".format( self.small_g.abbrev, key.mult_id)
+                    
+    #                 for node in result_graph.nodes: # f.ex. 1.2
+    #                     orig_node = Node("")
+    #                     for n in self.core_l.keys(): # original nodes from small graph
+    #                         if set(n.mult_id.split(".")).issubset( set(node.mult_id.split(".")) ):
+    #                             orig_node = n
+    #                             break
+    #                     if key in orig_node.neighbours:
+    #                         node.add_neighbour( cur_node )
+    #                         cur_node.add_neighbour( node )
+                    
+    #                 result_graph.nodes.add(cur_node)
+
+
+
+    #         self.result_graphs.append( result_graph )
+    #         self.results.append( result_graph.nodes )
+    #         #print(result_graph.nodes.pop())
 
 
 
