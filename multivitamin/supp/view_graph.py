@@ -45,7 +45,8 @@ def create_graphs( graph_list):
 
         node_label_dict = {}
         for node in nodes:
-            node_label_dict[node] = "{} '{}'".format(node.id, node.label)
+            # node_label_dict[node] = "{} '{}'".format(node.id, node.label)
+            node_label_dict[node] = "{}".format(node.label)
 
         pos = nx.kamada_kawai_layout(G)
         plt.figure(i)

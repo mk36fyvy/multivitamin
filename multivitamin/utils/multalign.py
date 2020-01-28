@@ -5,6 +5,7 @@ from multivitamin.basic.node import Node
 from multivitamin.basic.graph import Graph
 from multivitamin.utils.parser import parse_graph, edges_contain_doubles
 from multivitamin.utils.modular_product_class import MP
+from multivitamin.utils.scoring import Scoring
 from multivitamin.algorithms.bk_pivot_class import BK
 from multivitamin.algorithms.vf2_beauty import VF2
 from multivitamin.algorithms.vf2_subsub import subVF2
@@ -134,7 +135,7 @@ class Multalign():
 
     def greedy( self ):
 
-        maximum = 0 # is used to save the maximum number of mapped nodes
+        maximum = 10000 # is used to save the maximum number of mapped nodes
         counter = 1 # makes sure that every graph couple is only processed once
 
         for g1 in self.graph_list[:-1]:
@@ -155,7 +156,7 @@ class Multalign():
                     max_alignment = self.apply_algorithm( g1, g2 )
                     self.already_done[( g1.id, g2.id )] = max_alignment
 
-                if len(max_alignment) > maximum:
+                if len(max_alignment) < maximum: #subVF2
 
                     alignment = Graph( "{}-{}".format( g1.abbrev, g2.abbrev ), max_alignment )
                     alignment.abbrev = alignment.id
@@ -174,6 +175,8 @@ class Multalign():
 
         alignment_graph = self.make_graph_real( alignment )
         alignment_graph = self.generate_graph_bools( alignment_graph )
+
+        pprint.pprint(alignment_graph.nodes)
 
         self.graph_list.append( alignment_graph )
         self.intermediates.append( alignment_graph )
@@ -230,8 +233,14 @@ class Multalign():
         elif self.algorithm == "SUBVF2":
             subvf2 = subVF2( graph1, graph2 )
             subvf2.match()
-            # best_result = scoring( results )
-            return max(subvf2.results) # best_result
+            scoring = Scoring( subvf2.results ) #TODO: scoring matrix
+            scoring.score()
+            best_result = max(scoring.res_scores.keys(), key=(lambda k: scoring.res_scores[k])) #returns key with highest value in dict
+            print()
+            print(scoring.res_scores[best_result])
+            pprint.pprint(best_result)
+            print()
+            return best_result
 
 
     def generate_graph_bools( self, graph ):
