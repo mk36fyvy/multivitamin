@@ -73,8 +73,9 @@ class subVF2():
         found_pair = False
         for tup in p:
             
-            # print(tup)
+            
             if self.is_feasible(tup[0], tup[1], depth, td):
+                # print(tup)
                 # print("feasible")
                 # print()
                 found_pair = True
@@ -82,8 +83,9 @@ class subVF2():
 
                 self.match( tup, depth+1 )
             # else:
-            #     print("not feasible")
-            #     print()
+                # print(tup)
+                # print("not feasible")
+                # print()
         # if the matching isn't continued and the current depth is higher than/
         # equal to the max depth reached until now: save the subgraph
         if not found_pair and not self.found_complete_matching:
@@ -219,29 +221,29 @@ class subVF2():
             if v in m.out_neighbours:
                 if self.out_s[v] == 0: self.out_s[v] = depth
 
-        for node, node_depth in self.in_s.items():
-            if not self.core_s[node] == self.null_n:
-                continue
-            if node_depth != 0:
-                td["in_s"] += 1
+        # for node, node_depth in self.in_s.items():
+        #     if not self.core_s[node] == self.null_n:
+        #         continue
+        #     if node_depth != 0:
+        #         td["in_s"] += 1
 
-        for node, node_depth in self.out_s.items():
-            if not self.core_s[node] == self.null_n:
-                continue
-            if node_depth != 0:
-                td["out_s"] += 1
+        # for node, node_depth in self.out_s.items():
+        #     if not self.core_s[node] == self.null_n:
+        #         continue
+        #     if node_depth != 0:
+        #         td["out_s"] += 1
 
-        for node, node_depth in self.in_l.items():
-            if not self.core_l[node] == self.null_n:
-                continue
-            if node_depth != 0:
-                td["in_l"] += 1
+        # for node, node_depth in self.in_l.items():
+        #     if not self.core_l[node] == self.null_n:
+        #         continue
+        #     if node_depth != 0:
+        #         td["in_l"] += 1
 
-        for node, node_depth in self.out_l.items():
-            if not self.core_l[node] == self.null_n:
-                continue
-            if node_depth != 0:
-                td["out_l"] += 1
+        # for node, node_depth in self.out_l.items():
+        #     if not self.core_l[node] == self.null_n:
+        #         continue
+        #     if node_depth != 0:
+        #         td["out_l"] += 1
 
 
         return td
@@ -379,7 +381,7 @@ class subVF2():
                 cur_node.mult_id = ".{}".format( node.mult_id )
                 node_dict[node] = cur_node
                 final_node_set.add(cur_node)
-        pprint.pprint(node_dict)
+        # pprint.pprint(node_dict)
         i = 1
         for node1 in list(node_dict.keys())[:-1]:
             for node2 in list(node_dict.keys())[i:]:

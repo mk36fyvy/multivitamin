@@ -31,7 +31,7 @@ class Scoring():
         '''provides a generic scoring_matrix defined for general multiple
         alignment with labels (same labels are rewarded, gaps are punished)'''
         gap_score = -1
-        match_score = 3
+        match_score = 4
         for nodes in self.results:
             
             graph_score = 0

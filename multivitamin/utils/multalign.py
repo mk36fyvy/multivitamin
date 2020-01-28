@@ -176,7 +176,7 @@ class Multalign():
         alignment_graph = self.make_graph_real( alignment )
         alignment_graph = self.generate_graph_bools( alignment_graph )
 
-        pprint.pprint(alignment_graph.nodes)
+        # pprint.pprint(alignment_graph.nodes)
 
         self.graph_list.append( alignment_graph )
         self.intermediates.append( alignment_graph )
@@ -236,10 +236,10 @@ class Multalign():
             scoring = Scoring( subvf2.results ) #TODO: scoring matrix
             scoring.score()
             best_result = max(scoring.res_scores.keys(), key=(lambda k: scoring.res_scores[k])) #returns key with highest value in dict
-            print()
-            print(scoring.res_scores[best_result])
-            pprint.pprint(best_result)
-            print()
+            # print()
+            # print(scoring.res_scores[best_result])
+            # pprint.pprint(best_result)
+            # print()
             return best_result
 
 
