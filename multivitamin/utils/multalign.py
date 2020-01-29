@@ -19,6 +19,7 @@ class Multalign():
         algorithm,
         method,
         save_all,
+        scoring_matrix=None
     ):
 
         self.algorithm = algorithm
@@ -32,6 +33,8 @@ class Multalign():
         self.newick = ""
 
         self.already_done = {}
+
+        self.scoring_matrix = scoring_matrix # if this causes trouble, change scoring and this to scoring_matrix if scoring_matrix else "-1"
 
 
     # def multalign( self ):
@@ -233,7 +236,7 @@ class Multalign():
         elif self.algorithm == "SUBVF2":
             subvf2 = subVF2( graph1, graph2 )
             subvf2.match()
-            scoring = Scoring( subvf2.results ) #TODO: scoring matrix
+            scoring = Scoring( subvf2.results, self.scoring_matrix ) #TODO: scoring matrix
             scoring.score()
             best_result = max(scoring.res_scores.keys(), key=(lambda k: scoring.res_scores[k])) #returns key with highest value in dict
             # print()

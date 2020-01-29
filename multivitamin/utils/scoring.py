@@ -67,4 +67,10 @@ class Scoring():
 
 
     def parse_scoring_matrix( self, matrix ):
-        pass
+        file = self.scoring_matrix
+        while open(file) as f:
+            for line in f:
+                args = line.split(" ")
+                if args[2].isinstance("int"):
+                    self.scoring_matrix[(args[0],args[1]] = args[2])
+                #define gap scores here? maybe special line?
