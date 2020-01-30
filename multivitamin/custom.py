@@ -13,12 +13,17 @@ def check_semantics( n, m ):
 
     Insert your scoring logic below:'''
 
-   #  if set(n.label).issubset( set(m.label)) or set(m.label).issubset( set(n.label)):
-   #     return True
-   #  else:
-   #     return False
-
+    #example for forbidding a pair:
+    forbid( ("C", "H"), n, m)
+    
     return True
+
+def forbid( pair, n, m ):
+    if pair[0] in n.label and pair[1] in m.label:
+        return False
+    elif pair[1] in n.label and pair[0] in m.label:
+        return False
+
 
 def get_results_dir():
     '''define, where the result files will be saved.

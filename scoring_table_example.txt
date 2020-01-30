@@ -1,0 +1,37 @@
+-   -   -2
+C   C   3
+c   c   3
+O   O   3
+N   N   3
+S   S   3
+P   P   3
+Cl  Cl  3
+Br  Br  3
+C   c   1
+O   S   1
+N   P   1
+Cl  Br  1
+# rest is 0? Give warning? 
+# !Warning!: the following pairs have not been assigned in the scoring table. Assuming 0: 
+# C   Cl    0
+# etc.
+# If you want to forbid the mapping of a specific pair, change the check_semantics() function in custom.py accordingly. 
+# that way, users can run the program once and get all the pairs, so they can copy them
+
+Maybe:
+-   -2
+C   3
+c   3
+O   3
+N   3
+S   3
+P   3
+Cl  3
+Br  3
+C   c   1
+O   S   1
+N   P   1
+Cl  Br  1
+
+C   c   O   N   S   P   Cl  Br  
+3   
