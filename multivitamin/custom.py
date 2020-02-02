@@ -8,6 +8,12 @@
 # in your graph input file
 labelsep = " "
 
+# This variable is used as 'dummy label' for nodes without label. It makes
+# multiple alignment between graphs with and without labels more well-aranged. 
+# If you do not wish to use a dummy label, assign an empty str ""
+no_label_dummy = "#"
+
+
 def check_semantics( n, m ):
     '''This function is used in VF2 algorithm to decide,
     whether aligning two nodes is allowed from the

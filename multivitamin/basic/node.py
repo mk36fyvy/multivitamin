@@ -36,27 +36,7 @@ class Node():
 
     def get_mult_id( self ):
         mult_id_copy = copy.deepcopy( self.mult_id )
-        print(type(mult_id_copy))
         return mult_id_copy
-
-
-    def insert_fillers_to_label( self, mapping_label_len, filler, i ):
-        '''add fillers (gaps) to label or mult_id during mutliple alignment'''
-        if i == 0:
-            for n in range(mapping_label_len):
-                self.label.insert(0, filler)
-        elif i == -1:
-            for n in range(mapping_label_len):
-                self.label.append(filler)
-    
-    def insert_fillers_to_multid( self, mapping_label_len, filler, i ):
-        '''add fillers (gaps) to label or mult_id during mutliple alignment'''
-        if i == 0:
-            for n in range(mapping_label_len):
-                self.mult_id.insert(0, filler)
-        elif i == -1:
-            for n in range(mapping_label_len):
-                self.mult_id.append(filler)
 
 
     '''allow comparing nodes to each other ( all operations )'''
@@ -131,8 +111,8 @@ class Node():
         string = "["
         for el in self.label:
             string += el
-            string += "."
-            print(el)
+            string += " "
+        string = string[:-1]
         string += "]"
         return string
 

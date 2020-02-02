@@ -3,6 +3,7 @@ import os
 import getpass #to get username for AUTHOR line
 
 from multivitamin.utils.parser import parse_graph
+from multivitamin.custom import labelsep
 
 
 def write_graph(graph, path):
@@ -18,10 +19,15 @@ def write_graph(graph, path):
     f.write("\n")
 
     for node in (graph.nodes):
-        if node.label == "":
+        if node.label == []:
             f.write("{}\n".format( node.mult_id ))
         else:
-            f.write("{};{}\n".format( node.mult_id, node.label ))
+            label_string = ""
+            for el in node.label:
+                label_string += el
+                label_string += labelsep
+            label_string = label_string[:-1]
+            f.write("{};{}\n".format( node.mult_id, label_string ))
 
     f.write("\n")
 

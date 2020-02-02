@@ -2,12 +2,12 @@ import argparse, os
 from argparse import RawTextHelpFormatter
 
 from multivitamin.utils.parser import parse_graph
-from multivitamin.utils.get_input import process_file
+from multivitamin.utils.get_input import process_file, parse_scoring_matrix
 
 
 parser = argparse.ArgumentParser(
     description='multiVitamin - A multiple alignment tool for graphs',
-    usage='%(prog)s [ -h | -i | -c | -v | -d ] [-a] [-s] [-t] [-g] [-m]\nfor example: multiVitamin -ga VF2 -i g1.graph g2.graph g3.graph',
+    usage='%(prog)s [ -h | -i | -c | -v | -d ] [-a] [-m] [-t] [-l] [-s] [-g]\nfor example: multiVitamin -ga subVF2 -i g1.graph g2.graph g3.graph',
     add_help=False,
     formatter_class=argparse.RawDescriptionHelpFormatter
 )
@@ -17,7 +17,7 @@ group = parser.add_argument_group(
     title='Required arguments (These arguments are mutually exclusive)',
     description='''
 -h, --help                          show this help message and exit
--i, --input <files...>              provide .graph files for multiple alignment. 
+-i, --input <files...>              provide .graph files for multiple alignment.
                                       \'.\' takes all .graph files in the directory as
                                       arguments
 -c, --coopt <files...>              provide 2 graphs which will be aligned. Co-optimals
@@ -90,11 +90,14 @@ group2 = parser.add_argument_group(
                                       graph-subgraph isomorphism!
 -m, --mult <greedy>                 indicate the multiple alignment method. "greedy"
                                       is the default and only one available as of now.
--s, --save-all                      save all the graphs produced during the alignment.
+-t, --table <table>                 use a custom label scoring table. For more
+                                      information, check the README.
+-l, --save-all                      save all the graphs produced during the alignment.
                                       The graphs are saved as "[newick].graph"
--t, --save-shorter                  save an additional version of the alignment graph
+-s, --save-shorter                  save an additional version of the alignment graph
                                       with much shorter node ids
--g, --save-guide                    save the guide tree in Newick-format as "newick.txt"
+-g, --save-guide                    save the alignment tree in Newick-format as
+                                      "newick.txt"
 '''
 )
 opt = group2.add_argument_group()
@@ -120,7 +123,17 @@ opt.add_argument(
 )
 
 opt.add_argument(
-    '-s',
+    '-t',
+    '--table',
+    dest='table',
+    type=parse_scoring_matrix,
+    default='-1',
+    # help='choose a custom scoring matrix'
+    help=argparse.SUPPRESS
+)
+
+opt.add_argument(
+    '-l',
     '--save-all',
     dest='save_all',
     action='store_true',
@@ -129,7 +142,7 @@ opt.add_argument(
 )
 
 opt.add_argument(
-    '-t',
+    '-s',
     '--save-shorter',
     dest='save_shorter',
     action='store_true',

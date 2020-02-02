@@ -5,16 +5,18 @@ from multivitamin.custom import check_semantics
 from multivitamin.basic.node import Node
 from multivitamin.basic.graph import Graph
 from multivitamin.utils.parser import parse_graph
+from multivitamin.utils.scoring import Scoring
 
 
 class subVF2():
 
-    def __init__(self, g, h):
+    def __init__(self, g, h, scoring_matrix=None):
 
         self.null_n = Node("-1", [])
 
         self.g = g
         self.h = h
+        self.scoring_matrix = scoring_matrix if scoring_matrix else '-1'
 
         '''makes sure, that small_g is the smaller graph'''
         self.type = 'subgraph'
@@ -63,7 +65,10 @@ class subVF2():
 
         if self.s_in_small_g():
             self.found_complete_matching = True
-            self.append_result_subgraph( self.core_s )
+            scoring = Scoring( len(self.g.nodes), len(self.h.nodes), [self.core_s], self.scoring_matrix )
+            scoring.score()
+            # print(scoring.get_best_result())
+            self.append_result_subgraph( scoring.get_best_result() )
             self.restore_ds( last_mapped[0], last_mapped[1], depth )
             return
 
@@ -72,8 +77,7 @@ class subVF2():
 
         found_pair = False
         for tup in p:
-            
-            
+
             if self.is_feasible(tup[0], tup[1], depth, td):
                 # print(tup)
                 # print("feasible")
@@ -86,6 +90,7 @@ class subVF2():
                 # print(tup)
                 # print("not feasible")
                 # print()
+
         # if the matching isn't continued and the current depth is higher than/
         # equal to the max depth reached until now: save the subgraph
         if not found_pair and not self.found_complete_matching:
@@ -105,11 +110,14 @@ class subVF2():
         #     pprint.pprint(self.h.nodes)
         #     raise(Exception("null_n in core_l"))
 
-        if depth == 0 and not self.found_complete_matching: #if we returned to the start and no "complete" matching has been found
+        #if we returned to the start and no "complete" matching has been found
+        if depth == 0 and not self.found_complete_matching:
             self.found_complete_matching = True
-            # pprint.pprint(self.biggest_matches)
-            for res in self.biggest_matches:
-                self.append_result_subgraph( res )
+
+            scoring = Scoring( len(self.g.nodes), len(self.h.nodes),self.biggest_matches, self.scoring_matrix )
+            scoring.score()
+            print(scoring.get_best_result())
+            self.append_result_subgraph( scoring.get_best_result() )
             return
 
 
@@ -318,10 +326,15 @@ class subVF2():
         final_node_set = set()
         in_l_and_mapped = set()
 
-        node_label_len = len(next(iter(self.core_s)).label) # label length of nodes from smaller graph
-        mapping_label_len = len(next(iter(self.core_l)).label) # label length of nodes from larger graph
+        node_label_len = len(next(iter(self.core_s)).mult_id) # label length of nodes from smaller graph
+        mapping_label_len = len(next(iter(self.core_l)).mult_id) # label length of nodes from larger graph
 
-        for node, mapping in result.items():
+        # res_dict = dict(result)
+        # for pair in result:
+        #     print(pair[1])
+        #     res_dict[pair[0]] = pair[1]
+
+        for node, mapping in result[0].items():
 
             if mapping != self.null_n:
                 cur_node = Node(
@@ -355,7 +368,6 @@ class subVF2():
                                 node.get_label()
                             )
                 for i in range(node_label_len):
-                    print(cur_node.label)
                     cur_node.label.insert( 0, "-" )
 
                 cur_node.mult_id = node.get_mult_id() #copy?
@@ -384,6 +396,84 @@ class subVF2():
 
         self.result_graphs.append( result_graph )
         self.results.append( result_graph.nodes )
+
+
+# def append_result_subgraph( self, result ):
+#         '''creates a graph which contains the concatenated mapped nodes from
+#         subgraph. Then, it adds the neighbours to the new nodes following the
+#         original neighbours.'''
+
+#         # pprint.pprint(result)
+
+#         node_dict={} #used to reconstruct the neighbours
+#         final_node_set = set()
+#         in_l_and_mapped = set()
+
+#         node_label_len = len(next(iter(self.core_s)).mult_id) # label length of nodes from smaller graph
+#         mapping_label_len = len(next(iter(self.core_l)).mult_id) # label length of nodes from larger graph
+
+#         for node, mapping in result.items():
+
+#             if mapping != self.null_n:
+#                 cur_node = Node(
+#                                 "{}.{}".format(node.id, mapping.id), #id
+#                                 node.label + mapping.label, #label
+#                             )
+#                 cur_node.mult_id = node.mult_id + mapping.mult_id
+#                 in_l_and_mapped.add(mapping)
+#                 node_dict[mapping] = cur_node
+#                 node_dict[node] = cur_node
+#             else:
+#                 new_label = node.get_label()
+#                 for i in range(mapping_label_len):
+#                     new_label.append("-")
+#                 cur_node = Node(
+#                                 "{}.".format( node.id ),
+#                                 new_label
+#                             )
+#                 cur_node.mult_id = node.get_mult_id()
+#                 for i in range(mapping_label_len):
+#                     cur_node.mult_id.append("_____")
+
+#                 node_dict[node] = cur_node
+
+#             final_node_set.add(cur_node)
+
+#         for node, mapping in self.core_l.items():
+#             if node not in in_l_and_mapped:
+#                 cur_node = Node(
+#                                 ".{}".format( node.id ),
+#                                 node.get_label()
+#                             )
+#                 for i in range(node_label_len):
+#                     cur_node.label.insert( 0, "-" )
+
+#                 cur_node.mult_id = node.get_mult_id() #copy?
+#                 for i in range( node_label_len ):
+#                     cur_node.mult_id.insert( 0, "_____" )
+
+#                 node_dict[node] = cur_node
+#                 final_node_set.add(cur_node)
+
+#         i = 1
+#         for node1 in list(node_dict.keys())[:-1]:
+#             for node2 in list(node_dict.keys())[i:]:
+#                 if node2 in node1.neighbours:
+#                     node_dict[node1].neighbours.add(node_dict[node2])
+#                     node_dict[node2].neighbours.add(node_dict[node1])
+
+#             i += 1
+
+#         result_graph = Graph("{}-{}#{}".format(
+#                     self.small_g.id,
+#                     self.large_g.id,
+#                     len(self.result_graphs)+1
+#                 ),
+#                 final_node_set
+#             )
+
+#         self.result_graphs.append( result_graph )
+#         self.results.append( result_graph.nodes )
 
 
 if __name__ == "__main__":

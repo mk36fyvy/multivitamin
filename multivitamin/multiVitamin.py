@@ -53,8 +53,7 @@ def main():
             graphs = args.files[0]
         else:
             graphs = args.files
-
-        multalign = Multalign( graphs, args.algorithm, args.mult, args.save_all )
+        multalign = Multalign( graphs, args.algorithm, args.mult, args.save_all, args.table )
         print("Calculating multiple alignment with {} algorithm...".format( args.algorithm ))
         multalign.multalign()
         save_results( multalign )

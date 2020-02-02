@@ -34,8 +34,7 @@ class Multalign():
 
         self.already_done = {}
 
-        self.scoring_matrix = scoring_matrix # if this causes trouble, change scoring and this to scoring_matrix if scoring_matrix else "-1"
-
+        self.scoring_matrix = scoring_matrix if scoring_matrix else "-1"
 
     
     def multalign( self ):
@@ -167,16 +166,16 @@ class Multalign():
             return max(vf2.results)
 
         elif self.algorithm == "SUBVF2":
-            subvf2 = subVF2( graph1, graph2 )
+            subvf2 = subVF2( graph1, graph2, self.scoring_matrix )
             subvf2.match()
-            scoring = Scoring( subvf2.results, self.scoring_matrix ) #TODO: scoring matrix
-            scoring.score()
-            best_result = max(scoring.res_scores.keys(), key=(lambda k: scoring.res_scores[k])) #returns key with highest value in dict
+            # scoring = Scoring( subvf2.results, self.scoring_matrix ) #TODO: scoring matrix
+            # scoring.score()
+            # best_result = max(scoring.res_scores.keys(), key=(lambda k: scoring.res_scores[k])) #returns key with highest value in dict
             # print()
             # print(scoring.res_scores[best_result])
             # pprint.pprint(best_result)
             # print()
-            return best_result
+            return subvf2.results[0]
 
 
     def generate_graph_bools( self, graph ):
@@ -221,8 +220,8 @@ class Multalign():
 
         for graph in graph_list:
             for node in graph.nodes:
-                print(type(node.mult_id))
-                print(node.mult_id)
+                # print(type(node.mult_id))
+                # print(node.mult_id)
                 node.mult_id.append("{}:{}".format( graph.abbrev, node.id ))
 
         return graph_list
@@ -245,7 +244,9 @@ class Multalign():
         print("---ALIGNMENT------------------------")
         print("")
         print("*NODES (ID, LABEL, NEIGHBOURS)")
-        for node in graph.nodes:
+        node_list = list(graph.nodes)
+        node_list.sort( key= lambda x: x.label, reverse=True )
+        for node in node_list:
             print("  {}".format(node))
         print("")
         print("*EDGES (ID, LABEL)")
