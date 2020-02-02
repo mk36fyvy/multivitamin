@@ -3,6 +3,11 @@
 # from multivitamin.basic.edge import Edge
 # from multivitamin.basic.graph import Graph
 
+
+# This variable is used to define the separator between node's label elements
+# in your graph input file
+labelsep = " "
+
 def check_semantics( n, m ):
     '''This function is used in VF2 algorithm to decide,
     whether aligning two nodes is allowed from the

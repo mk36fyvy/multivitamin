@@ -4,6 +4,7 @@ import pprint
 from multivitamin.basic.node import Node
 from multivitamin.basic.edge import Edge
 from multivitamin.basic.graph import Graph
+from multivitamin.custom import labelsep
 
 
 def parse_graph( doc ):
@@ -58,6 +59,9 @@ def parse_graph( doc ):
             elif indicator == 1:
 
                 cur_node = Node( *split_list )
+                if cur_node.label:
+                    cur_node.label = cur_node.label.split(labelsep)
+
                 nodes.add( cur_node )
 
             #building labeled and/or directed edges
@@ -94,7 +98,7 @@ def parse_graph( doc ):
 
     if not check_list[2]:
         for node in nodes:
-            if node.label != "":
+            if node.label != []:
                 issues += "One or more nodes are labelled. If this is intended, please indicate this at the beginning of the graph file \n"
                 break
 

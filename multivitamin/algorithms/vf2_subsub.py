@@ -11,7 +11,7 @@ class subVF2():
 
     def __init__(self, g, h):
 
-        self.null_n = Node("-1", "")
+        self.null_n = Node("-1", [])
 
         self.g = g
         self.h = h
@@ -59,7 +59,7 @@ class subVF2():
         self.biggest_matches = [] #saves all co-optimals
 
 
-    def match( self, last_mapped=(Node("-1", ""), Node("-1", "")), depth=0 ):
+    def match( self, last_mapped=(Node("-1", []), Node("-1", [])), depth=0 ):
 
         if self.s_in_small_g():
             self.found_complete_matching = True
@@ -307,37 +307,6 @@ class subVF2():
 
 # RESULT PROCESSING -----------------------------------------------------------
 
-    # def append_result_graph( self, result ):
-    #     '''creates a graph which contains the concatenated mapped nodes.
-    #     Then, it adds the neighbours to the new nodes following the
-    #     original neighbours.'''
-
-    #     # result_graph = Graph("({},{})#{}".format(
-    #     result_graph = Graph("{}-{}#{}".format(
-    #         self.small_g.id,
-    #         self.large_g.id,
-    #         len(self.result_graphs)+1
-    #         ),
-    #         set()
-    #         )
-    #     for key, value in result.items():
-    #         cur_node = Node( "{}.{}".format( key.id, value.id), "{} {}".format( key.label, value.label ) )
-    #         cur_node.mult_id = "{}.{}".format( key.mult_id, value.mult_id)
-
-    #         for node in result_graph.nodes: # f.ex. 1.2
-    #             orig_node = Node("")
-    #             for n in result.keys(): # original nodes from small graph
-    #                 if set(n.mult_id.split(".")).issubset( set(node.mult_id.split(".")) ):
-    #                     orig_node = n
-    #                     break
-    #             if key in orig_node.neighbours:
-    #                 node.add_neighbour( cur_node )
-    #                 cur_node.add_neighbour( node )
-    #         result_graph.nodes.add(cur_node)
-
-    #     self.result_graphs.append( result_graph )
-    #     self.results.append( result_graph.nodes )
-
     def append_result_subgraph( self, result ):
         '''creates a graph which contains the concatenated mapped nodes from
         subgraph. Then, it adds the neighbours to the new nodes following the
@@ -349,24 +318,31 @@ class subVF2():
         final_node_set = set()
         in_l_and_mapped = set()
 
+        node_label_len = len(next(iter(self.core_s)).label) # label length of nodes from smaller graph
+        mapping_label_len = len(next(iter(self.core_l)).label) # label length of nodes from larger graph
+
         for node, mapping in result.items():
+
             if mapping != self.null_n:
-                # print(node)
-                # print(mapping)
                 cur_node = Node(
                                 "{}.{}".format(node.id, mapping.id), #id
-                                "{} {}".format( node.label, mapping.label), #label
+                                node.label + mapping.label, #label
                             )
-                cur_node.mult_id = "{}.{}".format( node.mult_id, mapping.mult_id)
+                cur_node.mult_id = node.mult_id + mapping.mult_id
                 in_l_and_mapped.add(mapping)
                 node_dict[mapping] = cur_node
                 node_dict[node] = cur_node
             else:
+                new_label = node.get_label()
+                for i in range(mapping_label_len):
+                    new_label.append("-")
                 cur_node = Node(
                                 "{}.".format( node.id ),
-                                "{} -".format( node.label )
+                                new_label
                             )
-                cur_node.mult_id = "{}.".format( node.mult_id )
+                cur_node.mult_id = node.get_mult_id()
+                for i in range(mapping_label_len):
+                    cur_node.mult_id.append("_____")
 
                 node_dict[node] = cur_node
 
@@ -376,12 +352,19 @@ class subVF2():
             if node not in in_l_and_mapped:
                 cur_node = Node(
                                 ".{}".format( node.id ),
-                                "- {}".format( node.label )
+                                node.get_label()
                             )
-                cur_node.mult_id = ".{}".format( node.mult_id )
+                for i in range(node_label_len):
+                    print(cur_node.label)
+                    cur_node.label.insert( 0, "-" )
+
+                cur_node.mult_id = node.get_mult_id() #copy?
+                for i in range( node_label_len ):
+                    cur_node.mult_id.insert( 0, "_____" )
+
                 node_dict[node] = cur_node
                 final_node_set.add(cur_node)
-        # pprint.pprint(node_dict)
+
         i = 1
         for node1 in list(node_dict.keys())[:-1]:
             for node2 in list(node_dict.keys())[i:]:
@@ -401,9 +384,6 @@ class subVF2():
 
         self.result_graphs.append( result_graph )
         self.results.append( result_graph.nodes )
-
-
-
 
 
 if __name__ == "__main__":

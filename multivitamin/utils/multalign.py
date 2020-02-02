@@ -37,74 +37,7 @@ class Multalign():
         self.scoring_matrix = scoring_matrix # if this causes trouble, change scoring and this to scoring_matrix if scoring_matrix else "-1"
 
 
-    # def multalign( self ):
-    #     if len( self.graph_list ) <= 1:
-    #         try:
-    #             res = self.graph_list[0]
-    #         except:
-    #             return
-
-    #         res.edges = set()
-    #         res.create_undirected_edges()
-
-    #         self.result = res
-
-    #         self.newick = self.graph_list[0].newick
-    #         self.print_alignment( self.result )
-
-    #         return
-
-    #     maximum = 0 # is used to save the maximum number of mapped nodes
-    #     counter = 1 # makes sure that every graph couple is only processed once
-
-    #     for g1 in self.graph_list[:-1]:
-
-    #         for g2 in self.graph_list[counter:]:
-
-    #             if g1.id == g2.id:
-    #                 continue
-
-    #             if ( g1.id, g2.id ) in self.already_done.keys():
-    #                 max_alignment = self.already_done[( g1.id, g2.id )]
-    #             else:
-    #                 max_alignment = self.apply_algorithm( g1, g2 )
-    #                 self.already_done[( g1.id, g2.id )] = max_alignment
-    #                 # print(self.already_done)
-
-    #             if len(max_alignment) >  maximum:
-
-    #                 alignment = Graph( "{}-{}".format( g1.abbrev, g2.abbrev ), max_alignment )
-    #                 alignment.abbrev = alignment.id
-    #                 alignment.newick = "({},{})".format( g1.newick, g2.newick)
-
-    #                 maximum = len(max_alignment)
-    #                 alig_one = g1
-    #                 alig_two = g2
-
-    #         counter += 1
-
-
-
-    #     self.graph_list.remove(alig_one)
-    #     self.graph_list.remove(alig_two)
-    #     self.remove_element( self.already_done, ( alig_one.id, alig_two.id) )
-
-    #     alignment_graph = self.make_graph_real( alignment )
-    #     alignment_graph = self.generate_graph_bools( alignment_graph )
-
-    #     self.graph_list.append( alignment_graph )
-    #     self.intermediates.append( alignment_graph )
-
-    #     if Node("null", "") in alignment.nodes and not self.save_all:
-    #         raise Exception("VF2 could not produce a multiple alignment of all the given graphs. \n The classical VF2 algorithm can only process *graph-subgraph*-isomorphism. \n Please consider using BK algorithm or -s to save all intermediate graphs until the error occurrs.")
-    #     elif Node("null", "") in alignment.nodes and self.save_all:
-    #         print("Multiple alignment was not successful. VF2 could not align the graphs {} and {} properly. \n Maybe BK is more appropriate for this alignment.".format(alig_one.id, alig_two.id))
-    #         print("Removing last graph. Continuing alignment...")
-    #         self.graph_list.remove(alignment_graph)
-    #         self.intermediates.remove( alignment_graph )
-
-    #     self.multalign()
-
+    
     def multalign( self ):
 
         if len( self.graph_list ) <= 1:
@@ -184,7 +117,7 @@ class Multalign():
         self.graph_list.append( alignment_graph )
         self.intermediates.append( alignment_graph )
 
-        if Node("null", "") in alignment.nodes and self.algorithm == "VF2":
+        if Node("null", []) in alignment.nodes and self.algorithm == "VF2":
             raise Exception("VF2 could not produce a multiple alignment of all the given graphs. \n The classical VF2 algorithm can only process *graph-subgraph*-isomorphism. \n Please consider using subVF2 algorithm instead.")
 
         self.multalign()
@@ -288,7 +221,9 @@ class Multalign():
 
         for graph in graph_list:
             for node in graph.nodes:
-                node.mult_id = "{}:{}".format( graph.abbrev, node.id )
+                print(type(node.mult_id))
+                print(node.mult_id)
+                node.mult_id.append("{}:{}".format( graph.abbrev, node.id ))
 
         return graph_list
 

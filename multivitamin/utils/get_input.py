@@ -13,6 +13,7 @@ def process_file( filename ):
         return parse_graph( filename ) # this is what is done to the parsed command-line arguments (graphs)
 
 
+
 def process_directory( directory_name ):
     graphs = []
     for filename in os.listdir(directory_name)[:]:

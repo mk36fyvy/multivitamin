@@ -27,7 +27,7 @@ class BK:
     def find_max_pivot( self, p, x ):
         p_union_x = p + list(x)
         helper = 0
-        piv = Node('-1', '')
+        piv = Node('-1', [])
 
         for v in p_union_x:
             cur_len_intersection = len([n for n in v.neighbours if n in p_union_x])

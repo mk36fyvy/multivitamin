@@ -44,14 +44,10 @@ class Edge():
 
     '''define the way an edge is printed'''
     def __str__( self ):
-        if self.node1.mult_id == "":
-            node1_id = self.node1.id
-        else:
-            node1_id = self.node1.mult_id
-        if self.node2.mult_id == "":
-            node2_id = self.node2.id
-        else:
-            node2_id = self.node2.mult_id
+
+        node1_id = self.node1.get_node_id_string()
+        node2_id = self.node2.get_node_id_string()
+
         return " ( {},   {} )   '{}'".format( node1_id, node2_id, self.label )
 
 

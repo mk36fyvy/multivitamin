@@ -34,26 +34,26 @@ class Scoring():
         self.gap_score = -1
         match_score = 4
         for nodes in self.results:
-            
+
             graph_score = 0
 
             for node in nodes:
-                label_list = node.label.split(" ")
+                label_list = node.get_label()
                 node_score = 0
                 gap_amount = 0
-                
+
                 for char in label_list:
                     if char == "-":
                         gap_amount +=1
                         label_list.remove(char)
-                node_score += ((len(label_list)+gap_amount-1)*gap_amount*gap_score) #the pairs that would have "-" are simulated here to save time
-                
+                node_score += ((len(label_list)+gap_amount-1)*gap_amount*self.gap_score) #the pairs that would have "-" are simulated here to save time
+
                 i = 1
                 for char1 in label_list[:-1]:
                     for char2 in label_list[i:]:
                         if char1 == char2:
                             node_score += match_score
-                
+
                 graph_score += node_score
                 i+=1
 
