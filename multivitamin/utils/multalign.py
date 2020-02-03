@@ -71,7 +71,7 @@ class Multalign():
 
     def greedy( self ):
 
-        maximum_score = 0 # is used to save the maximum number of mapped nodes
+        maximum_score = -10000 # is used to save the maximum number of mapped nodes
         counter = 1 # makes sure that every graph couple is only processed once
 
         for g1 in self.graph_list[:-1]:
