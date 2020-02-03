@@ -19,7 +19,7 @@ git clone https://github.com/mk36fyvy/multivitamin.git
 ```
 Navigate to the directory containing the setup.py file
 ```
-cd [yourDir]/multivitamin/multivitamin
+cd multivitamin/
 ```
 and type
 ```
@@ -34,11 +34,11 @@ multiVitamin -h
 
 #### Basics
 
-You can get an overview of the basic functionalities by typing
+You can get an overview of the basic flags and functionalities by typing
 ```
 multiVitamin -h
 ```
-A run example would look like the following
+A basic run example looks like the following
 ```
 multiVitamin -a subVF2 -i graph1.graph graph2.graph graph3.graph
 ```
@@ -52,7 +52,9 @@ Examples on what our custom graph file format looks like can be found in [graph_
 
 #### Custom scoring
 
-With the flag `-t` you can specify a scoring table with custom sum-of-pair scores. A table example can be found [here](scoring_table_example.txt).
+Pairwise alignments are scored in a very generic and basic way by default: exact matches are rewarded, gaps are punished, both with fixed values (4 and -1 respectively, editable [here](multivitamin/utils/scoring.py) in `score_without_matrix()`). 
+
+With the flag `-t` you can provide a scoring table with custom sum-of-pair scores. A table example can be found [here](scoring_table_example.txt).
 
 If you do not want to type all the pairings of the labels yourself, just specify all single labels like so
 ```
@@ -60,15 +62,21 @@ If you do not want to type all the pairings of the labels yourself, just specify
  C\t2
  N\t2
 ```
-This specifies the exact match score (the gap symbol `-` has to be indicated in the first line, if you want a different gap score than -1). If you run the program with this minimal scoring table, you will get a warning with all the missing pairs written out. Like that, you can simply copy and paste those into your scoring table file, change the scores and rerun the program.
+where `\t` indicates a `tab` spacing. 
 
-## Notes for practical course
+This specifies the exact match score, i.e for instance `match(C,C)` (the gap symbol `-` has to be indicated in the first line, if you want a different gap score than -1. Simply omit it, if this is not the case.). 
+
+If you run the program with this minimal scoring table, you will get a warning with all the missing pairs written out. Like that, you can simply copy and paste those of interest into your scoring table file, change the scores and rerun the program.
+
+You can also forbid the alignment of nodes with specific labels. Check [`custom.py`](multivitamin/custom.py) for this. 
+
+## Comments for practical course
 
 Please note
-- Due to time reasons, many useful features are not indicated/explained in the [multivitaminReadme.pdf](multivitaminReadme.pdf), if you experience any trouble with the program, feel free to ask. I will try, to add the missing information to the Readme as soon as possible.
+- Due to time reasons, many useful features are not indicated/explained in the [multivitaminReadme.pdf](multivitaminReadme.pdf), if you experience any trouble with the program, feel free to ask. I will try and add the missing information to the Readme as soon as possible.
 - The `subVF2` algorithm is the only one suitable for multiple alignment. You do not need to specify it as it is also the default algorithm.
 - The greedy multiple alignment algorithm is the only one available at the moment due to its acceptable running time. If you experience otherwise, please tell me and I will implement a progressive version.
-- There are many useful features in the [`custom.py`](custom.py) script explained inside.
+- There are many useful features in the [`custom.py`](multivitamin/custom.py) script explained inside.
 - Many changes had to be done last minute, unfortunately. So you could quite likely experience some bugs here and there. Please let me know, if anything appears odd to you. Many excuses in advance!
 
 ## Further reading
