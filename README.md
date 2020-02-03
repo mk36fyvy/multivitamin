@@ -52,7 +52,7 @@ Examples on what our custom graph file format looks like can be found in [graph_
 
 #### Custom scoring
 
-Pairwise alignments are scored in a very generic and basic way by default: exact matches are rewarded, gaps are punished, both with fixed values (4 and -1 respectively, editable [here](multivitamin/utils/scoring.py) in `scoring_without_matrix()`). 
+Pairwise alignments are scored in a very generic and basic way by default: exact matches are rewarded, gaps are punished, both with fixed values (4 and -1 respectively, editable [here](multivitamin/utils/scoring.py) in `score_without_matrix()`). 
 
 With the flag `-t` you can provide a scoring table with custom sum-of-pair scores. A table example can be found [here](scoring_table_example.txt).
 
