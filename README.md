@@ -19,7 +19,7 @@ git clone https://github.com/mk36fyvy/multivitamin.git
 ```
 Navigate to the directory containing the setup.py file
 ```
-cd [yourDir]/multivitamin/multivitamin
+cd multivitamin/
 ```
 and type
 ```
@@ -34,11 +34,11 @@ multiVitamin -h
 
 #### Basics
 
-You can get an overview of the basic functionalities by typing
+You can get an overview of the basic flags and functionalities by typing
 ```
 multiVitamin -h
 ```
-A run example would look like the following
+A basic run example looks like the following
 ```
 multiVitamin -a subVF2 -i graph1.graph graph2.graph graph3.graph
 ```
@@ -62,7 +62,9 @@ If you do not want to type all the pairings of the labels yourself, just specify
 ```
 where `\t` indicates `tab`. This specifies the exact match score (the gap symbol `-` has to be indicated in the first line, if you want a different gap score than -1). If you run the program with this minimal scoring table, you will get a warning with all the missing pairs written out. Like that, you can simply copy and paste those into your scoring table file, change the scores and rerun the program.
 
-## Notes for practical course
+You can also forbid the alignment of nodes with specific labels. Check [`custom.py`](custom.py) for this. 
+
+## Comments for practical course
 
 Please note
 - Due to time reasons, many useful features are not indicated/explained in the [multivitaminReadme.pdf](multivitaminReadme.pdf), if you experience any trouble with the program, feel free to ask. I will try, to add the missing information to the Readme as soon as possible.
