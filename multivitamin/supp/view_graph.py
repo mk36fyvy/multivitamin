@@ -22,7 +22,7 @@ def create_graph( graph_list):
         for node in nodes:
             label_string = "["
             for el in node.label:
-	        label_string += el
+                label_string += el
                 label_string += " "
             label_string = label_string[:-1]
             node_label_dict[node] = label_string
