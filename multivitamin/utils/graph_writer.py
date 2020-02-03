@@ -58,10 +58,16 @@ def write_shorter_graph( graph, path ):
     i = 1
     for node in (graph.nodes):
         node.id = i
-        if node.label == "":
+        if node.label == []:
             f.write("{}\n".format( node.id ))
         else:
-            f.write("{};{}\n".format( node.id, node.label ))
+            f.write("{};".format( node.id ))
+            label_string = ""
+            for el in node.label:
+                label_string += el
+                label_string += labelsep
+            label_string = label_string[:-1]
+            f.write("{}\n".format( label_string ))
         i += 1
 
     f.write("\n")

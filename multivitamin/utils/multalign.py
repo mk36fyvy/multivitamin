@@ -65,12 +65,13 @@ class Multalign():
             self.greedy()
 
         elif self.method == "PROGRESSIVE":
-            pass
+            print("This is not yet implemented, sorry! Please use the default setting.")
+            exit()
 
 
     def greedy( self ):
 
-        maximum = 10000 # is used to save the maximum number of mapped nodes
+        maximum_score = 0 # is used to save the maximum number of mapped nodes
         counter = 1 # makes sure that every graph couple is only processed once
 
         for g1 in self.graph_list[:-1]:
@@ -88,16 +89,16 @@ class Multalign():
                     # print(g1)
                     # print(g2)
                     # print()
-                    max_alignment = self.apply_algorithm( g1, g2 )
+                    max_alignment = self.apply_algorithm( g1, g2 )[0]
                     self.already_done[( g1.id, g2.id )] = max_alignment
 
-                if len(max_alignment) < maximum: #subVF2
+                if max_alignment[1] > maximum_score: #subVF2
 
-                    alignment = Graph( "{}-{}".format( g1.abbrev, g2.abbrev ), max_alignment )
+                    alignment = Graph( "{}-{}".format( g1.abbrev, g2.abbrev ), max_alignment[0] )
                     alignment.abbrev = alignment.id
                     alignment.newick = "({},{})".format( g1.newick, g2.newick)
 
-                    maximum = len(max_alignment)
+                    maximum_score = max_alignment[1]
                     alig_one = g1
                     alig_two = g2
 
@@ -136,6 +137,7 @@ class Multalign():
 
     def apply_algorithm( self, graph1, graph2 ):
         if self.algorithm == "BK":
+            raise Exception("BK algorithm is not usable for multiple alignment at the moment. But it is slow as hell anyway. Please use 'subVF2', which is also the default algorithm.")
             mp = MP( graph1, graph2 )
             # print(graph2)
             bk = BK( graph1, graph2 )
@@ -159,6 +161,7 @@ class Multalign():
             return max_res
 
         elif self.algorithm == "VF2":
+            raise Exception("VF2 algorithm is not really what you want for multiple alignment. Trust me. Really. Use 'subVF2' instead, please. Thanks.")
             vf2 = VF2( graph1, graph2 )
             vf2.match()
             if not vf2.results:
@@ -175,7 +178,7 @@ class Multalign():
             # print(scoring.res_scores[best_result])
             # pprint.pprint(best_result)
             # print()
-            return subvf2.results[0]
+            return subvf2.results
 
 
     def generate_graph_bools( self, graph ):

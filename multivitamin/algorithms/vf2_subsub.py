@@ -116,7 +116,7 @@ class subVF2():
 
             scoring = Scoring( len(self.g.nodes), len(self.h.nodes),self.biggest_matches, self.scoring_matrix )
             scoring.score()
-            print(scoring.get_best_result())
+            # print(scoring.get_best_result())
             self.append_result_subgraph( scoring.get_best_result() )
             return
 
@@ -329,11 +329,6 @@ class subVF2():
         node_label_len = len(next(iter(self.core_s)).mult_id) # label length of nodes from smaller graph
         mapping_label_len = len(next(iter(self.core_l)).mult_id) # label length of nodes from larger graph
 
-        # res_dict = dict(result)
-        # for pair in result:
-        #     print(pair[1])
-        #     res_dict[pair[0]] = pair[1]
-
         for node, mapping in result[0].items():
 
             if mapping != self.null_n:
@@ -395,85 +390,8 @@ class subVF2():
             )
 
         self.result_graphs.append( result_graph )
-        self.results.append( result_graph.nodes )
+        self.results.append( (result_graph.nodes,result[1]) )
 
-
-# def append_result_subgraph( self, result ):
-#         '''creates a graph which contains the concatenated mapped nodes from
-#         subgraph. Then, it adds the neighbours to the new nodes following the
-#         original neighbours.'''
-
-#         # pprint.pprint(result)
-
-#         node_dict={} #used to reconstruct the neighbours
-#         final_node_set = set()
-#         in_l_and_mapped = set()
-
-#         node_label_len = len(next(iter(self.core_s)).mult_id) # label length of nodes from smaller graph
-#         mapping_label_len = len(next(iter(self.core_l)).mult_id) # label length of nodes from larger graph
-
-#         for node, mapping in result.items():
-
-#             if mapping != self.null_n:
-#                 cur_node = Node(
-#                                 "{}.{}".format(node.id, mapping.id), #id
-#                                 node.label + mapping.label, #label
-#                             )
-#                 cur_node.mult_id = node.mult_id + mapping.mult_id
-#                 in_l_and_mapped.add(mapping)
-#                 node_dict[mapping] = cur_node
-#                 node_dict[node] = cur_node
-#             else:
-#                 new_label = node.get_label()
-#                 for i in range(mapping_label_len):
-#                     new_label.append("-")
-#                 cur_node = Node(
-#                                 "{}.".format( node.id ),
-#                                 new_label
-#                             )
-#                 cur_node.mult_id = node.get_mult_id()
-#                 for i in range(mapping_label_len):
-#                     cur_node.mult_id.append("_____")
-
-#                 node_dict[node] = cur_node
-
-#             final_node_set.add(cur_node)
-
-#         for node, mapping in self.core_l.items():
-#             if node not in in_l_and_mapped:
-#                 cur_node = Node(
-#                                 ".{}".format( node.id ),
-#                                 node.get_label()
-#                             )
-#                 for i in range(node_label_len):
-#                     cur_node.label.insert( 0, "-" )
-
-#                 cur_node.mult_id = node.get_mult_id() #copy?
-#                 for i in range( node_label_len ):
-#                     cur_node.mult_id.insert( 0, "_____" )
-
-#                 node_dict[node] = cur_node
-#                 final_node_set.add(cur_node)
-
-#         i = 1
-#         for node1 in list(node_dict.keys())[:-1]:
-#             for node2 in list(node_dict.keys())[i:]:
-#                 if node2 in node1.neighbours:
-#                     node_dict[node1].neighbours.add(node_dict[node2])
-#                     node_dict[node2].neighbours.add(node_dict[node1])
-
-#             i += 1
-
-#         result_graph = Graph("{}-{}#{}".format(
-#                     self.small_g.id,
-#                     self.large_g.id,
-#                     len(self.result_graphs)+1
-#                 ),
-#                 final_node_set
-#             )
-
-#         self.result_graphs.append( result_graph )
-#         self.results.append( result_graph.nodes )
 
 
 if __name__ == "__main__":

@@ -91,7 +91,7 @@ group2 = parser.add_argument_group(
 -m, --mult <greedy>                 indicate the multiple alignment method. "greedy"
                                       is the default and only one available as of now.
 -t, --table <table>                 use a custom label scoring table. For more
-                                      information, check the README.
+                                      information, check the README.md.
 -l, --save-all                      save all the graphs produced during the alignment.
                                       The graphs are saved as "[newick].graph"
 -s, --save-shorter                  save an additional version of the alignment graph

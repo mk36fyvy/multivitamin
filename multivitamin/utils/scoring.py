@@ -119,10 +119,10 @@ class Scoring():
             self.res_scores[tuple(sorted(res.items()))] = int(graph_score/len(res))
 
             # for key,value in self.res_scores.items():
-                # print()
-                # pprint.pprint(value)
-                # pprint.pprint(key)
-                # print()
+            #     print()
+            #     pprint.pprint(value)
+            #     pprint.pprint(key)
+            #     print()
 
         return
 
@@ -160,25 +160,22 @@ class Scoring():
                 else:
                     node_score += self.gap_score * node_label_len * mapping_label_len
 
-                # node_score += ((len(label_list)+gap_amount-1)*gap_amount*self.gap_score) #the pairs that would have "-" are simulated here to save time
-
                 graph_score += node_score
-
             gap_node_amount = self.large_graph_nodes_len-mapped
             graph_score += self.gap_score*gap_node_amount*node_label_len*mapping_label_len
-
-            self.res_scores[tuple(sorted(res.items()))] = int(graph_score/len(res))
+            self.res_scores[tuple(sorted(res.items()))] = int(graph_score/(self.large_graph_nodes_len+self.small_graph_nodes_len-(2*mapped)))
+            # self.res_scores[tuple(sorted(res.items()))] = int(graph_score)
 
 
     def get_best_result( self ):
         res_dict = dict( self.res_scores )
         best_graph = max(res_dict.keys(), key=(lambda k: self.res_scores[k])) #returns key with highest value in dict
         best_graph_value = self.res_scores[best_graph]
-        # print(best_graph)
         tup = (
             dict(best_graph),
             best_graph_value
         )
+        # pprint.pprint(tup)
         return tup
 
 

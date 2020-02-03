@@ -28,7 +28,11 @@ def process_directory( directory_name ):
 
 
 def parse_scoring_matrix( matrix_file ):
-    if matrix_file == '-1':
+    if matrix_file == None:
+        print("You did not specify a scoring table.")
+        exit()
+
+    elif matrix_file == '-1':
         return '-1'
 
     file = matrix_file
