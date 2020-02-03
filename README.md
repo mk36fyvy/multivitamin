@@ -25,13 +25,13 @@ Navigate to the directory containing the setup.py file
 ```
 cd multivitamin/
 ```
-If you have root permissions, run
+If you have **root permissions**, run
 ```
 pip3 install -e .
 ```
 and you're good to go.
 
-If you do not have root permissions, run
+If you **do not have root permissions**, run
 ```
 pip3 install -e . --user
 ```
