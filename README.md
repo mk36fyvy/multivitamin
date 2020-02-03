@@ -17,17 +17,44 @@ Clone the repo from github with
 ```
 git clone https://github.com/mk36fyvy/multivitamin.git
 ```
+There are two possibilities to run `multiVitamin`.
+
+#### pip3 install
+
 Navigate to the directory containing the setup.py file
 ```
 cd multivitamin/
 ```
-and type
+If you have **root permissions**, run
 ```
-pip3 -e install .
+pip3 install -e .
 ```
+and you're good to go.
+
+If you **do not have root permissions**, run
+```
+pip3 install -e . --user
+```
+to install `multiVitamin` locally. Then put it into your PATH, so it can be run from everywhere within the system.
+```
+echo 'export PATH=$PATH:~/.local/bin/' >> ~/.bashrc
+```
+After this, you will need to either run `source ~/.bashrc` or open a new terminal window.
+
 Done, now you can run multiVitamin in the command shell. You can test if the installation was successful by typing
 ```
 multiVitamin -h
+```
+
+#### Without installation
+
+You can also run the package without installation by running
+```
+[path_to_dir]/multivitamin/run.sh 
+```
+followed by the standard input specified in
+```
+[path_to_dir]/multivitamin/run.sh -h 
 ```
 
 ## How to use
