@@ -52,7 +52,9 @@ Examples on what our custom graph file format looks like can be found in [graph_
 
 #### Custom scoring
 
-With the flag `-t` you can specify a scoring table with custom sum-of-pair scores. A table example can be found [here](scoring_table_example.txt).
+Pairwise alignments are scored in a very generic and basic way by default: exact matches are rewarded, gaps are punished, both with fixed values (4 and -1 respectively, editable [here](multivitamin/utils/scoring.py) in `scoring_without_matrix()`). 
+
+With the flag `-t` you can provide a scoring table with custom sum-of-pair scores. A table example can be found [here](scoring_table_example.txt).
 
 If you do not want to type all the pairings of the labels yourself, just specify all single labels like so
 ```
@@ -60,7 +62,10 @@ If you do not want to type all the pairings of the labels yourself, just specify
  C\t2
  N\t2
 ```
-where `\t` indicates a `tab` spacing. This specifies the exact match score, i.e for instance `match(C,C)` (the gap symbol `-` has to be indicated in the first line, if you want a different gap score than -1. SImply omit it, if this is not the case.). 
+where `\t` indicates a `tab` spacing. 
+
+This specifies the exact match score, i.e for instance `match(C,C)` (the gap symbol `-` has to be indicated in the first line, if you want a different gap score than -1. Simply omit it, if this is not the case.). 
+
 If you run the program with this minimal scoring table, you will get a warning with all the missing pairs written out. Like that, you can simply copy and paste those of interest into your scoring table file, change the scores and rerun the program.
 
 You can also forbid the alignment of nodes with specific labels. Check [`custom.py`](multivitamin/custom.py) for this. 
