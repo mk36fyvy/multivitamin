@@ -44,7 +44,7 @@ def parse_graph( doc ):
                     check_list.append( arg.upper()  == "TRUE" )
 
                 elif line.upper().startswith( "AUTHOR" ):
-                    print( "Reading {} from {}".format( doc.split("/")[-1], line.split(" ",1)[1] ) )
+                    print( "Reading {} from {}".format( os.path.basename(doc), line.split(" ",1)[1] ) )
                     continue
 
                 else:

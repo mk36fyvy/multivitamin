@@ -7,7 +7,7 @@ from multivitamin.custom import labelsep
 
 
 def write_graph(graph, path):
-    f = open("{}{}/{}.graph".format( os.getcwd(), path, graph.id ), 'w+')
+    f = open("{}{}{}.graph".format( os.getcwd(), path, graph.id ), 'w+')
     f.write("// {}\n".format( graph.newick ))
     f.write("AUTHOR: {}\n".format( getpass.getuser() ))
     f.write("#nodes;{}\n".format( len(graph.nodes) ))

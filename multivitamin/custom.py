@@ -1,5 +1,9 @@
+import os
+
+from multivitamin.basic.node import Node
+
+
 '''if basic modules (graphs, nodes, edges) are needed, uncomment the lines below'''
-# from multivitamin.basic.node import Node
 # from multivitamin.basic.edge import Edge
 # from multivitamin.basic.graph import Graph
 
@@ -39,6 +43,9 @@ def forbid( pair, n, m ):
 def get_results_dir():
     '''define, where the result files will be saved.
     Default is a dir named 'results' in the current
-    working directory'''
+    working directory.'''
 
-    return "/results"
+    if os.name == 'nt': # you are using Windows
+        return "\\results\\"
+    else:
+        return "/results/"
