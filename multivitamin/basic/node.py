@@ -103,7 +103,7 @@ class Node():
             string = " "
             for id in self.mult_id:
                 string += str(id)
-                string += "."
+                string += "°"
             string = string[:-1]
             return string
 

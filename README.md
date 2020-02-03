@@ -11,6 +11,16 @@ to view graphical representations of graphs.
 Sounds exciting, so let's get started!
 
 
+## Comments for practical course
+
+Please note
+- At the beginning of your day, please take the time to pull and reinstall `multiVitamin` (if you previously installed it via pip3). For the rest of the day, unless otherwise communicated, pulls from time to time should be enough, you should not need to reinstall the package after each pull.
+- Due to time reasons, many useful features are not indicated/explained in the [multivitaminReadme.pdf](multivitaminReadme.pdf), if you experience any trouble with the program, feel free to ask. I will try and add the missing information to the Readme as soon as possible.
+- The `subVF2` algorithm is the only one suitable for multiple alignment. You do not need to specify it as it is also the default algorithm.
+- The greedy multiple alignment algorithm is the only one available at the moment due to its acceptable running time. If you experience otherwise, please tell me and I will implement a progressive version.
+- There are many useful features in the [`custom.py`](multivitamin/custom.py) script explained inside.
+- Many changes had to be done last minute, unfortunately. So you could quite likely experience some bugs here and there. Please let me know, if anything appears odd to you. Many excuses in advance!
+
 ## Installation instructions
 
 Clone the repo from github with
@@ -96,15 +106,6 @@ This specifies the exact match score, i.e for instance `match(C,C)` (the gap sym
 If you run the program with this minimal scoring table, you will get a warning with all the missing pairs written out. Like that, you can simply copy and paste those of interest into your scoring table file, change the scores and rerun the program.
 
 You can also forbid the alignment of nodes with specific labels. Check [`custom.py`](multivitamin/custom.py) for this. 
-
-## Comments for practical course
-
-Please note
-- Due to time reasons, many useful features are not indicated/explained in the [multivitaminReadme.pdf](multivitaminReadme.pdf), if you experience any trouble with the program, feel free to ask. I will try and add the missing information to the Readme as soon as possible.
-- The `subVF2` algorithm is the only one suitable for multiple alignment. You do not need to specify it as it is also the default algorithm.
-- The greedy multiple alignment algorithm is the only one available at the moment due to its acceptable running time. If you experience otherwise, please tell me and I will implement a progressive version.
-- There are many useful features in the [`custom.py`](multivitamin/custom.py) script explained inside.
-- Many changes had to be done last minute, unfortunately. So you could quite likely experience some bugs here and there. Please let me know, if anything appears odd to you. Many excuses in advance!
 
 ## Further reading
 
