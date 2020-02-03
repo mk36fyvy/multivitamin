@@ -23,7 +23,7 @@ cd multivitamin/
 ```
 and type
 ```
-pip3 -e install .
+pip3 install -e . --user
 ```
 Done, now you can run multiVitamin in the command shell. You can test if the installation was successful by typing
 ```
