@@ -20,12 +20,17 @@ def create_graph( graph_list):
 
         node_label_dict = {}
         for node in nodes:
-            node_label_dict[node] = "{} '{}'".format(node.id, node.label)
+	    label_string = "["
+	    for el in node.label:
+	        label_string += el
+                label_string += " "
+            label_string = label_string[:-1]
+            node_label_dict[node] = label_string
 
         pos = nx.kamada_kawai_layout(G)
         plt.subplot(plot_size,plot_size,i)
-        nx.draw_networkx_nodes(G, pos, node_color='#66ffff', cmap=plt.get_cmap('jet'), node_size=500)
-        nx.draw_networkx_labels(G, pos, labels=node_label_dict, font_size=10, font_weight='bold', font_color='black')
+        nx.draw_networkx_nodes(G, pos, node_color='lightblue', cmap=plt.get_cmap('jet'), node_size=50)
+        nx.draw_networkx_labels(G, pos, labels=node_label_dict, font_size=5, font_weight='bold', font_color='black')
         nx.draw_networkx_edges(G, pos, edge_color='grey')
         plt.title(str(graph_list[i-1].id))
     plt.show()
