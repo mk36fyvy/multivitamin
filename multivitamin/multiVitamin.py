@@ -160,7 +160,7 @@ def save_results( multalign ):
     f = open("{}{}/{}".format( os.getcwd(), path, "graph_abbreviations.txt" ), 'w+')
     for abbrev, id in multalign.graph_abbreviations.items():
         f.write("{}\t{}\n".format( abbrev, id))
-    f.close
+    f.close()
 
     print("")
     print("Saved graph id abbreviations as graph_abbreviations.txt")
