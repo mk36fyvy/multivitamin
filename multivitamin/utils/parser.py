@@ -1,5 +1,6 @@
 import sys
 import pprint
+import os
 
 from multivitamin.basic.node import Node
 from multivitamin.basic.edge import Edge
@@ -126,7 +127,8 @@ def parse_graph( doc ):
         get_node_neighbours(limit, nodes, edges)
         print_if_big(limit, edges, "Done.")
         g = Graph(
-                    doc.split("/")[-1].split(".")[0],
+                    os.path.basename(doc)[:-6],
+                    # doc.split("/")[-1][:-6], # removes path and '.graph' extension
                     nodes,
                     edges,
                     check_list[2],
@@ -134,7 +136,7 @@ def parse_graph( doc ):
                     check_list[4]
         )
 
-        print( "Successfully parsed " + doc.split("/")[-1] + "\n" )
+        print( "Successfully parsed " + os.path.basename(doc)[:-6] + "\n" )
         return g
 
     else:
