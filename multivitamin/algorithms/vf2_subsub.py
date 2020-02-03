@@ -67,7 +67,7 @@ class subVF2():
             self.found_complete_matching = True
             scoring = Scoring( len(self.g.nodes), len(self.h.nodes), [self.core_s], self.scoring_matrix )
             scoring.score()
-            # print(scoring.get_best_result())
+
             self.append_result_subgraph( scoring.get_best_result() )
             self.restore_ds( last_mapped[0], last_mapped[1], depth )
             return
@@ -79,17 +79,10 @@ class subVF2():
         for tup in p:
 
             if self.is_feasible(tup[0], tup[1], depth, td):
-                # print(tup)
-                # print("feasible")
-                # print()
                 found_pair = True
                 self.compute_s_( tup[0], tup[1] )
 
                 self.match( tup, depth+1 )
-            # else:
-                # print(tup)
-                # print("not feasible")
-                # print()
 
         # if the matching isn't continued and the current depth is higher than/
         # equal to the max depth reached until now: save the subgraph
@@ -104,11 +97,6 @@ class subVF2():
         if depth > 0:
             self.restore_ds( last_mapped[0], last_mapped[1], depth )
 
-        # pprint.pprint(self.core_l)
-        # if self.null_n in self.core_l.keys():
-        #     pprint.pprint(self.g.nodes)
-        #     pprint.pprint(self.h.nodes)
-        #     raise(Exception("null_n in core_l"))
 
         #if we returned to the start and no "complete" matching has been found
         if depth == 0 and not self.found_complete_matching:
@@ -116,7 +104,7 @@ class subVF2():
 
             scoring = Scoring( len(self.g.nodes), len(self.h.nodes),self.biggest_matches, self.scoring_matrix )
             scoring.score()
-            # print(scoring.get_best_result())
+
             self.append_result_subgraph( scoring.get_best_result() )
             return
 
@@ -162,7 +150,7 @@ class subVF2():
             self.zero_look_ahead(m, n, self.core_s) ) ):
             return False
 
-        return check_semantics( n, m ) # this method is imported from multivitamin/custom.py
+        return check_semantics( n, m ) # this function is imported from multivitamin/custom.py
 
 
     def compute_s_(self, n, m):
@@ -229,31 +217,6 @@ class subVF2():
             if v in m.out_neighbours:
                 if self.out_s[v] == 0: self.out_s[v] = depth
 
-        # for node, node_depth in self.in_s.items():
-        #     if not self.core_s[node] == self.null_n:
-        #         continue
-        #     if node_depth != 0:
-        #         td["in_s"] += 1
-
-        # for node, node_depth in self.out_s.items():
-        #     if not self.core_s[node] == self.null_n:
-        #         continue
-        #     if node_depth != 0:
-        #         td["out_s"] += 1
-
-        # for node, node_depth in self.in_l.items():
-        #     if not self.core_l[node] == self.null_n:
-        #         continue
-        #     if node_depth != 0:
-        #         td["in_l"] += 1
-
-        # for node, node_depth in self.out_l.items():
-        #     if not self.core_l[node] == self.null_n:
-        #         continue
-        #     if node_depth != 0:
-        #         td["out_l"] += 1
-
-
         return td
 
 
@@ -299,8 +262,8 @@ class subVF2():
                 if not m_ in m.in_neighbours:
                     return False
 
-            # Since we only contemplating neighbours of n n_ has to be an in or
-            # An out neighbour, it is sufficient to only check it m_ is out
+            # Since we're only contemplating neighbours of n n_ has to be an in
+            # or an out neighbour, it is sufficient to only check it m_ is out
             # Neighbour of m
             elif n_ in n.out_neighbours and not  m_ in m.out_neighbours:
                 return False
@@ -319,8 +282,6 @@ class subVF2():
         '''creates a graph which contains the concatenated mapped nodes from
         subgraph. Then, it adds the neighbours to the new nodes following the
         original neighbours.'''
-
-        # pprint.pprint(result)
 
         node_dict={} #used to reconstruct the neighbours
         final_node_set = set()
@@ -365,7 +326,7 @@ class subVF2():
                 for i in range(node_label_len):
                     cur_node.label.insert( 0, "-" )
 
-                cur_node.mult_id = node.get_mult_id() #copy?
+                cur_node.mult_id = node.get_mult_id()
                 for i in range( node_label_len ):
                     cur_node.mult_id.insert( 0, "_____" )
 

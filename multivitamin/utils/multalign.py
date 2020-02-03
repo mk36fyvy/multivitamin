@@ -112,8 +112,6 @@ class Multalign():
         alignment_graph = self.make_graph_real( alignment )
         alignment_graph = self.generate_graph_bools( alignment_graph )
 
-        # pprint.pprint(alignment_graph.nodes)
-
         self.graph_list.append( alignment_graph )
         self.intermediates.append( alignment_graph )
 
@@ -125,11 +123,6 @@ class Multalign():
     # ---- HELPER METHODS ------------------------------------------------------------------------------------
 
     def make_graph_real( self, graph ):
-        # for node in graph.nodes:
-        #     for neighbour in list(node.neighbours)[:]:
-        #         if not neighbour in graph.nodes:
-        #             node.remove_neighbour(neighbour)
-
         graph.edges = set()
         graph.create_undirected_edges()
         return graph
@@ -138,8 +131,9 @@ class Multalign():
     def apply_algorithm( self, graph1, graph2 ):
         if self.algorithm == "BK":
             raise Exception("BK algorithm is not usable for multiple alignment at the moment. But it is slow as hell anyway. Please use 'subVF2', which is also the default algorithm.")
+
             mp = MP( graph1, graph2 )
-            # print(graph2)
+
             bk = BK( graph1, graph2 )
             x = set()
             r = set()
@@ -162,6 +156,7 @@ class Multalign():
 
         elif self.algorithm == "VF2":
             raise Exception("VF2 algorithm is not really what you want for multiple alignment. Trust me. Really. Use 'subVF2' instead, please. Thanks.")
+
             vf2 = VF2( graph1, graph2 )
             vf2.match()
             if not vf2.results:
@@ -171,13 +166,6 @@ class Multalign():
         elif self.algorithm == "SUBVF2":
             subvf2 = subVF2( graph1, graph2, self.scoring_matrix )
             subvf2.match()
-            # scoring = Scoring( subvf2.results, self.scoring_matrix ) #TODO: scoring matrix
-            # scoring.score()
-            # best_result = max(scoring.res_scores.keys(), key=(lambda k: scoring.res_scores[k])) #returns key with highest value in dict
-            # print()
-            # print(scoring.res_scores[best_result])
-            # pprint.pprint(best_result)
-            # print()
             return subvf2.results
 
 

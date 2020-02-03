@@ -36,45 +36,6 @@ class Scoring():
             self.score_with_matrix()
 
 
-    # def score_without_matrix( self ):
-    #     '''provides a generic scoring_matrix defined for general multiple
-    #     alignment with labels (same labels are rewarded, gaps are punished)'''
-    #     self.gap_score = -1
-    #     match_score = 4
-    #     for graph in self.results:
-
-    #         graph_score = 0
-
-    #         for node in graph:
-    #             node_labels = node.get_label()
-    #             node_score = 0
-    #             gap_amount = 0
-
-
-    #             for char in label_list:
-    #                 if char == "-":
-    #                     gap_amount +=1
-    #                     label_list.remove(char)
-    #             node_score += ((len(label_list)+gap_amount-1)*gap_amount*self.gap_score) #the pairs that would have "-" are simulated here to save time
-
-    #             i = 1
-    #             for char1 in label_list[:-1]:
-    #                 for char2 in label_list[i:]:
-    #                     if char1 == char2:
-    #                         node_score += match_score
-
-    #             graph_score += node_score
-    #             i+=1
-
-    #         self.res_scores[frozenset(nodes)] = graph_score/len(nodes)
-    #         for key,value in self.res_scores.items():
-    #             print()
-    #             pprint.pprint(value)
-    #             pprint.pprint(key)
-    #             print()
-
-    #     return
-
     def score_without_matrix( self ):
         '''provides a generic scoring_matrix defined for general multiple
         alignment with labels (same labels are rewarded, gaps are punished)'''
@@ -109,20 +70,12 @@ class Scoring():
                 else:
                     node_score += self.gap_score * node_label_len * mapping_label_len
 
-                # node_score += ((len(node_labels)+gap_amount-1)*gap_amount*self.gap_score) #the pairs that would have "-" are simulated here to save time
-
                 graph_score += node_score
 
             gap_node_amount = self.large_graph_nodes_len-mapped
             graph_score += self.gap_score * gap_node_amount * node_label_len * mapping_label_len
 
             self.res_scores[tuple(sorted(res.items()))] = int(graph_score/len(res))
-
-            # for key,value in self.res_scores.items():
-            #     print()
-            #     pprint.pprint(value)
-            #     pprint.pprint(key)
-            #     print()
 
         return
 
@@ -164,7 +117,6 @@ class Scoring():
             gap_node_amount = self.large_graph_nodes_len-mapped
             graph_score += self.gap_score*gap_node_amount*node_label_len*mapping_label_len
             self.res_scores[tuple(sorted(res.items()))] = int(graph_score/(self.large_graph_nodes_len+self.small_graph_nodes_len-(2*mapped)))
-            # self.res_scores[tuple(sorted(res.items()))] = int(graph_score)
 
 
     def get_best_result( self ):
@@ -175,11 +127,10 @@ class Scoring():
             dict(best_graph),
             best_graph_value
         )
-        # pprint.pprint(tup)
         return tup
 
 
-
+    # The scoring matrix parsing is now done in get_input.py
     def parse_scoring_matrix( self, matrix ):
         file = matrix
         with open(file) as f:
