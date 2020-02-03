@@ -60,7 +60,7 @@ If you do not want to type all the pairings of the labels yourself, just specify
  C\t2
  N\t2
 ```
-This specifies the exact match score (the gap symbol `-` has to be indicated in the first line, if you want a different gap score than -1). If you run the program with this minimal scoring table, you will get a warning with all the missing pairs written out. Like that, you can simply copy and paste those into your scoring table file, change the scores and rerun the program.
+where `\t` indicates `tab`. This specifies the exact match score (the gap symbol `-` has to be indicated in the first line, if you want a different gap score than -1). If you run the program with this minimal scoring table, you will get a warning with all the missing pairs written out. Like that, you can simply copy and paste those into your scoring table file, change the scores and rerun the program.
 
 ## Notes for practical course
 
