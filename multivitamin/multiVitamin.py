@@ -56,6 +56,7 @@ def main():
         multalign = Multalign( graphs, args.algorithm, args.mult, args.save_all, args.table )
         print("Calculating multiple alignment with {} algorithm...".format( args.algorithm ))
         multalign.multalign()
+        print(multalign)
         save_results( multalign )
 
     elif args.coopt:

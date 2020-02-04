@@ -51,7 +51,6 @@ class Multalign():
             self.result = res
 
             self.newick = self.graph_list[0].newick
-            self.print_alignment( self.result )
 
             return
 
@@ -218,37 +217,29 @@ class Multalign():
         return graph_list
 
 
-    def print_alignment( self, graph ):
-        print("")
-        print("*****************************************************************")
-        print("*                                                               *")
-        print("*                          RESULTS                              *")
-        print("*                                                               *")
-        print("*****************************************************************")
-        print("")
-        print("---GRAPH ABBREVIATIONS--------------")
-        print("")
+    def __str__( self ):
+        if not self.result:
+            return ""
+        r = ""
+        r += "\n*****************************************************************\n"
+        r += "*                                                               *\n"
+        r += "*                          RESULTS                              *\n"
+        r += "*                                                               *\n"
+        r += "*****************************************************************\n\n"
+        r += "---GRAPH ABBREVIATIONS--------------\n\n"
         for abbrev, id in self.graph_abbreviations.items():
-            print("  {}\t>>\t{}".format( abbrev, id) )
-        print("")
-        print("")
-        print("---ALIGNMENT------------------------")
-        print("")
-        print("*NODES (ID, LABEL, NEIGHBOURS)")
-        node_list = list(graph.nodes)
+            r += "  {}\t>>\t{}\n".format( abbrev, id)
+        r += "\n\n---ALIGNMENT------------------------\n\n"
+        r += "*NODES (ID, LABEL, NEIGHBOURS)\n"
+        node_list = list(self.result.nodes)
         node_list.sort( key= lambda x: x.label, reverse=True )
         for node in node_list:
-            print("  {}".format(node))
-        print("")
-        print("*EDGES (ID, LABEL)")
-        for edge in graph.edges:
-            print("{}".format(edge))
-        print("")
-        print("")
-        print("---NEWICK TREE----------------------")
-        print("")
-        print(graph.newick)
-        print("")
-        print("********************************************************************")
-        print("")
+            r += "  {}\n".format(node)
+        r += "\n*EDGES (ID, LABEL)\n"
+        for edge in self.result.edges:
+            r += "{}\n".format(edge)
+        r += "\n\n---NEWICK TREE----------------------\n\n"
+        r += self.result.newick
+        r += "\n********************************************************************\n\n"
+        return r
 
