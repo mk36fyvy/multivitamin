@@ -9,36 +9,48 @@
 labelsep = " "
 
 # This variable is used as 'dummy label' for nodes without label. It makes
-# multiple alignment between graphs with and without labels more well-aranged. 
-# If you do not wish to use a dummy label, assign an empty str ""
+# multiple alignment between graphs with and without labels more well-arranged. 
+# If you do not wish to use a dummy label, assign an empty string ""
 no_label_dummy = "#"
+
+# Don't allow labels listed here to match with any other label. 
+# Accepts iterable of Strings only.
+force_exact_matching = ["H"]
+
+# Forbid matching of specific label pairs. Pairs are defined as 2-tuples of Strings.
+# Labels already specified in force_exact_matching don't need to be included here.
+forbidden_matchings = [("C","O")]
 
 
 def check_semantics( n, m ):
-    '''This function is used in VF2 algorithm to decide,
+    '''
+    This function is used in VF2 algorithm to decide,
     whether aligning two nodes is allowed from the
     label point of view.
-    In the sample example below, two nodes will only
-    be accepted as a legal matching, if the two
-    labels are exactly the same.
+    '''
+    
+    for label in force_exact_matching:
+        if label in n.label:
+            if label in m.label:
+                return True
+            else:
+                return False
+        else:
+            if label in m.label:
+                return False
 
-    Insert your scoring logic below:'''
-
-    #example for forbidding a pair:
-    forbid( ("C", "H"), n, m)
+    for left,right in forbidden_matchings:
+        if left in n.label and right in m.label:
+            return False
+        if left in m.label and right in n.label:
+            return False
     
     return True
-
-def forbid( pair, n, m ):
-    if pair[0] in n.label and pair[1] in m.label:
-        return False
-    elif pair[1] in n.label and pair[0] in m.label:
-        return False
 
 
 def get_results_dir():
     '''define, where the result files will be saved.
-    Default is a dir named 'results' in the current
+    Default is a directory named 'results' in the current
     working directory'''
 
     return "/results"
