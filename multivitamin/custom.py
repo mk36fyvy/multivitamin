@@ -1,5 +1,9 @@
+import os
+
+from multivitamin.basic.node import Node
+
+
 '''if basic modules (graphs, nodes, edges) are needed, uncomment the lines below'''
-# from multivitamin.basic.node import Node
 # from multivitamin.basic.edge import Edge
 # from multivitamin.basic.graph import Graph
 
@@ -53,4 +57,8 @@ def get_results_dir():
     Default is a directory named 'results' in the current
     working directory'''
 
-    return "/results"
+
+    if os.name == 'nt': # you are using Windows
+        return "\\results\\"
+    else:
+        return "/results/"

@@ -22,3 +22,4 @@ multivitamin/utils/graph_writer.py
 multivitamin/utils/modular_product_class.py
 multivitamin/utils/multalign.py
 multivitamin/utils/parser.py
+multivitamin/utils/scoring.py

@@ -43,7 +43,7 @@ def main():
     print("| | | | | | |_| | | |_| |\ V /| || |_| (_| | | | | | | | | | |")
     print("|_| |_| |_|\__,_|_|\__|_| \_/ |_| \__|\__,_|_| |_| |_|_|_| |_|")
     print("                                                              ")
-    print("                                                  v2.0.0      ")
+    print("                                                  v2.1.0      ")
     print("                                                              ")
 
 
@@ -56,6 +56,7 @@ def main():
         multalign = Multalign( graphs, args.algorithm, args.mult, args.save_all, args.table )
         print("Calculating multiple alignment with {} algorithm...".format( args.algorithm ))
         multalign.multalign()
+        print(multalign)
         save_results( multalign )
 
     elif args.coopt:
@@ -135,7 +136,7 @@ def save_results( multalign ):
     path = get_results_dir()
 
     # create results directory
-    if not os.path.isdir("{}/{}".format( os.getcwd(), path )): # if results/ does not exist
+    if not os.path.isdir("{}{}".format( os.getcwd(), path )): # if results/ does not exist
         try:
             os.mkdir("{}{}".format( os.getcwd(), path ) )
         except:
@@ -157,7 +158,7 @@ def save_results( multalign ):
         write_shorter_graph( multalign.result, path )
 
     # save graph abbreviations used for identifying original nodes in node ids
-    f = open("{}{}/{}".format( os.getcwd(), path, "graph_abbreviations.txt" ), 'w+')
+    f = open("{}{}{}".format( os.getcwd(), path, "graph_abbreviations.txt" ), 'w+')
     for abbrev, id in multalign.graph_abbreviations.items():
         f.write("{}\t{}\n".format( abbrev, id))
     f.close()
@@ -167,7 +168,7 @@ def save_results( multalign ):
 
     # save newick tree in easily parseable txt file
     if args.save_guide:
-        f = open("{}{}/{}".format( os.getcwd(), path, "newick.txt" ), 'w+')
+        f = open("{}{}{}".format( os.getcwd(), path, "newick.txt" ), 'w+')
         f.write("{}\n".format(multalign.newick))
         f.close
 

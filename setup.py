@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='multivitamin',
-    version='1.0',
+    version='2.1.0',
     packages=[
         'multivitamin',
         'multivitamin.algorithms',
@@ -12,7 +12,8 @@ setup(
     ],
     install_requires=[
         'matplotlib>=3.1.1',
-        'networkx>=2.4'
+        'networkx>=2.4',
+        'scipy'
     ],
     entry_points={
         'console_scripts': ['multiVitamin=multivitamin.multiVitamin:main']
