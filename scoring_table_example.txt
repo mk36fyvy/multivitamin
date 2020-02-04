@@ -1,13 +1,13 @@
--   -1
-C   3
-c   3
-O   3
-N   3
-S   3
-P   3
-Cl  3
-Br  3
-C   c   1
-O   S   1
-N   P   1
-Cl  Br  1
+- -1
+C 3
+c 3
+O 3
+N 3
+S 3
+P 3
+Cl 3
+Br 3
+C c 1
+O S 1
+N P 1
+Cl Br 1

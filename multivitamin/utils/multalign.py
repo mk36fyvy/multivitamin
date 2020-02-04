@@ -38,6 +38,9 @@ class Multalign():
 
     
     def multalign( self ):
+        '''
+        performs multiple alignment according to specified multiple alignment algorithm. 
+        '''
 
         if len( self.graph_list ) <= 1:
             try:
@@ -64,11 +67,17 @@ class Multalign():
             self.greedy()
 
         elif self.method == "PROGRESSIVE":
-            print("This is not yet implemented, sorry! Please use the default setting.")
+            raise AttributeError("This is not yet implemented, sorry! Please use the default setting.")
             exit()
 
 
     def greedy( self ):
+        '''
+        performs multiple alignment following a greedy approach: Every pairwise alignment is
+        calculated and the best scoring co-optimal is chosen. Then, the best scored pairwise 
+        alignment is chosen. Then, all pairwise alignments with this new graph are calculated
+        and scored and so on.
+        '''
 
         maximum_score = float('-inf') # is used to save the maximum number of mapped nodes
         counter = 1 # makes sure that every graph couple is only processed once
@@ -122,12 +131,22 @@ class Multalign():
     # ---- HELPER METHODS ------------------------------------------------------------------------------------
 
     def make_graph_real( self, graph ):
+        '''
+        takes an alignment consisting only of nodes with neighbours, creates the
+        appropriate edges and returns an *undirected* graph.
+        '''
+
         graph.edges = set()
         graph.create_undirected_edges()
         return graph
 
 
     def apply_algorithm( self, graph1, graph2 ):
+        '''
+        performs pairwise alignment using the algorithm provided. At the moment,
+        SUBVF2 algorithm is the only working algorithm for multiple alignment
+        '''
+        
         if self.algorithm == "BK":
             raise Exception("BK algorithm is not usable for multiple alignment at the moment. But it is slow as hell anyway. Please use 'subVF2', which is also the default algorithm.")
 
@@ -186,13 +205,23 @@ class Multalign():
 
 
     def remove_element( self, dictionary, key):
-        """Returns a **shallow** copy of the dictionary without a key."""
+        """
+        Returns a shallow copy of the dictionary without a specified key.
+        """
+
         _dict = dictionary.copy()
         _dict.pop(key, None)
         return _dict
 
 
     def make_mult_id( self, graph_list ):
+        '''
+        takes a list of all graphs for multiple alignments and provides them with
+        unique IDs for the alignment. These consist of the first 2 characters of 
+        the graph file name and a number that increments each time the 2-char-name 
+        is already taken.
+        '''
+        
         id_list = {}
 
         for graph in graph_list:

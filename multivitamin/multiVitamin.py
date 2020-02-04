@@ -133,6 +133,10 @@ def main():
 
 
 def save_results( multalign ):
+    '''
+    saves the results relative to flags specified by the user
+    '''
+
     path = get_results_dir()
 
     # create results directory
@@ -147,12 +151,12 @@ def save_results( multalign ):
         print("\nAll files will be saved in {}{} \n".format( os.getcwd(), path ))
 
     # save all intermediate alignment graphs, if flag is set
+    write_graph( multalign.result, path, args.output )
     if args.save_all or args.coopt:
         for graph in multalign.intermediates:
-            write_graph( graph, path )
-    else:
-        write_graph( multalign.result, path )
-
+            if not graph == multalign.result:
+                write_graph( graph, path, None )
+    
     # save end alignment graph with much shorter node ids
     if args.save_shorter:
         write_shorter_graph( multalign.result, path )

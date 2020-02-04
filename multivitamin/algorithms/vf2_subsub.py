@@ -122,6 +122,11 @@ class subVF2():
 
 
     def compute_p(self, td):
+        '''
+        computes the candidate pairs from terminal sets. If all the terminal
+        are empty, candidate pairs are computed from the sets of non-mapped
+        nodes.
+        '''
 
         if all( ( td["out_l"] ,td["out_s"] ) ):
             return self.cart_p1(self.out_l, self.legal_max(self.out_s))
@@ -144,6 +149,13 @@ class subVF2():
 
 
     def is_feasible( self, n ,m, depth, td):
+        '''
+        first, checks zero_look ahead (if there are neighbours of the candidate pair that
+        are in the current mapping, they have to be mapped to each other) then, checks some 
+        semantic conditions specified in check_semantics which is imported from
+        multivitamin/custom.py
+        '''
+
         #0-look-ahead
         if not all((
             self.zero_look_ahead(n, m, self.core_l),
@@ -154,12 +166,19 @@ class subVF2():
 
 
     def compute_s_(self, n, m):
+        '''
+        adds the feasible candidate pair (n, m) to current mapping
+        '''
 
         self.core_l[n] = m
         self.core_s[m] = n
 
 
     def restore_ds(self, n, m, depth):
+        '''
+        in order to return to one level above (i.e depth -= 1), some data structures have
+        to be brought back to their original state
+        '''
 
         if any((n==self.null_n, m==self.null_n)):
             raise(Exception("null node restored"))
@@ -221,7 +240,10 @@ class subVF2():
 
 
     def cart_p1( self, node_dict, t_max ):
-        """creates the cartesian product """
+        """
+        creates the cartesian product of the node set in node_dict that are in terminal sets 
+        (which means they are mapped to null node in core and do not have a depth of 0)
+        """
         cp = set()
         for node in node_dict:
             if self.core_l[node] == self.null_n and not node_dict[node] == 0:
@@ -229,7 +251,11 @@ class subVF2():
         return cp
 
     def cart_p2( self, node_dict, t_max ):
-            """creates the cartesian product """
+            """
+            creates the cartesian product of the node set in node_dict that are not in the
+            current mapping and not in terminal sets (which means they are mapped to null 
+            node while it is made sure, that all terminal sets are empty)
+            """
             cp = set()
             for node in node_dict:
                 if self.core_l[node] == self.null_n:
@@ -279,9 +305,11 @@ class subVF2():
 # RESULT PROCESSING -----------------------------------------------------------
 
     def append_result_subgraph( self, result ):
-        '''creates a graph which contains the concatenated mapped nodes from
+        '''
+        creates a graph which contains the concatenated mapped nodes from
         subgraph. Then, it adds the neighbours to the new nodes following the
-        original neighbours.'''
+        original neighbours.
+        '''
 
         node_dict={} #used to reconstruct the neighbours
         final_node_set = set()
@@ -292,7 +320,7 @@ class subVF2():
 
         for node, mapping in result[0].items():
 
-            if mapping != self.null_n:
+            if mapping != self.null_n: # nodes that were actually mapped
                 cur_node = Node(
                                 "{}.{}".format(node.id, mapping.id), #id
                                 node.label + mapping.label, #label
@@ -301,7 +329,7 @@ class subVF2():
                 in_l_and_mapped.add(mapping)
                 node_dict[mapping] = cur_node
                 node_dict[node] = cur_node
-            else:
+            else: # nodes from small graph that were not mapped against a node from larger graph
                 new_label = node.get_label()
                 for i in range(mapping_label_len):
                     new_label.append("-")
@@ -318,7 +346,7 @@ class subVF2():
             final_node_set.add(cur_node)
 
         for node, mapping in self.core_l.items():
-            if node not in in_l_and_mapped:
+            if node not in in_l_and_mapped: # nodes from large graph that were not mapped against nodes from smaller graph
                 cur_node = Node(
                                 ".{}".format( node.id ),
                                 node.get_label()
@@ -333,6 +361,7 @@ class subVF2():
                 node_dict[node] = cur_node
                 final_node_set.add(cur_node)
 
+        # reconstructing the neighbours
         i = 1
         for node1 in list(node_dict.keys())[:-1]:
             for node2 in list(node_dict.keys())[i:]:

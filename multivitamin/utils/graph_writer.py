@@ -6,8 +6,10 @@ from multivitamin.utils.parser import parse_graph
 from multivitamin.custom import labelsep
 
 
-def write_graph(graph, path):
-    f = open("{}{}{}.graph".format( os.getcwd(), path, graph.id ), 'w+')
+def write_graph(graph, path, out_name):
+    if out_name == None:
+        out_name = graph.id
+    f = open("{}{}{}.graph".format( os.getcwd(), path, out_name ), 'w+')
     f.write("// {}\n".format( graph.newick ))
     f.write("AUTHOR: {}\n".format( getpass.getuser() ))
     f.write("#nodes;{}\n".format( len(graph.nodes) ))
@@ -40,7 +42,7 @@ def write_graph(graph, path):
 
     f.close()
 
-    print("Saved graph as {}.graph".format( graph.id ))
+    print("Saved graph as {}.graph".format( out_name ))
 
 
 def write_shorter_graph( graph, path ):
