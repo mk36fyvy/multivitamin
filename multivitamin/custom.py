@@ -19,11 +19,11 @@ no_label_dummy = "#"
 
 # Don't allow labels listed here to match with any other label. 
 # Accepts iterable of Strings only.
-force_exact_matching = ["H"]
+force_exact_matching = [] # Example: ["H","C"]
 
 # Forbid matching of specific label pairs. Pairs are defined as 2-tuples of Strings.
 # Labels already specified in force_exact_matching don't need to be included here.
-forbidden_matchings = [("C","O")]
+forbidden_matchings = [] # Example: [("C","O"),("C","S"),("C","N")]
 
 
 def check_semantics( n, m ):
