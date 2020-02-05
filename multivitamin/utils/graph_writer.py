@@ -97,6 +97,7 @@ def write_shorter_graph( graph, path ):
 
 def consensus(graph , path=None, out_name=None): 
     # path and out_name are unused until now
+    pass
 
 
 def write_to_json( graph ):
