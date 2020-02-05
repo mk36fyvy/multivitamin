@@ -80,7 +80,6 @@ def parse_scoring_matrix( matrix_file ):
                 raise Exception("Error in Scoring Matrix:/nUnable to parse: '{}'".format(line))
 
         scoring_matrix = return_missing_pairs( cart_pair_check, cart_pairs, scoring_matrix, matrix_file, gap_score )
-    print(scoring_matrix)
     return scoring_matrix
 
 
