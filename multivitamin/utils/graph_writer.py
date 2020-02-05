@@ -1,6 +1,7 @@
 import sys
 import os
 import getpass #to get username for AUTHOR line
+from numpy.core.defchararray import isdecimal
 
 from multivitamin.custom import labelsep
 from multivitamin.utils.parser import parse_graph
@@ -95,24 +96,29 @@ def write_shorter_graph( graph, path ):
     print("Saved graph as {}.shorter.graph".format( graph.id ))
 
 
-def find_consensus_labelling(graph): 
-    # path and out_name are unused until now
+def find_consensus_labelling(graph):
+    """
+    Takes a graph and returns a dictionary with it's nodes as keys and the appropriate consensus labels as values.
+    Iff all node labels can be interpreted as element numbers according to multiVitamin/supp/molecule_dicts.py: atomic_numbers_to_elements, it also translates the labels. 
+    """
     consensus = dict()
+    is_element_numbered = all(map(lambda node: all(map(lambda l: l in atomic_number_to_element.keys(),node.label)),graph.nodes())) # if all labels can be interpreted as element numbers
     for node in graph.nodes():
-        consensus[node] = __consensus__(node)
-    return consensus
+        consensus[node] = __consensus__(node, is_element_numbered)
+    return consensus 
 
 
-def __consensus__(node):
+def __consensus__(node, condition):
     hist = dict()
-    for label in set(node.label):
+    node_set = map(lambda e: atomic_number_to_element[e], set(node.label)) if condition else set(node.label) # translate element numbers to element symbols if possible, else use normal labels
+    for l in node_set:
         hist[l] = node.label.count(l)
     hist["-"] = 0
     max = max(hist.values())
     cons = list()
-    for label in hist.keys():
-        if hist[label] == max:
-            cons.append(label)
+    for lab in hist.keys():
+        if hist[lab] == max:
+            cons.append(lab)
     return "|".join(cons)
 
 
