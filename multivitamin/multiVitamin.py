@@ -6,7 +6,7 @@ from multivitamin.basic.graph import Graph
 from multivitamin.utils.parser import parse_graph
 from multivitamin.utils.multalign import Multalign
 from multivitamin.utils.flags import parser
-from multivitamin.utils.graph_writer import write_graph, write_shorter_graph
+from multivitamin.utils.graph_writer import write_graph, write_shorter_graph, write_to_json
 from multivitamin.utils.modular_product_class import MP
 from multivitamin.supp.view_graph import create_graph
 from multivitamin.supp.view_graph import create_graphs
@@ -150,13 +150,18 @@ def save_results( multalign ):
     else:
         print("\nAll files will be saved in {}{} \n".format( os.getcwd(), path ))
 
-    # save all intermediate alignment graphs, if flag is set
+    # save result graph
     write_graph( multalign.result, path, args.output )
+
+    # save all intermediate alignment graphs, if flag is set
     if args.save_all or args.coopt:
         for graph in multalign.intermediates:
             if not graph == multalign.result:
                 write_graph( graph, path, None )
     
+    if args.representation:
+        write_to_json( multalign.result )
+
     # save end alignment graph with much shorter node ids
     if args.save_shorter:
         write_shorter_graph( multalign.result, path )

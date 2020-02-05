@@ -7,7 +7,7 @@ from multivitamin.utils.get_input import process_file, parse_scoring_matrix
 
 parser = argparse.ArgumentParser(
     description='multiVitamin - A multiple alignment tool for graphs',
-    usage='%(prog)s [ -h | -i | -c | -v | -d ] [-a] [-m] [-t] [-l] [-s] [-g] [-o]\nfor example: multiVitamin -ga subVF2 -i g1.graph g2.graph g3.graph',
+    usage='%(prog)s [ -h | -i | -c | -v | -d ] [-a] [-m] [-t] [-l] [-s] [-g] [-o]\nfor example: multiVitamin -ga subVF2 -i g1.graph g2.graph g3.graph', # add [-r]
     add_help=False,
     formatter_class=argparse.RawDescriptionHelpFormatter
 )
@@ -100,8 +100,12 @@ group2 = parser.add_argument_group(
                                       "newick.txt".
 -o, --output                        specify the name of the output graph from the 
                                       multiple alignment. The .graph extension is
-                                      automatically added 
+                                      automatically added.
 '''
+# -r, --representation              show interactive representation of the result graph 
+#                                     in XXX. This representation is saved as .html file
+#                                     in the results directory
+
 )
 opt = group2.add_argument_group()
 
@@ -168,5 +172,15 @@ opt.add_argument(
     dest='output',
     type=str,
     # help='specify the name of the output graph from the multiple alignment.'
+    help=argparse.SUPPRESS
+)
+
+# not fully implemented yet
+opt.add_argument(
+    '-r',
+    '--representation',
+    dest='representation',
+    action='store_true',
+    # help='show interactive representation of the result graph in XXX. This representation is saved as .html file in the results directory'
     help=argparse.SUPPRESS
 )
