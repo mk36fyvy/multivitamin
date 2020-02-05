@@ -15,6 +15,7 @@ Sounds exciting, so let's get started!
 
 #### Changes from 04.02 to 05.02
 - added the `-o` flag with which you can specify the name of your resulting multiple alignment graph.
+- fixed the very ugly node IDs in the output_graphs. They now look better (relatively) and are actually reparsable, i.e. realignable.
 - The scoring table layout changed, because there were issues with some editors concerning the tab spaces. This is why tabs were replaced by `labelsep` which you can specify in custom.py. The default is space. If you use labels that include spaces, you should change `labelsep` accordingly.
 - added some more comments to the functions and the code in general here and there.
 

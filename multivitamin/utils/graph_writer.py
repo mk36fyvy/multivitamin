@@ -22,15 +22,23 @@ def write_graph(graph, path, out_name):
     f.write("\n")
 
     for node in (graph.nodes):
-        if node.label == []:
-            f.write("{}\n".format( node.mult_id ))
+        mult_id_label = ""
+        for id in node.mult_id:
+            mult_id_label += id
+            mult_id_label += "°"
+        mult_id_label = mult_id_label[:-1]
+
+        node.mult_id = mult_id_label # this is only done because the graph is not used any further internally
+
+        if not node.label:
+            f.write("{}\n".format( mult_id_label ))
         else:
             label_string = ""
             for el in node.label:
                 label_string += el
                 label_string += labelsep
             label_string = label_string[:-1]
-            f.write("{};{}\n".format( node.mult_id, label_string ))
+            f.write("{};{}\n".format( mult_id_label, label_string ))
 
     f.write("\n")
 
@@ -88,44 +96,44 @@ def write_shorter_graph( graph, path ):
 
 
 def write_to_json( graph ):
+    pass
+    # f = open("{}{}/{}.shorter.graph".format( os.getcwd(), path, graph.id ), 'w+')
     
-    f = open("{}{}/{}.shorter.graph".format( os.getcwd(), path, graph.id ), 'w+')
-    
-    f.write("// {}\n".format( graph.newick ))
-    f.write("AUTHOR: {}\n".format( getpass.getuser() ))
-    f.write("#nodes;{}\n".format( len(graph.nodes) ))
-    f.write("#edges;{}\n".format( len(graph.edges) ))
-    f.write("Nodes labelled;{}\n".format( graph.nodes_are_labelled) )
-    f.write("Edges labelled;{}\n".format(graph.edges_are_labelled) )
-    f.write("Directed graph;{}\n".format( graph.is_directed ))
+    # f.write("// {}\n".format( graph.newick ))
+    # f.write("AUTHOR: {}\n".format( getpass.getuser() ))
+    # f.write("#nodes;{}\n".format( len(graph.nodes) ))
+    # f.write("#edges;{}\n".format( len(graph.edges) ))
+    # f.write("Nodes labelled;{}\n".format( graph.nodes_are_labelled) )
+    # f.write("Edges labelled;{}\n".format(graph.edges_are_labelled) )
+    # f.write("Directed graph;{}\n".format( graph.is_directed ))
 
-    f.write("\n")
+    # f.write("\n")
 
-    i = 1
-    for node in (graph.nodes):
-        node.id = i
-        if node.label == []:
-            f.write("{}\n".format( node.id ))
-        else:
-            f.write("{};".format( node.id ))
-            label_string = ""
-            for el in node.label:
-                label_string += el
-                label_string += labelsep
-            label_string = label_string[:-1]
-            f.write("{}\n".format( label_string ))
-        i += 1
+    # i = 1
+    # for node in (graph.nodes):
+    #     node.id = i
+    #     if node.label == []:
+    #         f.write("{}\n".format( node.id ))
+    #     else:
+    #         f.write("{};".format( node.id ))
+    #         label_string = ""
+    #         for el in node.label:
+    #             label_string += el
+    #             label_string += labelsep
+    #         label_string = label_string[:-1]
+    #         f.write("{}\n".format( label_string ))
+    #     i += 1
 
-    f.write("\n")
+    # f.write("\n")
 
-    if not graph.edges_are_labelled:
-        for edge in graph.edges:
-            f.write("{};{}\n".format( edge.node1.id, edge.node2.id ))
-    else:
-        for edge in graph.edges:
-            f.write("{};{};{}\n".format( edge.node1.id, edge.node2.id, edge.label ))
+    # if not graph.edges_are_labelled:
+    #     for edge in graph.edges:
+    #         f.write("{};{}\n".format( edge.node1.id, edge.node2.id ))
+    # else:
+    #     for edge in graph.edges:
+    #         f.write("{};{};{}\n".format( edge.node1.id, edge.node2.id, edge.label ))
 
-    f.close()
+    # f.close()
 
 
 
@@ -133,7 +141,7 @@ def write_to_json( graph ):
 if __name__ == '__main__':
     try:
         g = parse_graph( sys.argv[1] )
-        write_graph(g, "./")
+        write_graph(g, "./", None)
     except Exception as e:
         print(e)
         print("Please provide a graph you want to test the graphwriter with \n \t example: python3 graph_writer.py graph1.graph")
