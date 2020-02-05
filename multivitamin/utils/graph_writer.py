@@ -95,9 +95,25 @@ def write_shorter_graph( graph, path ):
     print("Saved graph as {}.shorter.graph".format( graph.id ))
 
 
-def consensus(graph , path=None, out_name=None): 
+def find_consensus_labelling(graph): 
     # path and out_name are unused until now
-    pass
+    consensus = dict()
+    for node in graph.nodes():
+        consensus[node] = __consensus__(node)
+    return consensus
+
+
+def __consensus__(node):
+    hist = dict()
+    for label in set(node.label):
+        hist[l] = node.label.count(l)
+    hist["-"] = 0
+    max = max(hist.values())
+    cons = list()
+    for label in hist.keys():
+        if hist[label] == max:
+            cons.append(label)
+    return "|".join(cons)
 
 
 def write_to_json( graph ):
