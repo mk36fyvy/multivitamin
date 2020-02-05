@@ -54,17 +54,19 @@ def parse_scoring_matrix( matrix_file ):
 
         for line in f:
             args = line.split("\t")
-            try: # upper part of table defining gap and char equality
+            if len(args)==2:
                 scoring_matrix[ (args[0],args[0]) ] = int(args[1])
                 cart_pair_check.append(args[0])
-            except Exception as e: #lower part of the table defining inequal pairs
-                print(e)
+            elif len(args)==3:
                 cart_pairs.append( (args[0],args[1]) )
                 # cart_pairs.append(args[1],args[0])
                 scoring_matrix[ (args[0],args[1]) ] = int(args[2])
                 scoring_matrix[ (args[1],args[0]) ] = int(args[2])
+            else:
+                raise Exception("Error in Scoring Matrix:/nUnable to parse: '{}'".format(line))
 
         scoring_matrix = return_missing_pairs( cart_pair_check, cart_pairs, scoring_matrix, matrix_file, gap_score )
+    print(scoring_matrix)
     return scoring_matrix
 
 

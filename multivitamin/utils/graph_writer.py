@@ -84,6 +84,8 @@ def write_shorter_graph( graph, path ):
     print("Saved graph as {}.shorter.graph".format( graph.id ))
 
 
+def consensus(graph , path=None, out_name=None): 
+    # path and out_name are unused until now
 
 if __name__ == '__main__':
     try:
