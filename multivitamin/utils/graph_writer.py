@@ -95,6 +95,11 @@ def write_shorter_graph( graph, path ):
     print("Saved graph as {}.shorter.graph".format( graph.id ))
 
 
+def consensus(graph , path=None, out_name=None): 
+    # path and out_name are unused until now
+    pass
+
+
 def write_to_json( graph ):
     pass
     # f = open("{}{}/{}.shorter.graph".format( os.getcwd(), path, graph.id ), 'w+')
@@ -134,8 +139,6 @@ def write_to_json( graph ):
     #         f.write("{};{};{}\n".format( edge.node1.id, edge.node2.id, edge.label ))
 
     # f.close()
-
-
 
 
 if __name__ == '__main__':
