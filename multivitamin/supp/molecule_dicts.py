@@ -13,9 +13,10 @@ atomic_number_to_element = {
     "19" : "K",
     "26" : "Fe",
     "35" : "Br",
-    "53" : "I"
+    "53" : "I",
+    "-"  : "-"
 }
-
+# gap to gap translation is necessary to preserve them 
 
 element_to_size = {
     "H"  : "1",
