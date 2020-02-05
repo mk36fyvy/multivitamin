@@ -114,7 +114,7 @@ opt.add_argument(
     '--algorithm',
     dest='algorithm',
     type=str,
-    default='subVF2',
+    default='SUBVF2',
     # help='indicate an alignment-algorithm (BK | VF2 | subVF2) (default: subVF2) \n Warning: VF2 is only suited if there is true graph-subgraph isomorphism!'
     help=argparse.SUPPRESS
 )
