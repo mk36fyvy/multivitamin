@@ -4,7 +4,7 @@ import getpass #to get username for AUTHOR line
 
 from multivitamin.custom import labelsep
 from multivitamin.utils.parser import parse_graph
-from multivitamin.supp.molecule_dicts import atomic_number_to_element, element_to_size
+from multivitamin.supp.molecule_dicts import atomic_number_to_element, get_size_by_element
 
 
 def write_graph(graph, path, out_name):
@@ -55,7 +55,7 @@ def write_graph(graph, path, out_name):
 
 
 def write_shorter_graph( graph, path ):
-    f = open("{}{}/{}.shorter.graph".format( os.getcwd(), path, graph.id ), 'w+')
+    f = open("{}{}{}.shorter.graph".format( os.getcwd(), path, graph.id ), 'w+')
     f.write("// {}\n".format( graph.newick ))
     f.write("AUTHOR: {}\n".format( getpass.getuser() ))
     f.write("#nodes;{}\n".format( len(graph.nodes) ))
@@ -117,9 +117,20 @@ def __consensus__(node):
 
 
 def write_to_json( graph ):
-    pass
-    # f = open("{}{}/{}.shorter.graph".format( os.getcwd(), path, graph.id ), 'w+')
     
+#     import mmap
+# 
+#     with open('example.txt', 'rb', 0) as file, \
+#         mmap.mmap(file.fileno(), 0, access=mmap.ACCESS_READ) as s:
+#         if s.find(b'blabla') != -1:
+#             print('true')
+    
+    f = open("{}{}{}.shorter.graph".format( os.getcwd(), path, graph.id ), 'w+')
+    
+    f.write('var dataset = {')
+    f.write('/t"nodes":[')
+    for node in graph.nodes:
+        f.write('{"atom": "{}", "size": {}},'.format( node.label, get_size_by_element ))
     # f.write("// {}\n".format( graph.newick ))
     # f.write("AUTHOR: {}\n".format( getpass.getuser() ))
     # f.write("#nodes;{}\n".format( len(graph.nodes) ))

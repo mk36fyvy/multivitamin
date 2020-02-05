@@ -90,6 +90,9 @@ class Node():
 
 
     def node_id( self ):
+        '''
+        returns mult_id if not empty. Else returns id
+        '''
         if self.mult_id == [] or self.mult_id == ["."]:
             return self.id
         else:
