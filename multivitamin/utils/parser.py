@@ -9,6 +9,10 @@ from multivitamin.custom import labelsep, no_label_dummy
 
 
 def parse_graph( doc ):
+    '''
+    parses a graph written in a custom .graph file format
+    '''
+
     check_list = [] #contains #nodes #edges, if they are labelled and if graph is directed
     nodes = set()
     edges = set()
@@ -26,7 +30,6 @@ def parse_graph( doc ):
             #if line is empty
             if not line:
                 indicator += 1
-                #print("Accessing block #{}".format(indicator))
                 continue
 
             #building check_list
