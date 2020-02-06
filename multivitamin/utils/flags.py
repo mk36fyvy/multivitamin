@@ -7,7 +7,7 @@ from multivitamin.utils.get_input import process_file, parse_scoring_matrix
 
 parser = argparse.ArgumentParser(
     description='multiVitamin - A multiple alignment tool for graphs',
-    usage='%(prog)s [ -h | -i | -c | -v | -d ] [-a] [-m] [-t] [-l] [-s] [-g]\nfor example: multiVitamin -ga subVF2 -i g1.graph g2.graph g3.graph',
+    usage='%(prog)s [ -h | -i | -c | -v | -d ] [-a] [-m] [-t] [-l] [-s] [-g] [-o]\nfor example: multiVitamin -ga subVF2 -i g1.graph g2.graph g3.graph', # add [-r]
     add_help=False,
     formatter_class=argparse.RawDescriptionHelpFormatter
 )
@@ -93,12 +93,19 @@ group2 = parser.add_argument_group(
 -t, --table <table>                 use a custom label scoring table. For more
                                       information, check the README.md.
 -l, --save-all                      save all the graphs produced during the alignment.
-                                      The graphs are saved as "[newick].graph"
+                                      The graphs are saved as "[newick].graph".
 -s, --save-shorter                  save an additional version of the alignment graph
-                                      with much shorter node ids
+                                      with much shorter node ids.
 -g, --save-guide                    save the alignment tree in Newick-format as
-                                      "newick.txt"
+                                      "newick.txt".
+-o, --output                        specify the name of the output graph from the 
+                                      multiple alignment. The .graph extension is
+                                      automatically added.
 '''
+# -r, --representation              show interactive representation of the result graph 
+#                                     in XXX. This representation is saved as .html file
+#                                     in the results directory
+
 )
 opt = group2.add_argument_group()
 
@@ -107,7 +114,7 @@ opt.add_argument(
     '--algorithm',
     dest='algorithm',
     type=str,
-    default='subVF2',
+    default='SUBVF2',
     # help='indicate an alignment-algorithm (BK | VF2 | subVF2) (default: subVF2) \n Warning: VF2 is only suited if there is true graph-subgraph isomorphism!'
     help=argparse.SUPPRESS
 )
@@ -156,5 +163,24 @@ opt.add_argument(
     dest='save_guide',
     action='store_true',
     # help='save the guide tree in Newick-format as "newick.txt"'
+    help=argparse.SUPPRESS
+)
+
+opt.add_argument(
+    '-o',
+    '--output',
+    dest='output',
+    type=str,
+    # help='specify the name of the output graph from the multiple alignment.'
+    help=argparse.SUPPRESS
+)
+
+# not fully implemented yet
+opt.add_argument(
+    '-r',
+    '--representation',
+    dest='representation',
+    action='store_true',
+    # help='show interactive representation of the result graph in XXX. This representation is saved as .html file in the results directory'
     help=argparse.SUPPRESS
 )
