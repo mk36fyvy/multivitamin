@@ -34,12 +34,13 @@ element_to_size = {
     "Fe" : "12",
     "Br" : "24",
     "I"  : "28",
-    "dummy" : "10"
 }
 
 
 def get_size_by_element( label ):
-    
     if label in element_to_size:
-        pass
+        return element_to_size[label]
+    else:
+        return "10"
+        
         
