@@ -102,8 +102,8 @@ def find_consensus_labelling(graph):
     Iff all node labels can be interpreted as element numbers according to multiVitamin/supp/molecule_dicts.py: atomic_numbers_to_elements, it also translates the labels. 
     """
     consensus = dict()
-    is_element_numbered = all(map(lambda node: all(map(lambda l: l in atomic_number_to_element.keys(),node.label)),graph.nodes())) # if all labels can be interpreted as element numbers
-    for node in graph.nodes():
+    is_element_numbered = all(map(lambda node: all(map(lambda l: l in atomic_number_to_element, node.label)),graph.nodes)) # if all labels can be interpreted as element numbers
+    for node in graph.nodes:
         consensus[node] = __consensus__(node, is_element_numbered)
     return consensus 
 
@@ -114,70 +114,45 @@ def __consensus__(node, condition):
     for l in node_set:
         hist[l] = node.label.count(l)
     hist["-"] = 0
-    max = max(hist.values())
+    maxim = max(hist.values())
     cons = list()
     for lab in hist.keys():
-        if hist[lab] == max:
+        if hist[lab] == maxim:
             cons.append(lab)
     return "|".join(cons)
 
 
 def write_to_json( graph ):
+    print(os.getcwd())
+    f = open("{}.json".format( graph.id ), 'w+')
+    try:
+        f.write('var dataset = {')
+        f.write('\n\t"nodes":[\n')
+        sorted_nodes = list(graph.nodes)
+        node_num = {sorted_nodes[n]:n for n in range(len(sorted_nodes))}
+        consensus_labels = find_consensus_labelling(graph)
+        b_first = True
+        for node in sorted_nodes:
+            if not b_first:
+                f.write(',\n')
+            f.write('\t\t{{"atom": "{}", "size": {} }}'.format( consensus_labels[node], get_size_by_element(consensus_labels[node])))
+            b_first = False
+        f.write('\n\t],\n\t"links":[\n')
+        b_first = True
+        for edge in graph.edges:
+            if not b_first:
+                f.write(',\n')
+            f.write('\t\t{{"source": {}, "target": {}, "bond": 1 }}'.format( node_num[edge.node1], node_num[edge.node2]))
+            b_first = False
+        f.write('\n\t]\n}')
+    finally:
+        f.close()
     
-#     import mmap
-# 
-#     with open('example.txt', 'rb', 0) as file, \
-#         mmap.mmap(file.fileno(), 0, access=mmap.ACCESS_READ) as s:
-#         if s.find(b'blabla') != -1:
-#             print('true')
     
-    f = open("{}{}{}.shorter.graph".format( os.getcwd(), path, graph.id ), 'w+')
-    
-    f.write('var dataset = {')
-    f.write('/t"nodes":[')
-    for node in graph.nodes:
-        f.write('{"atom": "{}", "size": {}},'.format( node.label, get_size_by_element ))
-    # f.write("// {}\n".format( graph.newick ))
-    # f.write("AUTHOR: {}\n".format( getpass.getuser() ))
-    # f.write("#nodes;{}\n".format( len(graph.nodes) ))
-    # f.write("#edges;{}\n".format( len(graph.edges) ))
-    # f.write("Nodes labelled;{}\n".format( graph.nodes_are_labelled) )
-    # f.write("Edges labelled;{}\n".format(graph.edges_are_labelled) )
-    # f.write("Directed graph;{}\n".format( graph.is_directed ))
-
-    # f.write("\n")
-
-    # i = 1
-    # for node in (graph.nodes):
-    #     node.id = i
-    #     if node.label == []:
-    #         f.write("{}\n".format( node.id ))
-    #     else:
-    #         f.write("{};".format( node.id ))
-    #         label_string = ""
-    #         for el in node.label:
-    #             label_string += el
-    #             label_string += labelsep
-    #         label_string = label_string[:-1]
-    #         f.write("{}\n".format( label_string ))
-    #     i += 1
-
-    # f.write("\n")
-
-    # if not graph.edges_are_labelled:
-    #     for edge in graph.edges:
-    #         f.write("{};{}\n".format( edge.node1.id, edge.node2.id ))
-    # else:
-    #     for edge in graph.edges:
-    #         f.write("{};{};{}\n".format( edge.node1.id, edge.node2.id, edge.label ))
-
-    # f.close()
-
-
 if __name__ == '__main__':
     try:
         g = parse_graph( sys.argv[1] )
-        write_graph(g, "./", None)
+        write_to_json(g)
     except Exception as e:
-        print(e)
         print("Please provide a graph you want to test the graphwriter with \n \t example: python3 graph_writer.py graph1.graph")
+        raise(e)
