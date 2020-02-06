@@ -40,11 +40,11 @@ class subVF2():
 
         # Initializing the two core dictionaries that store each node of the
         # Corresponding graph as key and the node of the other graph where it maps
-        # As soon as it mapps for now we use self.null_n as inital value
+        # As soon as it maps for now we use self.null_n as initial value
         self.core_s = self.small_g.gen_dict( self.null_n )
         self.core_l = self.large_g.gen_dict( self.null_n )
 
-        # initialiazing the terminal sets for each graph. These are dictionaries
+        # initializing the terminal sets for each graph. These are dictionaries
         # that store the node as values and the recursion depth as keys where the
         # nodes entered the corresponding set. For now we initialiazing them with 0 '''
         self.in_s = self.small_g.gen_dict( 0 )
@@ -57,7 +57,7 @@ class subVF2():
 
         # The following attributes are used for subgraph-subgraph matching.
         self.found_complete_matching = False # to turn off subsub search
-        self.max_depth_matching = -1
+        self.max_depth_matching = 0 #-1
         self.biggest_matches = [] #saves all co-optimals
 
 
@@ -75,15 +75,27 @@ class subVF2():
         td = self.set_inout( last_mapped[0], last_mapped[1], depth )
         p = self.compute_p(td)
 
+        used_tuples = 0
         found_pair = False
         for tup in p:
-
+            
+            used_tuples += 1
+            free_nodes = [node for node in self.core_s if self.core_s[node] != self.null_n] 
+            #testing a new quit condition
+            if len(free_nodes) - used_tuples < self.max_depth_matching - depth +1:
+                print("_________________________________________")
+                print ("The following mapping at depth {} cannot lead to a mapping deeper than {}: \n{}".format( depth, self.max_depth_matching, self.core_s ))
+                print("_________________________________________")
+                return 
+            
+            
             if self.is_feasible(tup[0], tup[1], depth, td):
                 found_pair = True
                 self.compute_s_( tup[0], tup[1] )
 
                 self.match( tup, depth+1 )
-
+        
+        
         # if the matching isn't continued and the current depth is higher than/
         # equal to the max depth reached until now: save the subgraph
         if not found_pair and not self.found_complete_matching:
@@ -91,6 +103,11 @@ class subVF2():
                 self.max_depth_matching = depth
                 self.biggest_matches = []
                 self.biggest_matches.append(self.core_s.copy())
+                print()
+                print(depth)
+                print("is equal to {}".format(self.max_depth_matching))
+                pprint.pprint(self.biggest_matches)
+                print()
             elif depth == self.max_depth_matching:
                 self.biggest_matches.append(self.core_s.copy())
 
@@ -99,7 +116,7 @@ class subVF2():
 
 
         #if we returned to the start and no "complete" matching has been found
-        if depth == 0 and not self.found_complete_matching:
+        elif depth == 0 and not self.found_complete_matching:
             self.found_complete_matching = True
 
             scoring = Scoring( len(self.g.nodes), len(self.h.nodes),self.biggest_matches, self.scoring_matrix )
