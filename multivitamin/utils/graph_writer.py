@@ -1,6 +1,7 @@
 import sys
 import os
 import getpass #to get username for AUTHOR line
+import io
 from numpy.core.defchararray import isdecimal
 
 from multivitamin.custom import labelsep
@@ -73,6 +74,7 @@ def write_shorter_graph( graph, path ):
         if node.label == []:
             f.write("{}\n".format( node.id ))
         else:
+            dir_path = os.path.dirname(os.path.realpath(__file__))
             f.write("{};".format( node.id ))
             label_string = ""
             for el in node.label:
@@ -122,10 +124,27 @@ def __consensus__(node, condition):
     return "|".join(cons)
 
 
-def write_to_json( graph ):
-    print(os.getcwd())
-    f = open("{}.json".format( graph.id ), 'w+')
+def generate_html_vis(graph):
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    print(dir_path)
+    template = open("{}/template.html".format(dir_path), 'r') #make windows compatible
     try:
+        vis = open("{}.visualization.html".format( graph.id ), 'w+')
+        for line in template.readlines():
+            if line.startswith('{DATASET}'):
+                vis.write(write_to_json(graph))
+            else:
+                vis.write(line)
+    finally:
+        template.close()
+        vis.close()
+    
+
+def write_to_json( graph ):
+    #print(os.getcwd())
+    #f = open("{}.json".format( graph.id ), 'w+')
+    try:
+        f = io.StringIO()
         f.write('var dataset = {')
         f.write('\n\t"nodes":[\n')
         sorted_nodes = list(graph.nodes)
@@ -146,13 +165,16 @@ def write_to_json( graph ):
             b_first = False
         f.write('\n\t]\n}')
     finally:
+        ret = f.getvalue()
         f.close()
+        return ret
+    #create flag to save json to disk
     
     
 if __name__ == '__main__':
     try:
         g = parse_graph( sys.argv[1] )
-        write_to_json(g)
+        generate_html_vis(g)
     except Exception as e:
         print("Please provide a graph you want to test the graphwriter with \n \t example: python3 graph_writer.py graph1.graph")
         raise(e)
