@@ -168,7 +168,7 @@ def write_to_json( graph ):
         for node in sorted_nodes:
             if not b_first:
                 f.write(',\n')
-            f.write('\t\t{{"atom": "{}", "size": {}, "score": {} }}'.format( consensus_labels[node], get_size_by_element(consensus_labels[node], score_dict[node])))
+            f.write('\t\t{{"atom": "{0}", "size": {1}, "score": {0}{2} }}'.format( consensus_labels[node], get_size_by_element(consensus_labels[node], score_dict[node])))
             b_first = False
         f.write('\n\t],\n\t"links":[\n')
         b_first = True
