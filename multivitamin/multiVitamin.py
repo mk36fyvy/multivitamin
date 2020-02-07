@@ -1,3 +1,5 @@
+#! bin/env/ python3
+
 import os
 import pprint
 
@@ -23,7 +25,7 @@ FLAGS:
 -n save_guide
 -s save_all
 -v view
--vm view seperate
+-vm view separate
 '''
 
 args = parser.parse_args()
