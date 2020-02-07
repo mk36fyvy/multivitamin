@@ -103,17 +103,30 @@ def find_consensus_labelling(graph):
     Takes a graph and returns a dictionary with it's nodes as keys and the appropriate consensus labels as values.
     Iff all node labels can be interpreted as element numbers according to multiVitamin/supp/molecule_dicts.py: atomic_numbers_to_elements, it also translates the labels. 
     """
+    
+    def classify_scores(score):
+        if score is not None:
+            if score <= 0.5 :
+                return 51
+            elif score <= 0.8:
+                return 80
+            else:
+                return 100
+        else: 
+            return -1
+    
     consensus = dict()
     is_element_numbered = all(map(lambda node: all(map(lambda l: l in atomic_number_to_element, node.label)),graph.nodes)) # if all labels can be interpreted as element numbers
     for node in graph.nodes:
-        consensus[node] = __consensus__(node, is_element_numbered)
-    return consensus 
+        consensus[node], temp_scores[node] = __consensus__(node, is_element_numbered)
+    scores = {k: classify_scores(v) for k, v in temp_scores.items()}
+    return (consensus, scores) 
 
 
 def __consensus__(node, condition):
     hist = dict()
-    node_set = map(lambda e: atomic_number_to_element[e], set(node.label)) if condition else set(node.label) # translate element numbers to element symbols if possible, else use normal labels
-    for l in node_set:
+    node_label_set = map(lambda e: atomic_number_to_element[e], set(node.label)) if condition else set(node.label) # translate element numbers to element symbols if possible, else use normal labels
+    for l in node_label_set:
         hist[l] = node.label.count(l)
     hist["-"] = 0
     maxim = max(hist.values())
@@ -121,7 +134,8 @@ def __consensus__(node, condition):
     for lab in hist.keys():
         if hist[lab] == maxim:
             cons.append(lab)
-    return "|".join(cons)
+    temp_score = hist[cons[0]]/sum(hist.values()) if len(cons) else None
+    return ("|".join(cons), temp_score)
 
 
 def generate_html_vis(graph):
@@ -149,12 +163,12 @@ def write_to_json( graph ):
         f.write('\n\t"nodes":[\n')
         sorted_nodes = list(graph.nodes)
         node_num = {sorted_nodes[n]:n for n in range(len(sorted_nodes))}
-        consensus_labels = find_consensus_labelling(graph)
+        consensus_labels, score_dict = find_consensus_labelling(graph)
         b_first = True
         for node in sorted_nodes:
             if not b_first:
                 f.write(',\n')
-            f.write('\t\t{{"atom": "{}", "size": {} }}'.format( consensus_labels[node], get_size_by_element(consensus_labels[node])))
+            f.write('\t\t{{"atom": "{0}", "size": {1}, "score": {0}{2} }}'.format( consensus_labels[node], get_size_by_element(consensus_labels[node], score_dict[node])))
             b_first = False
         f.write('\n\t],\n\t"links":[\n')
         b_first = True
