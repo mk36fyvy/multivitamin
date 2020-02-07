@@ -57,7 +57,7 @@ class subVF2():
 
         # The following attributes are used for subgraph-subgraph matching.
         self.found_complete_matching = False # to turn off subsub search
-        self.max_depth_matching = 0 #-1
+        self.max_depth_matching = 0
         self.biggest_matches = [] #saves all co-optimals
 
 
@@ -80,9 +80,9 @@ class subVF2():
         for tup in p:
             
             used_tuples += 1
-            free_nodes = [node for node in self.core_s if self.core_s[node] != self.null_n] 
+            free_nodes = [node for node in self.core_s if self.core_s[node] == self.null_n] 
             #testing a new quit condition
-            if len(free_nodes) - used_tuples < self.max_depth_matching - depth +1:
+            if len(free_nodes) - used_tuples < self.max_depth_matching - depth -4:
                 print("_________________________________________")
                 print ("The following mapping at depth {} cannot lead to a mapping deeper than {}: \n{}".format( depth, self.max_depth_matching, self.core_s ))
                 print("_________________________________________")
@@ -280,7 +280,7 @@ class subVF2():
             return cp
 
 
-    def legal_max(self, t_dict):
+    def legal_max(self, t_dict): # use sorted dict
         '''returns node from t_dict with max id'''
         max_node = self.null_n
         for node in t_dict:
