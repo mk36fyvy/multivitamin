@@ -1,5 +1,7 @@
 import sys
 import pprint
+import threading
+import queue 
 
 from multivitamin.custom import check_semantics
 from multivitamin.basic.node import Node
@@ -8,7 +10,38 @@ from multivitamin.utils.parser import parse_graph
 from multivitamin.utils.scoring import Scoring
 
 
-class subVF2():
+class myThread (threading.Thread):
+       def __init__(self, threadID, name, counter):
+      threading.Thread.__init__(self)
+      self.threadID = threadID
+      self.name = name
+      self.counter = counter
+   def run(self):
+      print "Starting " + self.name
+      # Get lock to synchronize threads
+      threadLock.acquire()
+      print_time(self.name, self.counter, 3)
+      # Free lock to release next thread
+      threadLock.release()
+
+
+
+
+def process_data(threadName, q):
+       while not exitFlag:
+      queueLock.acquire()
+         if not workQueue.empty():
+            data = q.get()
+            queueLock.release()
+            print "%s processing %s" % (threadName, data)
+         else:
+            queueLock.release()
+         time.sleep(1)
+
+
+
+
+class parVF2():
 
     def __init__(self, g, h, scoring_matrix=None):
 
@@ -60,6 +93,20 @@ class subVF2():
         self.max_depth_matching = 0 #-1
         self.biggest_matches = [] #saves all co-optimals
 
+        threadList = ["Thread-1", "Thread-2"]
+        nameList = ["One", "Two", "Three", "Four", "Five"]
+        queueLock = threading.Lock()
+        workQueue = Queue.Queue(10)
+        threads = []
+        threadID = 1
+
+        # Create new threads
+        for tName in threadList:
+            thread = myThread(threadID, tName, workQueue)
+            thread.start()
+            threads.append(thread)
+            threadID += 1
+
 
     def match( self, last_mapped=(Node("-1", []), Node("-1", [])), depth=0 ):
 
@@ -78,15 +125,83 @@ class subVF2():
         used_tuples = 0
         found_pair = False
         for tup in p:
-            if depth == 0:
-                print("Came back to 0")
+            
+
             used_tuples += 1
             free_nodes = [node for node in self.core_s if self.core_s[node] == self.null_n] 
             #testing a new quit condition
-            if len(free_nodes) - used_tuples < self.max_depth_matching - depth -2:
+            if len(free_nodes) - used_tuples < self.max_depth_matching - depth -3:
                 # print("_________________________________________")
                 # print ("The following mapping at depth {} cannot lead to a mapping deeper than {}: \n{}".format( depth, self.max_depth_matching, self.core_s ))
-                #print ("The mapping at depth {} cannot lead to a mapping deeper than {}.".format( depth, self.max_depth_matching ))
+                print ("The mapping at depth {} cannot lead to a mapping deeper than {}.".format( depth, self.max_depth_matching ))
+                # print("_________________________________________")
+                break
+            
+            
+            if self.is_feasible(tup[0], tup[1], depth, td):
+                found_pair = True
+                self.compute_s_( tup[0], tup[1] )
+
+                self.match( tup, depth+1 )
+            
+            asyncio.gather(
+                par_task_match( self, last_mapped=(Node("-1", []), Node("-1", [])), depth=0 )
+            )
+        
+        # if the matching isn't continued and the current depth is higher than/
+        # equal to the max depth reached until now: save the subgraph
+        if not found_pair and not self.found_complete_matching:
+            if depth > self.max_depth_matching:
+                self.max_depth_matching = depth
+                self.biggest_matches = []
+                self.biggest_matches.append(self.core_s.copy())
+                print()
+                print(depth)
+                print("is equal to {}".format(self.max_depth_matching))
+                pprint.pprint(self.biggest_matches)
+                print()
+            elif depth == self.max_depth_matching:
+                self.biggest_matches.append(self.core_s.copy())
+
+        if depth > 0:
+            self.restore_ds( last_mapped[0], last_mapped[1], depth )
+
+
+        #if we returned to the start and no "complete" matching has been found
+        elif depth == 0 and not self.found_complete_matching:
+            self.found_complete_matching = True
+
+            scoring = Scoring( len(self.g.nodes), len(self.h.nodes),self.biggest_matches, self.scoring_matrix )
+            scoring.score()
+
+            self.append_result_subgraph( scoring.get_best_result() )
+            return
+
+
+    def par_task_match( self, last_mapped=(Node("-1", []), Node("-1", [])), depth=0 ):
+        if self.s_in_small_g():
+            self.found_complete_matching = True
+            scoring = Scoring( len(self.g.nodes), len(self.h.nodes), [self.core_s], self.scoring_matrix )
+            scoring.score()
+
+            self.append_result_subgraph( scoring.get_best_result() )
+            self.restore_ds( last_mapped[0], last_mapped[1], depth )
+            return
+
+        td = self.set_inout( last_mapped[0], last_mapped[1], depth )
+        p = self.compute_p(td)
+
+        used_tuples = 0
+        found_pair = False
+        for tup in p:
+            
+            used_tuples += 1
+            free_nodes = [node for node in self.core_s if self.core_s[node] == self.null_n] 
+            #testing a new quit condition
+            if len(free_nodes) - used_tuples < self.max_depth_matching - depth -3:
+                # print("_________________________________________")
+                # print ("The following mapping at depth {} cannot lead to a mapping deeper than {}: \n{}".format( depth, self.max_depth_matching, self.core_s ))
+                print ("The mapping at depth {} cannot lead to a mapping deeper than {}.".format( depth, self.max_depth_matching ))
                 # print("_________________________________________")
                 break
             
@@ -126,6 +241,9 @@ class subVF2():
 
             self.append_result_subgraph( scoring.get_best_result() )
             return
+
+
+
 
 
     def s_in_small_g(self):

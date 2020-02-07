@@ -107,6 +107,14 @@ def main():
                 fake_align.intermediates.append( result_graph )
             save_results( fake_align )
 
+        elif args.algorithm == "PARVF2":
+            parvf2 = parVF2( graphs[0], graphs[1] )
+            parvf2.match()
+            for result_graph in parvf2.result_graphs:
+                result_graph.create_undirected_edges()
+                fake_align.intermediates.append( result_graph )
+            save_results( fake_align )
+
         else:
             raise Exception("Invalid algorithm name!")
 
