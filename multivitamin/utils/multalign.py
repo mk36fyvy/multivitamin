@@ -130,6 +130,8 @@ class Multalign():
 
     # ---- HELPER METHODS ------------------------------------------------------------------------------------
 
+    
+    
     def make_graph_real( self, graph ):
         '''
         takes an alignment consisting only of nodes with neighbours, creates the

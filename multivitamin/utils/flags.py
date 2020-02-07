@@ -2,7 +2,7 @@ import argparse, os
 from argparse import RawTextHelpFormatter
 
 from multivitamin.utils.parser import parse_graph
-from multivitamin.utils.get_input import process_file, parse_scoring_matrix
+from multivitamin.utils.get_input import process_file, parse_scoring_matrix, parse_guide_tree
 
 
 parser = argparse.ArgumentParser(
@@ -88,12 +88,16 @@ group2 = parser.add_argument_group(
 -a, --algorithm <BK|VF2|subVF2>     indicate an alignment-algorithm (default: BK)
                                       Warning: VF2 is only suited if there is true
                                       graph-subgraph isomorphism!
--m, --mult <greedy>                 indicate the multiple alignment method. "greedy"
-                                      is the default and only one available as of now.
+-m, --mult <greedy|'file name'>     indicate the multiple alignment method. "greedy"
+                                      is the default method. 
+                                      ***NEW*** You can provide a guide tree yourself 
+                                      by assigning a one line file with the graph names 
+                                      in Newick format. 
 -t, --table <table>                 use a custom label scoring table. For more
                                       information, check the README.md.
 -l, --save-all                      save all the graphs produced during the alignment.
-                                      The graphs are saved as "[newick].graph".
+                                      The graphs are saved as "[newick].graph", unless
+                                      -o is used.
 -s, --save-shorter                  save an additional version of the alignment graph
                                       with much shorter node ids.
 -g, --save-guide                    save the alignment tree in Newick-format as
@@ -123,7 +127,7 @@ opt.add_argument(
     '-m',
     '--mult',
     dest='mult',
-    type=str,
+    type=parse_guide_tree,
     default='GREEDY',
     # help='choose a multiple alignment method (default: greedy) \n greedy is the only one available at the moment'
     help=argparse.SUPPRESS

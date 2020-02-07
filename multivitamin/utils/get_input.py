@@ -37,6 +37,13 @@ def process_directory( directory_name ):
     return graphs
 
 
+def parse_guide_tree( method ):
+    
+    if method == "GREEDY":
+        return "GREEDY"
+    else:
+        
+
 def parse_scoring_matrix( matrix_file ):
     '''
     parses the scoring table if given with -t
@@ -105,6 +112,9 @@ def return_missing_pairs( char_list, cart_pairs, scoring_matrix, scoring_matrix_
         print("If you want to forbid the mapping of a specific pair, change the check_semantics() function in custom.py accordingly.")
         print()
     return scoring_matrix
+
+
+
 
 def get_all_cart_pairs( char_list ):
     '''
