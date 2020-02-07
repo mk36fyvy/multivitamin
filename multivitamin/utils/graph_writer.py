@@ -116,6 +116,7 @@ def find_consensus_labelling(graph):
             return -1
     
     consensus = dict()
+    temp_scores = dict()
     is_element_numbered = all(map(lambda node: all(map(lambda l: l in atomic_number_to_element, node.label)),graph.nodes)) # if all labels can be interpreted as element numbers
     for node in graph.nodes:
         consensus[node], temp_scores[node] = __consensus__(node, is_element_numbered)
@@ -157,31 +158,29 @@ def generate_html_vis(graph):
 def write_to_json( graph ):
     #print(os.getcwd())
     #f = open("{}.json".format( graph.id ), 'w+')
-    try:
-        f = io.StringIO()
-        f.write('var dataset = {')
-        f.write('\n\t"nodes":[\n')
-        sorted_nodes = list(graph.nodes)
-        node_num = {sorted_nodes[n]:n for n in range(len(sorted_nodes))}
-        consensus_labels, score_dict = find_consensus_labelling(graph)
-        b_first = True
-        for node in sorted_nodes:
-            if not b_first:
-                f.write(',\n')
-            f.write('\t\t{{"atom": "{0}", "size": {1}, "score": {0}{2} }}'.format( consensus_labels[node], get_size_by_element(consensus_labels[node], score_dict[node])))
-            b_first = False
-        f.write('\n\t],\n\t"links":[\n')
-        b_first = True
-        for edge in graph.edges:
-            if not b_first:
-                f.write(',\n')
-            f.write('\t\t{{"source": {}, "target": {}, "bond": 1 }}'.format( node_num[edge.node1], node_num[edge.node2]))
-            b_first = False
-        f.write('\n\t]\n}')
-    finally:
-        ret = f.getvalue()
-        f.close()
-        return ret
+    f = io.StringIO()
+    f.write('var dataset = {')
+    f.write('\n\t"nodes":[\n')
+    sorted_nodes = list(graph.nodes)
+    node_num = {sorted_nodes[n]:n for n in range(len(sorted_nodes))}
+    consensus_labels, score_dict = find_consensus_labelling(graph)
+    b_first = True
+    for node in sorted_nodes:
+        if not b_first:
+            f.write(',\n')
+        f.write('\t\t{{"atom": "{0}", "size": {1}, "score": "{0}{2}" }}'.format( consensus_labels[node], get_size_by_element(consensus_labels[node]), score_dict[node]))
+        b_first = False
+    f.write('\n\t],\n\t"links":[\n')
+    b_first = True
+    for edge in graph.edges:
+        if not b_first:
+            f.write(',\n')
+        f.write('\t\t{{"source": {}, "target": {}, "bond": 1 }}'.format( node_num[edge.node1], node_num[edge.node2]))
+        b_first = False
+    f.write('\n\t]\n}')
+    ret = f.getvalue()
+    f.close()
+    return ret
     #create flag to save json to disk
     
     
