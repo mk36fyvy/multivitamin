@@ -186,6 +186,11 @@ class Multalign():
             subvf2.match()
             return subvf2.results
 
+        elif self.algorithm == "PARVF2":
+            parvf2 = parVF2( graph1, graph2, self.scoring_matrix )
+            parvf2.match()
+            return subvf2.results
+
 
     def generate_graph_bools( self, graph ):
         if not list(graph.nodes)[0].label == "":
