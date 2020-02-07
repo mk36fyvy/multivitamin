@@ -69,6 +69,11 @@ class Multalign():
         elif self.method == "PROGRESSIVE":
             raise AttributeError("This is not yet implemented, sorry! Please use the default setting.")
             exit()
+            
+        else:
+            print("Aligning with a given guide tree")
+            self.guided_alignment()
+            pass 
 
 
     def greedy( self ):
@@ -127,6 +132,11 @@ class Multalign():
             raise Exception("VF2 could not produce a multiple alignment of all the given graphs. \n The classical VF2 algorithm can only process *graph-subgraph*-isomorphism. \n Please consider using subVF2 algorithm instead.")
 
         self.multalign()
+        
+        
+    def guided_alignment(self):
+        print("here comes an algorithm")
+        pass
 
     # ---- HELPER METHODS ------------------------------------------------------------------------------------
 
