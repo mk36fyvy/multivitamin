@@ -74,6 +74,7 @@ def main():
         print("Calculating alignment using {} algorithm...".format( args.algorithm ))
 
         if args.algorithm == "BK":
+            print("!WARNING!: Bron-Kerbosch is quite slow. You might want to use subVF2 algorithm. Just think about it. You've got the time, trust me.")
             mp = MP( graphs[0], graphs[1] )
             bk = BK( mp.g, mp.h )
             x = set()
@@ -92,6 +93,7 @@ def main():
             save_results( fake_align )
 
         elif args.algorithm == "VF2":
+            print("!WARNING!: VF2 will not give you any output, if there is no graph-subgraph-isomorphism. If you are looking for subgraph-subgraph-isomorphism, please use subVF2 algorithm")
             vf2 = VF2( graphs[0], graphs[1] )
             vf2.match()
             for result_graph in vf2.result_graphs:

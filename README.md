@@ -13,6 +13,11 @@ Sounds exciting, so let's get started!
 
 ## Comments for practical course
 
+#### Changes from 07.02 to 10.02
+- added `-r`, a new dynamic, interactive graph representation from the consensus graph (example: `multiVitamin -ri <g1.graph> <g2.graph>` ). The script takes the string which appears most often in the label list. The nodes are color coded: `multiVitamin` recognizes elements and atomic numbers and gives them approprite colors. If an element occurs more often in a node label, the node's color gets more dark. If an element is missing, simply add it in multivitamin/supp/molecule_dicts.py. (#Coming soon#: Hovering over a node displays its original label list)
+- Added a progress bar to `subVF2` that gives (little) indication on the estimated progress (it counts how many times VF2 has returned to 0 depth, that is, has rechosen the first two mapped nodes).
+-  
+
 #### Changes from 04.02 to 05.02
 - added the `-o` flag with which you can specify the name of your resulting multiple alignment graph.
 - fixed the very ugly node IDs in the output_graphs. They now look better (relatively) and are actually reparsable, i.e. realignable. Nonetheless, you might want to use the graph with shorter IDs generated with `-s` if you are realigning it.

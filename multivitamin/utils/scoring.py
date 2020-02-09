@@ -45,8 +45,8 @@ class Scoring():
         alignment with labels (same labels are rewarded, gaps are punished)
         '''
         
-        self.gap_score = -1
-        exact_match_score = 4
+        self.gap_score = 0
+        exact_match_score = 1
         for res in self.results:
 
             graph_score = 0
@@ -69,12 +69,14 @@ class Scoring():
 
                     for el1 in node_labels:
                         for el2 in mapping_labels:
-                            if "-" in (el1, el2):
+                            if "-" in el1:
+                                node_score += self.gap_score
+                            elif "-" in el2:
                                 node_score += self.gap_score
                             elif el1 == el2:
                                 node_score += exact_match_score
-                else:
-                    node_score += self.gap_score * node_label_len * mapping_label_len
+                # else:
+                #     node_score += self.gap_score * node_label_len * mapping_label_len
 
                 graph_score += node_score
 

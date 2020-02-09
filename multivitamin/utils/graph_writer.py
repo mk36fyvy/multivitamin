@@ -100,8 +100,10 @@ def write_shorter_graph( graph, path ):
 
 def find_consensus_labelling(graph):
     """
-    Takes a graph and returns a dictionary with it's nodes as keys and the appropriate consensus labels as values.
-    Iff all node labels can be interpreted as element numbers according to multiVitamin/supp/molecule_dicts.py: atomic_numbers_to_elements, it also translates the labels. 
+    Takes a graph and returns a dictionary with it's nodes as keys and the appropriate 
+    consensus labels as values.
+    Iff all node labels can be interpreted as atomic numbers according to multiVitamin/supp/molecule_dicts.py: 
+    atomic_numbers_to_elements, it also translates the labels. 
     """
     
     def classify_scores(score):
