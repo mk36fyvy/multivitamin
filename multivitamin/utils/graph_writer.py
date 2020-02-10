@@ -177,9 +177,13 @@ def write_to_json( graph ):
     consensus_labels, score_dict = find_consensus_labelling(graph)
     b_first = True
     for node in sorted_nodes:
+        label_str = "[ "
+        for el in node.label:
+            label_str += "{}  ".format(el)
+        label_str += "]"
         if not b_first:
             f.write(',\n')
-        f.write('\t\t{{"atom": "{0}", "size": {1}, "score": "{0}{2}" }}'.format( consensus_labels[node], get_size_by_element(consensus_labels[node]), score_dict[node]))
+        f.write('\t\t{{"atom": "{0}", "size": {1}, "score": "{0}{2}", "alignment": "{3}" }}'.format( consensus_labels[node], get_size_by_element(consensus_labels[node]), score_dict[node], label_str))
         b_first = False
     f.write('\n\t],\n\t"links":[\n')
     b_first = True
