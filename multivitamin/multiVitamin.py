@@ -8,7 +8,7 @@ from multivitamin.basic.graph import Graph
 from multivitamin.utils.parser import parse_graph
 from multivitamin.utils.multalign import Multalign
 from multivitamin.utils.flags import parser
-from multivitamin.utils.graph_writer import write_graph, write_shorter_graph, write_to_json
+from multivitamin.utils.graph_writer import write_graph, write_shorter_graph, generate_html_vis
 from multivitamin.utils.modular_product_class import MP
 from multivitamin.supp.view_graph import create_graph
 from multivitamin.supp.view_graph import create_graphs
@@ -16,21 +16,11 @@ from multivitamin.algorithms.bk_pivot_class import BK
 from multivitamin.algorithms.vf2_beauty import VF2
 from multivitamin.algorithms.vf2_subsub import subVF2
 
-'''
-FLAGS:
--a BK VF2 SUBVF2
--c use algorithm for single alignment and save co-optimals
--g guide
--m save in list as input graphs
--n save_guide
--s save_all
--v view
--vm view separate
-'''
+
 
 args = parser.parse_args()
 args.algorithm = args.algorithm.upper()
-args.mult = args.mult.upper()
+# args.mult = args.mult.upper()
 
 def main():
 
@@ -55,6 +45,10 @@ def main():
             graphs = args.files[0]
         else:
             graphs = args.files
+
+        if graph_is_double( graphs ):
+            raise InterruptedError("You provided at least one graph twice which is not allowed. Please rename one file if you wish to include a self-match. ")
+
         multalign = Multalign( graphs, args.algorithm, args.mult, args.save_all, args.table )
         print("Calculating multiple alignment with {} algorithm...".format( args.algorithm ))
         multalign.multalign()
@@ -136,6 +130,15 @@ def main():
         raise Exception("No graph was parsed from the command-line")
 
 
+def graph_is_double( graphs ):
+    i = 1
+    for graph1 in graphs[:-1]:
+        for graph2 in graphs[i:]:
+            if graph1.id == graph2.id:
+                return True
+        i += 1
+    return False
+
 def save_results( multalign ):
     '''
     saves the results relative to flags specified by the user
@@ -151,6 +154,7 @@ def save_results( multalign ):
             print ("Creation of the directory %s failed" % path)
         else:
             print ("Successfully created the directory {}{}\n All files will be saved here.".format( os.getcwd(), path ))
+            print()
     else:
         print("\nAll files will be saved in {}{} \n".format( os.getcwd(), path ))
 
@@ -162,9 +166,9 @@ def save_results( multalign ):
         for graph in multalign.intermediates:
             if not graph == multalign.result:
                 write_graph( graph, path, None )
-    
+
     if args.representation:
-        write_to_json( multalign.result )
+        generate_html_vis( path, multalign.result )
 
     # save end alignment graph with much shorter node ids
     if args.save_shorter:
@@ -176,7 +180,7 @@ def save_results( multalign ):
         f.write("{}\t{}\n".format( abbrev, id))
     f.close()
 
-    print("")
+    # print("")
     print("Saved graph id abbreviations as graph_abbreviations.txt")
 
     # save newick tree in easily parseable txt file

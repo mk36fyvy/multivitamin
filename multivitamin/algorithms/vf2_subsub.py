@@ -1,7 +1,7 @@
 import sys
 import pprint
 
-from multivitamin.custom import check_semantics, forbidden_matchings, force_exact_matching
+from multivitamin.custom import check_semantics
 from multivitamin.basic.node import Node
 from multivitamin.basic.graph import Graph
 from multivitamin.utils.parser import parse_graph
@@ -20,7 +20,7 @@ class subVF2():
         else:
             self.small_g = g
             self.large_g = h
-        
+
         self.scoring_matrix = scoring_matrix if scoring_matrix else '-1'
 
         # this null_node is used to indicate an "empty" mapping
@@ -82,7 +82,7 @@ class subVF2():
             if depth == 0:
                 print_progress_bar(self.i, len(self.large_g.nodes), prefix = 'Estimated progress:', suffix = 'Aligning {} and {}'.format( self.small_g.id, self.large_g.id ), length = 50)
                 self.i += 1
-                
+
             if self.is_feasible(tup[0], tup[1], depth, td):
                 found_pair = True
                 self.compute_s_( tup[0], tup[1] )
@@ -156,7 +156,7 @@ class subVF2():
     def is_feasible( self, n ,m, depth, td):
         '''
         first, checks zero_look ahead (if there are neighbours of the candidate pair that
-        are in the current mapping, they have to be mapped to each other) then, checks some 
+        are in the current mapping, they have to be mapped to each other) then, checks some
         semantic conditions specified in check_semantics which is imported from
         multivitamin/custom.py
         '''
@@ -246,7 +246,7 @@ class subVF2():
 
     def cart_p1( self, node_dict, t_max ):
         """
-        creates the cartesian product of the node set in node_dict that are in terminal sets 
+        creates the cartesian product of the node set in node_dict that are in terminal sets
         (which means they are mapped to null node in core and do not have a depth of 0)
         """
         cp = set()
@@ -258,9 +258,9 @@ class subVF2():
     def cart_p2( self, node_dict, max_free_node ):
             """
             creates the cartesian product of the node set in node_dict that are not in the
-            current mapping and not in terminal sets (which means they are mapped to null 
-            node while it is made sure, that all terminal sets are empty). 
-            It is made impossible that the first candidate pair is a forbidden matching 
+            current mapping and not in terminal sets (which means they are mapped to null
+            node while it is made sure, that all terminal sets are empty).
+            It is made impossible that the first candidate pair is a forbidden matching
             (from label point of view).
             """
             cp = set()
@@ -268,29 +268,6 @@ class subVF2():
                 if self.core_l[node] == self.null_n:
                     cp.add( (node, max_free_node) )
             return cp
-
-
-    def get_legal_s_nodes( self, s_set, l_set ):
-        '''
-        first, looking for node with exact label match. Then reiterating through the nodes
-        to find any non-forbidden matching.
-        '''
-
-        legal_set = ()
-
-
-
-        for s_node in s_set:
-            for el in s_node.label:
-                if el == "-":
-                    continue    
-                elif el in el:
-                    return s_node
-        for s_node in s_set:
-            for l_node in l_set:
-                if not s_node.label in force_exact_matching:
-                    if not (s_node.label, l_node.label) in forbidden_matchings:
-                        return s_node
 
 
     def legal_max(self, t_dict):

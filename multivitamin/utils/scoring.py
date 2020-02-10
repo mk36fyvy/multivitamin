@@ -44,7 +44,7 @@ class Scoring():
         provides a generic scoring_matrix defined for general multiple
         alignment with labels (same labels are rewarded, gaps are punished)
         '''
-        
+
         self.gap_score = 0
         exact_match_score = 1
         for res in self.results:
