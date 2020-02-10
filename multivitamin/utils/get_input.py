@@ -1,4 +1,5 @@
 import os
+from ete3 import Tree
 
 from multivitamin.utils.parser import parse_graph
 from multivitamin.custom import labelsep
@@ -24,7 +25,6 @@ def process_directory( directory_name ):
     '''
     parses all .graph files in the given directory
     '''
-
     graphs = []
     for filename in os.listdir(directory_name)[:]:
         # print(filename)
@@ -118,3 +118,27 @@ def get_all_cart_pairs( char_list ):
                 all_cart_pairs.append( (char1, char2) )
                 # all_cart_pairs.append( (char2, char1) )
     return all_cart_pairs
+
+
+def parse_guide_tree( mult ):
+    if mult.upper() == "GREEDY":
+        return "GREEDY"
+    elif mult.upper() == "PROGRESSIVE":
+        return "PROGRESSIVE"
+    else:
+        # try:
+        file = os.getcwd() +"/"+ mult
+        with open(file) as f:
+            t = Tree(
+                f.readline(),
+                format = 9
+            )
+
+        print("Successfully parsed guide tree:")
+        print(t)
+        print()
+
+        return t
+        # except Exception as e:
+        #     print(e)
+        #     print("Please provide the name of a one-line file containing a guide tree in a Newick-like format as seen in the following example:\n (((g1,g2),(g3,g4)),g5);")
