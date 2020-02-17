@@ -128,11 +128,15 @@ def find_consensus_labelling(graph):
     return (consensus, scores)
 
 
-def __consensus__(node, condition):
-    hist = dict()
-    node_label_set = map(lambda e: atomic_number_to_element[e], set(node.label)) if condition else set(node.label) # translate element numbers to element symbols if possible, else use normal labels
-    for l in node_label_set:
-        hist[l] = node.label.count(l)
+def __consensus__(node, is_element_numbered):
+    hist = None
+    pre_hist = {}
+    for l in set(node.label):
+        pre_hist[l] = node.label.count(l)
+    if is_element_numbered:
+        hist = {atomic_number_to_element[k]:v for k,v in pre_hist.items()}
+    else:
+        hist = pre_hist
     if "-" in hist.keys():
         gap_count = hist["-"]
     else:
@@ -161,8 +165,8 @@ def generate_html_vis( path, graph ):
                 vis.write(write_to_json(graph))
             else:
                 vis.write(line)
-    except Exception as e:
-        print(e)
+    except:
+        raise
     finally:
         template.close()
         vis.close()
