@@ -95,8 +95,7 @@ group2 = parser.add_argument_group(
 -t, --table <table>                 use a custom label scoring table. For more
                                       information, check the README.md.
 -l, --save-all                      save all the graphs produced during the alignment.
-                                      The graphs are saved as "[newick].graph", unless
-                                      -o is used.
+                                      The graphs are saved as "[newick].graph".
 -s, --save-shorter                  save an additional version of the alignment graph
                                       with much shorter node ids.
 -g, --save-guide                    save the alignment tree in Newick-format as
