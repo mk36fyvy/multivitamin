@@ -66,12 +66,15 @@ class subVF2():
 
     def match( self, last_mapped=(Node("-1", []), Node("-1", [])), depth=0 ):
         if self.s_in_small_g():
+            if not self.found_complete_matching:
+                print_progress_bar(len(self.large_g.nodes), len(self.large_g.nodes), prefix = 'Estimated progress:', suffix = 'Aligning {} and {}'.format( self.small_g.id, self.large_g.id ), length = 50)
             self.found_complete_matching = True
             scoring = Scoring( len(self.small_g.nodes), len(self.large_g.nodes), [self.core_s], self.scoring_matrix )
             scoring.score()
 
             self.append_result_subgraph( scoring.get_best_result() )
             self.restore_ds( last_mapped[0], last_mapped[1], depth )
+            
             return
 
         td = self.set_inout( last_mapped[0], last_mapped[1], depth )
@@ -79,7 +82,7 @@ class subVF2():
 
         found_pair = False
         for tup in p:
-            if depth == 0:
+            if depth == 0 and not self.found_complete_matching:
                 print_progress_bar(self.i, len(self.large_g.nodes), prefix = 'Estimated progress:', suffix = 'Aligning {} and {}'.format( self.small_g.id, self.large_g.id ), length = 50)
                 self.i += 1
 
@@ -111,6 +114,8 @@ class subVF2():
             scoring.score()
 
             self.append_result_subgraph( scoring.get_best_result() )
+            print_progress_bar(len(self.large_g.nodes), len(self.large_g.nodes), prefix = 'Estimated progress:', suffix = 'Aligning {} and {}'.format( self.small_g.id, self.large_g.id ), length = 50)
+                
             return
 
 
