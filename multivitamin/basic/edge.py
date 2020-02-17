@@ -8,11 +8,13 @@ class Edge():
                     node2,
                     label=None
                 ):
-
-        self.node1 = node1
-        self.node2 = node2
-        self.label = label if label else ""
-
+        try:
+            self.node1 = node1
+            self.node2 = node2
+            self.label = label if label else ""
+        except Exception as e:
+            print("failed inside")
+            print(e)
 
     def is_reverse_of( self, e2 ):
         '''checks if edge is the reverse (as in a,b to b,a) of another edge'''

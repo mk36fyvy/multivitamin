@@ -74,11 +74,16 @@ def parse_graph( doc ):
             elif indicator == 2:
 
                 for node in nodes:
-                    if node.id == split_list[0]:
-                        split_list[0] = node
-
-                    elif node.id == split_list[1]:
-                        split_list[1] = node
+                    try:
+                        if node.id == split_list[0]:
+                            split_list[0] = node
+                        elif node.id == split_list[1]:
+                            split_list[1] = node
+                    except Exception as e:
+                        print(node.id)
+                        print(node)
+                        print(split_list)
+                        return e
 
                 cur_edge = Edge( *split_list )
                 edges.add( cur_edge )
