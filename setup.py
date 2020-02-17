@@ -13,7 +13,8 @@ setup(
     install_requires=[
         'matplotlib>=3.1.1',
         'networkx>=2.4',
-        'scipy'
+        'scipy',
+        'ete3'
     ],
     entry_points={
         'console_scripts': ['multiVitamin=multivitamin.multiVitamin:main']

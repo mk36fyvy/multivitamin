@@ -31,22 +31,92 @@ svg{
   align-items: center;
   justify-content: center;
 }
+
+.tooltip {
+  position: absolute;
+  text-align: center;
+  padding: 8px;
+  font: 12px sans-serif;
+  background: lightsteelblue;
+  border: 0px;
+  border-radius: 8px;
+  pointer-events: none;
+}
 </style>
 <body>
 <div id="wrapper" style="width: 100%; height: 100%;">
 </div>
 <script src="https://d3js.org/d3.v3.min.js"></script>
 <script>
+var element_to_atomcolor = {
+    "H100"  : "#f0f3f4",
+    "C100"  : "#566573",
+    "C80"   : "#abb2b9",
+    "C51"   : "#d6dbdf",
+    "N100"  : "#2471a3",
+    "N80"   : "#5499c7",
+    "N51"   : "#aed6f1",
+    "O100"  : "#e74c3c",
+    "O80"   : "#f1948a",
+    "O51"   : "#fadbd8",
+    "F100"  : "#0affe5",
+    "F80"   : "#9bfff4",
+    "F51"   : "#dafffb",
+    "P100"  : "#8e44ad",
+    "P80"   : "#bb8fce",
+    "P51"   : "#e8daef",
+    "S100"  : "#fff000",
+    "S80"   : "#fff997",
+    "S51"   : "#fdfbd1",
+    "Cl100" : "#229954",
+    "Cl80"  : "#7fdda6",
+    "Cl51"  : "#c0f1d5",
+    "Fe100" : "#7e2600",
+    "Fe80"  : "#ca460c",
+    "Fe51"  : "#ff8854"
+}
+
+var element_to_textcolor = {
+    "H100"  : "#000000",
+    "C100"  : "#ffffff",
+    "C80"   : "#ffffff",
+    "C51"   : "#000000",
+    "N100"  : "#ffffff",
+    "N80"   : "#ffffff",
+    "N51"   : "#000000",
+    "O100"  : "#ffffff",
+    "O80"   : "#ffffff",
+    "O51"   : "#000000",
+    "F100"  : "#000000",
+    "F80"   : "#000000",
+    "F51"   : "#000000",
+    "P100"  : "#ffffff",
+    "P80"   : "#ffffff",
+    "P51"   : "#000000",
+    "S100"  : "#000000",
+    "S80"   : "#000000",
+    "S51"   : "#000000",
+    "Cl100" : "#ffffff",
+    "Cl80"  : "#ffffff",
+    "Cl51"  : "#000000",
+    "Fe100" : "#ffffff",
+    "Fe80"  : "#ffffff",
+    "Fe51"  : "#000000"
+}
 
 {DATASET}
 
-var width = screen.width,
-    height = screen.height;
+var width = window.innerWidth,
+    height = window.innerHeight;
 
 var color = d3.scale.category20();
 
 var radius = d3.scale.sqrt()
     .range([0, 6]);
+
+var div = d3.select("#wrapper").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
 
 var svg = d3.select("#wrapper").append("svg")
     .attr("width", width)
@@ -81,11 +151,25 @@ var force = d3.layout.force()
 
   node.append("circle")
       .attr("r", function(d) { return radius(d.size); })
-      .style("fill", function(d) { return color(d.atom); });
+      .style("fill", function(d) { if(d.score in element_to_atomcolor) {return element_to_atomcolor[d.score]} else {return "#000000";} })
+      .on("mouseover", function(d) {
+        div.transition()
+          .duration(200)
+          .style("opacity", .9);
+        div.html(d.alignment)
+          .style("left", (d3.event.pageX) + "px")
+          .style("top", (d3.event.pageY - 28) + "px");
+        })
+      .on("mouseout", function(d) {
+        div.transition()
+          .duration(500)
+          .style("opacity", 0);
+        });
 
   node.append("text")
       .attr("dy", ".35em")
       .attr("text-anchor", "middle")
+      .style("fill", function(d) {  if(d.score in element_to_textcolor) {return element_to_textcolor[d.score]} else {return "#fff";} })
       .text(function(d) { return d.atom; });
 
   function tick() {
@@ -100,4 +184,3 @@ var force = d3.layout.force()
 </script>
 </body
 </html>
-

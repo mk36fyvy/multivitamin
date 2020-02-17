@@ -53,7 +53,7 @@ def write_graph(graph, path, out_name):
 
     f.close()
 
-    print("Saved graph as {}.graph".format( out_name ))
+    print("Saved alignment graph as {}.graph".format( out_name ))
 
 
 def write_shorter_graph( graph, path ):
@@ -95,86 +95,115 @@ def write_shorter_graph( graph, path ):
 
     f.close()
 
-    print("Saved graph as {}.shorter.graph".format( graph.id ))
+    print("Saved alignment graph as {}.shorter.graph".format( graph.id ))
 
+
+# ------------- FOR  HTML  VISUALIZATION -----------------------------
 
 def find_consensus_labelling(graph):
     """
-    Takes a graph and returns a dictionary with it's nodes as keys and the appropriate consensus labels as values.
-    Iff all node labels can be interpreted as element numbers according to multiVitamin/supp/molecule_dicts.py: atomic_numbers_to_elements, it also translates the labels. 
+    Takes a graph and returns a dictionary with it's nodes as keys and the appropriate
+    consensus labels as values.
+    Iff all node labels can be interpreted as atomic numbers according to multiVitamin/supp/molecule_dicts.py:
+    atomic_numbers_to_elements, it also translates the labels.
     """
+
+    def classify_scores(score):
+        if score is not None:
+            if score <= 0.5 :
+                return 51
+            elif score <= 0.8:
+                return 80
+            else:
+                return 100
+        else:
+            return -1
+
     consensus = dict()
+    temp_scores = dict()
     is_element_numbered = all(map(lambda node: all(map(lambda l: l in atomic_number_to_element, node.label)),graph.nodes)) # if all labels can be interpreted as element numbers
     for node in graph.nodes:
-        consensus[node] = __consensus__(node, is_element_numbered)
-    return consensus 
+        consensus[node], temp_scores[node] = __consensus__(node, is_element_numbered)
+    scores = {k: classify_scores(v) for k, v in temp_scores.items()}
+    return (consensus, scores)
 
 
 def __consensus__(node, condition):
     hist = dict()
-    node_set = map(lambda e: atomic_number_to_element[e], set(node.label)) if condition else set(node.label) # translate element numbers to element symbols if possible, else use normal labels
-    for l in node_set:
+    node_label_set = map(lambda e: atomic_number_to_element[e], set(node.label)) if condition else set(node.label) # translate element numbers to element symbols if possible, else use normal labels
+    for l in node_label_set:
         hist[l] = node.label.count(l)
+    if "-" in hist.keys():
+        gap_count = hist["-"]
+    else:
+        gap_count = 0
     hist["-"] = 0
     maxim = max(hist.values())
     cons = list()
     for lab in hist.keys():
         if hist[lab] == maxim:
             cons.append(lab)
-    return "|".join(cons)
+    temp_score = hist[cons[0]]/(sum(hist.values())+gap_count) if len(cons) else None
+
+    return ("|".join(cons), temp_score)
 
 
-def generate_html_vis(graph):
+def generate_html_vis( path, graph ):
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    print(dir_path)
-    template = open("{}/template.html".format(dir_path), 'r') #make windows compatible
+    if os.name == 'nt': # if you are using Windows
+        template = open("{}{}\\template.html".format( dir_path ), 'r')
+    else:
+        template = open("{}//template.html".format( dir_path ), 'r')
     try:
-        vis = open("{}.visualization.html".format( graph.id ), 'w+')
+        vis = open("{}{}{}.visualization.html".format( os.getcwd(), path, graph.id ), 'w+')
         for line in template.readlines():
             if line.startswith('{DATASET}'):
                 vis.write(write_to_json(graph))
             else:
                 vis.write(line)
+    except Exception as e:
+        print(e)
     finally:
         template.close()
         vis.close()
-    
+        print("Saved consensus representation as {}.visualization.html".format( graph.id ))
 
 def write_to_json( graph ):
-    #print(os.getcwd())
-    #f = open("{}.json".format( graph.id ), 'w+')
-    try:
-        f = io.StringIO()
-        f.write('var dataset = {')
-        f.write('\n\t"nodes":[\n')
-        sorted_nodes = list(graph.nodes)
-        node_num = {sorted_nodes[n]:n for n in range(len(sorted_nodes))}
-        consensus_labels = find_consensus_labelling(graph)
-        b_first = True
-        for node in sorted_nodes:
-            if not b_first:
-                f.write(',\n')
-            f.write('\t\t{{"atom": "{}", "size": {} }}'.format( consensus_labels[node], get_size_by_element(consensus_labels[node])))
-            b_first = False
-        f.write('\n\t],\n\t"links":[\n')
-        b_first = True
-        for edge in graph.edges:
-            if not b_first:
-                f.write(',\n')
-            f.write('\t\t{{"source": {}, "target": {}, "bond": 1 }}'.format( node_num[edge.node1], node_num[edge.node2]))
-            b_first = False
-        f.write('\n\t]\n}')
-    finally:
-        ret = f.getvalue()
-        f.close()
-        return ret
+    f = io.StringIO()
+    f.write('var dataset = {')
+    f.write('\n\t"nodes":[\n')
+    sorted_nodes = list(graph.nodes)
+    node_num = {sorted_nodes[n]:n for n in range(len(sorted_nodes))}
+    consensus_labels, score_dict = find_consensus_labelling(graph)
+    b_first = True
+    for node in sorted_nodes:
+        label_str = "[ "
+        for el in node.label:
+            label_str += "{}  ".format(el)
+        label_str += "]"
+        if not b_first:
+            f.write(',\n')
+        f.write('\t\t{{"atom": "{0}", "size": {1}, "score": "{0}{2}", "alignment": "{3}" }}'.format( consensus_labels[node], get_size_by_element(consensus_labels[node]), score_dict[node], label_str))
+        b_first = False
+    f.write('\n\t],\n\t"links":[\n')
+    b_first = True
+    for edge in graph.edges:
+        if not b_first:
+            f.write(',\n')
+        f.write('\t\t{{"source": {}, "target": {}, "bond": 1 }}'.format( node_num[edge.node1], node_num[edge.node2]))
+        b_first = False
+    f.write('\n\t]\n}')
+    ret = f.getvalue()
+    f.close()
+    return ret
     #create flag to save json to disk
-    
-    
+
+
 if __name__ == '__main__':
     try:
         g = parse_graph( sys.argv[1] )
-        generate_html_vis(g)
+        generate_html_vis(os.getcwd(), g)
+        write_graph(g, os.getcwd(), "{}.test.graph".format(g.id))
     except Exception as e:
         print("Please provide a graph you want to test the graphwriter with \n \t example: python3 graph_writer.py graph1.graph")
         raise(e)

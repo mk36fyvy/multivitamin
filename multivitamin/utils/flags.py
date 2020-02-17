@@ -88,11 +88,10 @@ group2 = parser.add_argument_group(
 -a, --algorithm <BK|VF2|subVF2>     indicate an alignment-algorithm (default: BK)
                                       Warning: VF2 is only suited if there is true
                                       graph-subgraph isomorphism!
--m, --mult <greedy|'file name'>     indicate the multiple alignment method. "greedy"
-                                      is the default method. 
-                                      ***NEW*** You can provide a guide tree yourself 
-                                      by assigning a one line file with the graph names 
-                                      in Newick format. 
+-m, --mult <GREEDY|file>            indicate the multiple alignment method. "greedy"
+                                      is the default. If you want to use your own guide
+                                      tree, indicate the path to a file containing the
+                                      guide tree in Newick format in the first line.
 -t, --table <table>                 use a custom label scoring table. For more
                                       information, check the README.md.
 -l, --save-all                      save all the graphs produced during the alignment.
@@ -102,15 +101,15 @@ group2 = parser.add_argument_group(
                                       with much shorter node ids.
 -g, --save-guide                    save the alignment tree in Newick-format as
                                       "newick.txt".
--o, --output                        specify the name of the output graph from the 
+-o, --output                        specify the name of the output graph from the
                                       multiple alignment. The .graph extension is
                                       automatically added.
+-r, --representation                show interactive representation of the result graph
+                                      with 3Djs. This representation is saved as .html file
+                                      in the results directory
 '''
-# -r, --representation              show interactive representation of the result graph 
-#                                     in XXX. This representation is saved as .html file
-#                                     in the results directory
-
 )
+
 opt = group2.add_argument_group()
 
 opt.add_argument(

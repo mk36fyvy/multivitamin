@@ -6,27 +6,25 @@ from multivitamin.basic.node import Node
 from multivitamin.basic.graph import Graph
 from multivitamin.utils.parser import parse_graph
 from multivitamin.utils.scoring import Scoring
+from multivitamin.supp.progress_bar import print_progress_bar
 
 
 class subVF2():
 
     def __init__(self, g, h, scoring_matrix=None):
 
-        self.null_n = Node("-1", [])
 
-        self.g = g
-        self.h = h
-        self.scoring_matrix = scoring_matrix if scoring_matrix else '-1'
-
-        '''makes sure, that small_g is the smaller graph'''
-        self.type = 'subgraph'
-        if h == g:
-            self.type = 'isomorphism'
-
-        self.small_g, self.large_g = g, h
         if g.int_size() > h.int_size():
             self.small_g = h
             self.large_g = g
+        else:
+            self.small_g = g
+            self.large_g = h
+
+        self.scoring_matrix = scoring_matrix if scoring_matrix else '-1'
+
+        # this null_node is used to indicate an "empty" mapping
+        self.null_n = Node("-1", [])
 
         # if the graph is undirected, the inverse edges (1,2 -> 2,1) are
         # constructed to work with the original VF2 algorithm
@@ -35,6 +33,7 @@ class subVF2():
         if not self.small_g.is_directed:
             self.small_g.create_fake_directions()
 
+        # converts the nodes' neighbours to in and out neighbours
         self.large_g.get_inout_neighbours()
         self.small_g.get_inout_neighbours()
 
@@ -60,12 +59,15 @@ class subVF2():
         self.max_depth_matching = -1
         self.biggest_matches = [] #saves all co-optimals
 
+        # progress bar
+        self.i = 0
+        print_progress_bar(self.i, len(self.large_g.nodes), prefix = 'Progress:', suffix = 'Complete', length = 50)
+
 
     def match( self, last_mapped=(Node("-1", []), Node("-1", [])), depth=0 ):
-
         if self.s_in_small_g():
             self.found_complete_matching = True
-            scoring = Scoring( len(self.g.nodes), len(self.h.nodes), [self.core_s], self.scoring_matrix )
+            scoring = Scoring( len(self.small_g.nodes), len(self.large_g.nodes), [self.core_s], self.scoring_matrix )
             scoring.score()
 
             self.append_result_subgraph( scoring.get_best_result() )
@@ -77,6 +79,9 @@ class subVF2():
 
         found_pair = False
         for tup in p:
+            if depth == 0:
+                print_progress_bar(self.i, len(self.large_g.nodes), prefix = 'Estimated progress:', suffix = 'Aligning {} and {}'.format( self.small_g.id, self.large_g.id ), length = 50)
+                self.i += 1
 
             if self.is_feasible(tup[0], tup[1], depth, td):
                 found_pair = True
@@ -102,7 +107,7 @@ class subVF2():
         if depth == 0 and not self.found_complete_matching:
             self.found_complete_matching = True
 
-            scoring = Scoring( len(self.g.nodes), len(self.h.nodes),self.biggest_matches, self.scoring_matrix )
+            scoring = Scoring( len(self.small_g.nodes), len(self.large_g.nodes),self.biggest_matches, self.scoring_matrix )
             scoring.score()
 
             self.append_result_subgraph( scoring.get_best_result() )
@@ -151,7 +156,7 @@ class subVF2():
     def is_feasible( self, n ,m, depth, td):
         '''
         first, checks zero_look ahead (if there are neighbours of the candidate pair that
-        are in the current mapping, they have to be mapped to each other) then, checks some 
+        are in the current mapping, they have to be mapped to each other) then, checks some
         semantic conditions specified in check_semantics which is imported from
         multivitamin/custom.py
         '''
@@ -241,7 +246,7 @@ class subVF2():
 
     def cart_p1( self, node_dict, t_max ):
         """
-        creates the cartesian product of the node set in node_dict that are in terminal sets 
+        creates the cartesian product of the node set in node_dict that are in terminal sets
         (which means they are mapped to null node in core and do not have a depth of 0)
         """
         cp = set()
@@ -250,16 +255,18 @@ class subVF2():
                 cp.add( (node, t_max) )
         return cp
 
-    def cart_p2( self, node_dict, t_max ):
+    def cart_p2( self, node_dict, max_free_node ):
             """
             creates the cartesian product of the node set in node_dict that are not in the
-            current mapping and not in terminal sets (which means they are mapped to null 
-            node while it is made sure, that all terminal sets are empty)
+            current mapping and not in terminal sets (which means they are mapped to null
+            node while it is made sure, that all terminal sets are empty).
+            It is made impossible that the first candidate pair is a forbidden matching
+            (from label point of view).
             """
             cp = set()
             for node in node_dict:
                 if self.core_l[node] == self.null_n:
-                    cp.add( (node, t_max) )
+                    cp.add( (node, max_free_node) )
             return cp
 
 
@@ -395,7 +402,7 @@ if __name__ == "__main__":
     print("")
     print("********************************************************************")
     print("*                                                                  *")
-    print("                    RESULTS for {} and {}".format( vf2.g.id, vf2.h.id) )
+    print("                    RESULTS for {} and {}".format( vf2.small_g.id, vf2.large_g.id) )
     print("*                                                                  *")
     print("********************************************************************")
     print("")
