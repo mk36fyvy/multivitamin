@@ -44,9 +44,9 @@ class Scoring():
         provides a generic scoring_matrix defined for general multiple
         alignment with labels (same labels are rewarded, gaps are punished)
         '''
-        
-        self.gap_score = -1
-        exact_match_score = 4
+
+        self.gap_score = 0
+        exact_match_score = 1
         for res in self.results:
 
             graph_score = 0
@@ -69,21 +69,21 @@ class Scoring():
 
                     for el1 in node_labels:
                         for el2 in mapping_labels:
-                            if "-" in (el1, el2):
+                            if "-" in el1:
+                                node_score += self.gap_score
+                            elif "-" in el2:
                                 node_score += self.gap_score
                             elif el1 == el2:
                                 node_score += exact_match_score
-                else:
-                    node_score += self.gap_score * node_label_len * mapping_label_len
+                # else:
+                #     node_score += self.gap_score * node_label_len * mapping_label_len
 
                 graph_score += node_score
 
-            gap_node_amount = self.large_graph_nodes_len-mapped
+            gap_node_amount = self.large_graph_nodes_len + self.small_graph_nodes_len - (2 * mapped)
             graph_score += self.gap_score * gap_node_amount * node_label_len * mapping_label_len
 
-            self.res_scores[tuple(sorted(res.items()))] = int(graph_score/len(res))
-
-        return
+            self.res_scores[tuple(sorted(res.items()))] = int(graph_score/(node_label_len + mapping_label_len))
 
 
     def score_with_matrix( self ):
@@ -126,9 +126,9 @@ class Scoring():
                     node_score += self.gap_score * node_label_len * mapping_label_len
 
                 graph_score += node_score
-            gap_node_amount = self.large_graph_nodes_len-mapped
-            graph_score += self.gap_score*gap_node_amount*node_label_len*mapping_label_len
-            self.res_scores[tuple(sorted(res.items()))] = int(graph_score/(self.large_graph_nodes_len+self.small_graph_nodes_len-(2*mapped)))
+            gap_node_amount = self.large_graph_nodes_len + self.small_graph_nodes_len - (2 * mapped)
+            graph_score += self.gap_score*gap_node_amount * node_label_len * mapping_label_len
+            self.res_scores[tuple(sorted(res.items()))] = int(graph_score/(node_label_len + mapping_label_len))
 
 
     def get_best_result( self ):

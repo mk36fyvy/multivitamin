@@ -1,8 +1,10 @@
 import sys
 import pprint
+from ete3 import Tree
 
 from multivitamin.basic.node import Node
 from multivitamin.basic.graph import Graph
+from multivitamin.basic.guide_tree import Guide_tree
 from multivitamin.utils.parser import parse_graph, edges_contain_doubles
 from multivitamin.utils.modular_product_class import MP
 from multivitamin.utils.scoring import Scoring
@@ -36,10 +38,29 @@ class Multalign():
 
         self.scoring_matrix = scoring_matrix if scoring_matrix else "-1"
 
-    
+
     def multalign( self ):
         '''
-        performs multiple alignment according to specified multiple alignment algorithm. 
+        performs multiple alignment according to specified multiple alignment algorithm.
+        '''
+
+        if self.method == "GREEDY":
+            self.greedy()
+
+        elif self.method == "PROGRESSIVE":
+            raise AttributeError("This is not yet implemented, sorry! Please use the default setting.")
+
+        else:
+            print("Aligning along the provided guide tree...")
+            self.guided_alignment( self.method ) # in this case, self.method contains the alignment tree as tree object
+
+
+    def greedy( self ):
+        '''
+        performs multiple alignment following a greedy approach: Every pairwise alignment is
+        calculated and the best scoring co-optimal is chosen. Then, the best scored pairwise
+        alignment is chosen. Then, all pairwise alignments with this new graph are calculated
+        and scored and so on.
         '''
 
         if len( self.graph_list ) <= 1:
@@ -50,42 +71,15 @@ class Multalign():
 
             res.edges = set()
             res.create_undirected_edges()
-
             self.result = res
-
             self.newick = self.graph_list[0].newick
-
             return
-
-        if self.method == "GREEDY":
-            # for graph in self.graph_list:
-            #     print(graph.id)
-            # print()
-            # print(next(iter(self.graph_list[-1].nodes)))
-            # print()
-            # print()
-            self.greedy()
-
-        elif self.method == "PROGRESSIVE":
-            raise AttributeError("This is not yet implemented, sorry! Please use the default setting.")
-            exit()
-
-
-    def greedy( self ):
-        '''
-        performs multiple alignment following a greedy approach: Every pairwise alignment is
-        calculated and the best scoring co-optimal is chosen. Then, the best scored pairwise 
-        alignment is chosen. Then, all pairwise alignments with this new graph are calculated
-        and scored and so on.
-        '''
 
         maximum_score = float('-inf') # is used to save the maximum number of mapped nodes
         counter = 1 # makes sure that every graph couple is only processed once
 
         for g1 in self.graph_list[:-1]:
-
             for g2 in self.graph_list[counter:]:
-                # print(maximum)
                 if g1.id == g2.id:
                     continue
 
@@ -126,10 +120,39 @@ class Multalign():
         if Node("null", []) in alignment.nodes and self.algorithm == "VF2":
             raise Exception("VF2 could not produce a multiple alignment of all the given graphs. \n The classical VF2 algorithm can only process *graph-subgraph*-isomorphism. \n Please consider using subVF2 algorithm instead.")
 
-        self.multalign()
+        self.greedy()
+
+
+    def guided_alignment( self, tree ):
+
+        def get_graph( el ):
+            if el.graph is not None:
+                return el.graph
+            else:
+                alignment = self.apply_algorithm( get_graph(el.lchild), get_graph(el.rchild))[0]
+                graph = Graph( "{}-{}".format( el.lchild.graph.abbrev, el.rchild.graph.abbrev ), alignment[0] )
+                graph.abbrev = graph.id
+                graph.newick = "({},{})".format( el.lchild.graph.newick, el.rchild.graph.newick)
+                alignment_graph = self.make_graph_real( graph )
+                alignment_graph = self.generate_graph_bools( alignment_graph )
+                el.graph = alignment_graph
+                return alignment_graph
+
+        gt = Guide_tree( tree, self.graph_list )
+        gt.root.graph = get_graph( gt.root )
+        res = gt.root.graph
+        res.edges = set()
+        res.create_undirected_edges()
+        self.result = res
+        self.newick = gt.root.graph.newick
+
+
+
 
     # ---- HELPER METHODS ------------------------------------------------------------------------------------
 
+    
+    
     def make_graph_real( self, graph ):
         '''
         takes an alignment consisting only of nodes with neighbours, creates the
@@ -146,7 +169,7 @@ class Multalign():
         performs pairwise alignment using the algorithm provided. At the moment,
         SUBVF2 algorithm is the only working algorithm for multiple alignment
         '''
-        
+
         if self.algorithm == "BK":
             raise Exception("BK algorithm is not usable for multiple alignment at the moment. But it is slow as hell anyway. Please use 'subVF2', which is also the default algorithm.")
 
@@ -222,11 +245,11 @@ class Multalign():
     def make_mult_id( self, graph_list ):
         '''
         takes a list of all graphs for multiple alignments and provides them with
-        unique IDs for the alignment. These consist of the first 2 characters of 
-        the graph file name and a number that increments each time the 2-char-name 
+        unique IDs for the alignment. These consist of the first 2 characters of
+        the graph file name and a number that increments each time the 2-char-name
         is already taken.
         '''
-        
+
         id_list = {}
 
         for graph in graph_list:

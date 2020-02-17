@@ -13,11 +13,11 @@ from multivitamin.basic.node import Node
 labelsep = " "
 
 # This variable is used as 'dummy label' for nodes without label. It makes
-# multiple alignment between graphs with and without labels more well-arranged. 
+# multiple alignment between graphs with and without labels more well-arranged.
 # If you do not wish to use a dummy label, assign an empty string ""
 no_label_dummy = "#"
 
-# Don't allow labels listed here to match with any other label. 
+# Don't allow labels listed here to match with any other label.
 # Accepts iterable of Strings only.
 force_exact_matching = ["A"] # Example: ["H","C"]
 
@@ -32,7 +32,7 @@ def check_semantics( n, m ):
     whether aligning two nodes is allowed from the
     label point of view.
     '''
-    
+
     for label in force_exact_matching:
         if label in n.label:
             if label in m.label:
@@ -48,7 +48,7 @@ def check_semantics( n, m ):
             return False
         if left in m.label and right in n.label:
             return False
-    
+
     return True
 
 
