@@ -24,8 +24,6 @@ class subVF2():
 
         self.scoring_matrix = scoring_matrix if scoring_matrix else '-1'
 
-        # this null_node is used to indicate an "empty" mapping
-        self.null_n = Node("-1", [])
 
         # if the graph is undirected, the inverse edges (1,2 -> 2,1) are
         # constructed to work with the original VF2 algorithm
@@ -40,9 +38,9 @@ class subVF2():
 
         # Initializing the two core dictionaries that store each node of the
         # Corresponding graph as key and the node of the other graph where it maps
-        # As soon as it mapps for now we use self.null_n as inital value
-        self.core_s = self.small_g.gen_dict( self.null_n )
-        self.core_l = self.large_g.gen_dict( self.null_n )
+        # As soon as it mapps for now we use None as inital value
+        self.core_s = self.small_g.gen_dict( None )
+        self.core_l = self.large_g.gen_dict( None )
 
         # initialiazing the terminal sets for each graph. These are dictionaries
         # that store the node as values and the recursion depth as keys where the
@@ -65,10 +63,10 @@ class subVF2():
         print_progress_bar(self.i, len(self.large_g.nodes), prefix = 'Progress:', suffix = 'Complete', length = 50)
 
 
-    def match( self, last_mapped=(Node("-1", []), Node("-1", [])), depth=0 ):
+    def match( self, last_mapped=(None, None), depth=0 ):
         if self.s_in_small_g():
-            if not self.found_complete_matching:
-                print_progress_bar(len(self.large_g.nodes), len(self.large_g.nodes), prefix = 'Estimated progress:', suffix = 'Aligning {} and {}'.format( self.small_g.id, self.large_g.id ), length = 50)
+#             if not self.found_complete_matching:
+#                 print_progress_bar(len(self.large_g.nodes), len(self.large_g.nodes), prefix = 'Estimated progress:', suffix = 'Aligning {} and {}'.format( self.small_g.id, self.large_g.id ), length = 50)
             self.found_complete_matching = True
             scoring = Scoring( len(self.small_g.nodes), len(self.large_g.nodes), [self.core_s], self.scoring_matrix )
             scoring.score()
@@ -127,7 +125,7 @@ class subVF2():
         """
 
         for node in self.core_s:
-            if self.core_s[node] == self.null_n:
+            if not self.core_s[node]:
                 return False
         return True
 
@@ -148,13 +146,13 @@ class subVF2():
         elif not any((td["in_l"], td["in_s"], td["out_l"], td["out_s"])):
 
             # all mapped nodes are in m_l (large_g) or m_s (small_g)
-            m_l = {n for n in self.core_l if self.core_l[n] != self.null_n}
-            m_s = {n for n in self.core_s if self.core_s[n] != self.null_n}
+            m_l = {n for n in self.core_l if self.core_l[n]}
+            m_s = {n for n in self.core_s if self.core_s[n]}
 
             # In diff_l are all nodes that are in the large graph, but not mapping
             diff_l = set(self.large_g.nodes) - m_l
             diff_s = set(self.small_g.nodes) - m_s  # see above
-
+            
             return self.cart_p2(diff_l, max(diff_s))
         return set()
 
@@ -191,16 +189,16 @@ class subVF2():
         to be brought back to their original state
         '''
 
-        if any((n==self.null_n, m==self.null_n)):
-            raise(Exception("null node restored"))
+        if any((not n, not m)):
+            raise(Exception("None restored"))
 
         self.restore_terminals(self.in_l, "in_l", self.core_l, depth)
         self.restore_terminals(self.out_l, "out_l", self.core_l, depth)
         self.restore_terminals(self.in_s, "in_s", self.core_s, depth)
         self.restore_terminals(self.out_s, "out_s", self.core_s, depth)
 
-        self.core_l[n] = self.null_n
-        self.core_s[m] = self.null_n
+        self.core_l[n] = None
+        self.core_s[m] = None
 
 
 # HELPER FUNCTIONS ------------------------------------------------------------
@@ -213,7 +211,7 @@ class subVF2():
         td = {"in_l": 0, "out_l": 0, "in_s": 0, "out_s": 0}
 
         # makes sure, the first selected node gets depth
-        try:  # This is needed, because the very first try will fail (null_n not in in_l)
+        try:  # This is needed, because the very first try will fail (None not in in_l)
             if self.in_l[n] == 0 and self.out_l[n] == 0:
                 self.in_l[n] = depth
                 self.out_l[n] = depth
@@ -226,7 +224,7 @@ class subVF2():
 
         # Compute terminal_dicts and length for the large graph
         for v in n.neighbours:
-            if not self.core_l[v] == self.null_n :
+            if self.core_l[v]:
                 continue
 
             if v in n.in_neighbours:
@@ -238,7 +236,7 @@ class subVF2():
 
         # compute terminal_dicts for the small graph
         for v in m.neighbours:
-            if not self.core_s[v] == self.null_n:
+            if self.core_s[v]:
                 continue
 
             if v in m.in_neighbours:
@@ -253,36 +251,36 @@ class subVF2():
     def cart_p1( self, node_dict, t_max ):
         """
         creates the cartesian product of the node set in node_dict that are in terminal sets
-        (which means they are mapped to null node in core and do not have a depth of 0)
+        (which means they are mapped to None in core and do not have a depth of 0)
         """
         cp = set()
         for node in node_dict:
-            if self.core_l[node] == self.null_n and not node_dict[node] == 0:
+            if not self.core_l[node] and not node_dict[node] == 0:
                 cp.add( (node, t_max) )
         return cp
 
     def cart_p2( self, node_dict, max_free_node ):
             """
             creates the cartesian product of the node set in node_dict that are not in the
-            current mapping and not in terminal sets (which means they are mapped to null
-            node while it is made sure, that all terminal sets are empty).
+            current mapping and not in terminal sets (which means they are mapped to None 
+            while it is made sure, that all terminal sets are empty).
             It is made impossible that the first candidate pair is a forbidden matching
             (from label point of view).
             """
             cp = set()
             for node in node_dict:
-                if self.core_l[node] == self.null_n:
+                if not self.core_l[node]:
                     cp.add( (node, max_free_node) )
             return cp
 
 
     def legal_max(self, t_dict):
         '''returns node from t_dict with max id'''
-        max_node = self.null_n
+        max_node = None
         for node in t_dict:
-            if t_dict[node] > 0 and self.core_s[node] != self.null_n:
-                continue
-            elif node > max_node:
+            if t_dict[node] > 0 and self.core_s[node]:
+                continue    
+            elif node > max_node or not max_node:
                 max_node = node
         return max_node
 
@@ -293,7 +291,7 @@ class subVF2():
 
             m_ = core[n_] # Mapping of v
 
-            if m_ == self.null_n : # If mapping doesn't exist, proceed
+            if not m_ : # If mapping doesn't exist, proceed
                 continue
 
             # If n_ is an in neighbour of n m_ must be an in neighbour of m
@@ -311,7 +309,7 @@ class subVF2():
 
     def restore_terminals(self, t_dict, dict_key, core, depth):
         for node in t_dict:
-            if core[node] == self.null_n and t_dict[node] == depth:
+            if not core[node] and t_dict[node] == depth:
                 t_dict[node] = 0
 
 
@@ -333,7 +331,7 @@ class subVF2():
 
         for node, mapping in result[0].items():
 
-            if mapping != self.null_n: # nodes that were actually mapped
+            if mapping: # nodes that were actually mapped
                 cur_node = Node(
                                 "{}.{}".format(node.id, mapping.id), #id
                                 node.label + mapping.label, #label
@@ -396,9 +394,10 @@ class subVF2():
         self.results.append( (result_graph.nodes,result[1]) )
 
 
-    def get_real_result_graph( self, incompl_graph ):
-        incompl_graph = self.generate_graph_bools( incompl_graph )
-        return incompl_graph.create_undirected_edges()
+    def get_real_result_graph( self ):
+        result = self.result_graphs[1]
+        result = self.generate_graph_bools( result )
+        return result.create_undirected_edges()
     
     
     def generate_graph_bools( self, graph ):
@@ -416,8 +415,6 @@ class subVF2():
             graph.is_directed = True
 
         return graph
-
-
 
 if __name__ == "__main__":
 
