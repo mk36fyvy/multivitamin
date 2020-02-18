@@ -49,7 +49,6 @@ class Multalign():
             self.greedy()
 
         elif self.method == "PROGRESSIVE":
-            raise AttributeError("This is not yet implemented, sorry! Please use the default setting.")
             self.progressive_alignment()
 
         else:
@@ -154,11 +153,12 @@ class Multalign():
         #warn user of asumptions of UPGMA
         print('"Warning: executing UPGMA algorithm with graph distances. Be aware of the strong assumptions of UPGMA, namely, that for any thwo input pairs, a "parent" graph may be constructed with equivalent distance to both input graphs and preserving distance to all other graphs. Since this may not be a reasonable assumption for our present way of aligning and scoring graphs, be careful with the output of UPGMA clustering.')
 
-        dist = np.zeroes((len( self.graph_list ),len( self.graph_list ))) #square distace matrix
+        dist = np.zeros((len( self.graph_list ),len( self.graph_list ))) #square distace matrix
 
         #check scoring matrix here
         print("\nScoring Matrix:\n{}\n".format(self.scoring_matrix))
-        if self.scoring_matrix == -1: #no scoring given
+        if self.scoring_matrix == "-1": #no scoring given
+
             pass #create some reasonable default values here
         else: #user specified scoring
             scoremin = min(self.scoring_matrix.items())
@@ -177,14 +177,15 @@ class Multalign():
             g1 = self.graph_list[i1]
             g2 = self.graph_list[i2]
             if i1==i2:
-                dist[i1, i2] = 0
+              
+                dist[i1, i2] = -1
             elif (g1, g2) in self.already_done:
                 dist[i1, i2] = self.already_done[( g1, g2 )][1] #note to michel: abuse of tuple indexing is almost criminal here
             else:
                 max_alignment = self.apply_algorithm( g1, g2 )[0]
                 self.already_done[( g1, g2 )] = self.already_done[( g2, g1 )] = max_alignment
                 dist[i1, i2] = self.already_done[( g1, g2 )][1]
-
+                
         while len( self.graph_list ) > 1:
             #find indices of highest score, if the highest score occurs twice, choice is arbitrary
             i1, i2 = np.unravel_index(np.argmax(dist, axis=None), dist.shape) #(g1,g2)
@@ -194,7 +195,9 @@ class Multalign():
             #compute alignment if not already present
             if not ( g1, g2 ) in self.already_done:
                 max_alignment = self.apply_algorithm( g1, g2 )[0]
-                self.already_done[( g1, g2 )] = self.already_done[( g2, g1 )] = max_alignment
+                
+                self.already_done[( g1, g2 )] = max_alignment
+                self.already_done[( g2, g1 )] = max_alignment
 
             #if max_alignment[1] > maximum_score: #subVF2 #necessary?
             alignment = Graph( "{}-{}".format( g1.abbrev, g2.abbrev ), self.already_done[( g1, g2 )][0] )
@@ -217,12 +220,16 @@ class Multalign():
             self.intermediates.append( alignment_graph )
 
             #calculate distances according to algo (UPGMA for now), drop rows/columns from dist table and append new row for alignement graph
-            computed_distances = [(dist[k,i1]+dist[k,i2])/2 for k in range(dist.shape[0]) if not any( k == i1 , k == i2)]#this is actually WPGMA, find and normalize by alignment size of graphs
-            np.delete(dist, [i1,i2], axis = 0)
-            np.delete(dist, [i1,i2], axis = 1)
+            len_g1 = len(g1.id)
+            len_g2 = len(g2.id)
+            computed_distances = [(dist[k,i1]+dist[k,i2])/2 for k in range(dist.shape[0]) if not any( (k == i1 , k == i2) )]#this is actually WPGMA, find and normalize by alignment size of graphs
+            dist = np.delete(dist, [i1,i2], axis = 0)
+            dist = np.delete(dist, [i1,i2], axis = 1)
             #probably need to transpose one of those
-            np.append(dist, computed_distances, axis = 0)
-            np.append(dist, np.append(computed_distances, 0), axis = 1)
+            dist = np.append(dist, [computed_distances], axis = 0)
+            
+            dist = np.append(dist, np.append(computed_distances, -1).reshape((-1,1)), axis = 1)
+
 
         #alignment should be done now
         try:
@@ -239,8 +246,6 @@ class Multalign():
 
     # ---- HELPER METHODS ------------------------------------------------------------------------------------
 
-    
-    
     def make_graph_real( self, graph ):
         '''
         takes an alignment consisting only of nodes with neighbours, creates the
@@ -381,4 +386,5 @@ class Multalign():
         r += "\n\n---NEWICK TREE----------------------\n\n"
         r += self.result.newick
         r += "\n********************************************************************\n\n"
+
         return r

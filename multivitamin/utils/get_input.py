@@ -126,7 +126,7 @@ def get_all_cart_pairs( char_list ):
 def parse_guide_tree( mult ):
     if mult.upper() == "GREEDY":
         return "GREEDY"
-    elif mult.upper() == "PROGRESSIVE":
+    elif mult.upper() == "PROGRESSIVE": #default
         return "PROGRESSIVE"
     else:
         # try:

@@ -110,6 +110,10 @@ class Graph():
             return len(self.nodes) <= len(other.nodes)
 
 
+    def __hash__( self ):
+        return hash((self.id))
+
+
     '''define the way a graph is printed'''
     def __str__( self ):
         p_nodes = ""
