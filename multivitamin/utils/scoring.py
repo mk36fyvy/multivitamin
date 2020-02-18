@@ -61,7 +61,7 @@ class Scoring():
             for node, mapping in res.items():
 
                 node_labels = node.get_label()
-                mapping_labels = mapping.get_label()
+                mapping_labels = mapping.get_label() if mapping else []
                 node_score = 0
                 if mapping:
                     mapped += 1
@@ -107,7 +107,7 @@ class Scoring():
             for node, mapping in res.items():
 
                 node_labels = node.get_label()
-                mapping_labels = mapping.get_label()
+                mapping_labels = mapping.get_label() if mapping else []
                 node_score = 0
                 if mapping:
                     mapped += 1
