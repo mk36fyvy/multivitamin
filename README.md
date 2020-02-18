@@ -13,6 +13,9 @@ Sounds exciting, so let's get started!
 
 ## Comments for practical course
 
+#### Changes from 18.02
+- If you want to create an interactive representation of a graph without (re)running an alignment, simply run `multiVitamin -rV <graph file>`. The html file will be generated in your results directory without opening a popup (in order to facilitate automization)
+
 #### Changes from 07.02 to 11.02
 - **Important**: Please reinstall `multiVitamin` after pulling.
 - added `-r`, a new dynamic, interactive *graph representation* of the consensus graph (example: `multiVitamin -ri <g1.graph> <g2.graph>` ). The script takes the string which appears most often in the label list. The nodes are colour coded: `multiVitamin` recognizes elements and atomic numbers and gives them appropriate colours. If an element occurs more often in a node label, the node's colour gets more dark. If an element is missing (i.e. it is displayed as a black node), simply add it in multivitamin/supp/molecule_dicts.py. Double/triple/... bonds are not supported as of now. Hovering over a node displays its original label list
