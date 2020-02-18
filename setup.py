@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='multivitamin',
-    version='2.1.0',
+    version='2.2.5',
     packages=[
         'multivitamin',
         'multivitamin.algorithms',

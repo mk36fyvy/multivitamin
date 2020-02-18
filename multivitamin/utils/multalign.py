@@ -158,6 +158,7 @@ class Multalign():
         #check scoring matrix here
         print("\nScoring Matrix:\n{}\n".format(self.scoring_matrix))
         if self.scoring_matrix == "-1": #no scoring given
+
             pass #create some reasonable default values here
         else: #user specified scoring
             scoremin = min(self.scoring_matrix.items())
@@ -176,6 +177,7 @@ class Multalign():
             g1 = self.graph_list[i1]
             g2 = self.graph_list[i2]
             if i1==i2:
+              
                 dist[i1, i2] = -1
             elif (g1, g2) in self.already_done:
                 dist[i1, i2] = self.already_done[( g1, g2 )][1] #note to michel: abuse of tuple indexing is almost criminal here
@@ -183,7 +185,7 @@ class Multalign():
                 max_alignment = self.apply_algorithm( g1, g2 )[0]
                 self.already_done[( g1, g2 )] = self.already_done[( g2, g1 )] = max_alignment
                 dist[i1, i2] = self.already_done[( g1, g2 )][1]
-        
+                
         while len( self.graph_list ) > 1:
             #find indices of highest score, if the highest score occurs twice, choice is arbitrary
             i1, i2 = np.unravel_index(np.argmax(dist, axis=None), dist.shape) #(g1,g2)
@@ -193,6 +195,7 @@ class Multalign():
             #compute alignment if not already present
             if not ( g1, g2 ) in self.already_done:
                 max_alignment = self.apply_algorithm( g1, g2 )[0]
+                
                 self.already_done[( g1, g2 )] = max_alignment
                 self.already_done[( g2, g1 )] = max_alignment
 
@@ -203,8 +206,7 @@ class Multalign():
 
             if Node("null", []) in alignment.nodes and self.algorithm == "VF2":
                 raise Exception("VF2 could not produce a multiple alignment of all the given graphs. \n The classical VF2 algorithm can only process *graph-subgraph*-isomorphism. \n Please consider using subVF2 algorithm instead.")
-            
-            print(dist)
+
             #remove old graphs
             self.graph_list.remove(g1)
             self.graph_list.remove(g2)
@@ -227,6 +229,7 @@ class Multalign():
             dist = np.append(dist, [computed_distances], axis = 0)
             
             dist = np.append(dist, np.append(computed_distances, -1).reshape((-1,1)), axis = 1)
+
 
         #alignment should be done now
         try:
@@ -383,4 +386,5 @@ class Multalign():
         r += "\n\n---NEWICK TREE----------------------\n\n"
         r += self.result.newick
         r += "\n********************************************************************\n\n"
+
         return r

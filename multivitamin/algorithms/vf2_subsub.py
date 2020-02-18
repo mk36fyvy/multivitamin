@@ -7,6 +7,7 @@ from multivitamin.basic.graph import Graph
 from multivitamin.utils.parser import parse_graph
 from multivitamin.utils.scoring import Scoring
 from multivitamin.supp.progress_bar import print_progress_bar
+from multivitamin.utils.parser import edges_contain_doubles
 
 
 class subVF2():
@@ -66,12 +67,15 @@ class subVF2():
 
     def match( self, last_mapped=(Node("-1", []), Node("-1", [])), depth=0 ):
         if self.s_in_small_g():
+            if not self.found_complete_matching:
+                print_progress_bar(len(self.large_g.nodes), len(self.large_g.nodes), prefix = 'Estimated progress:', suffix = 'Aligning {} and {}'.format( self.small_g.id, self.large_g.id ), length = 50)
             self.found_complete_matching = True
             scoring = Scoring( len(self.small_g.nodes), len(self.large_g.nodes), [self.core_s], self.scoring_matrix )
             scoring.score()
 
             self.append_result_subgraph( scoring.get_best_result() )
             self.restore_ds( last_mapped[0], last_mapped[1], depth )
+            
             return
 
         td = self.set_inout( last_mapped[0], last_mapped[1], depth )
@@ -79,7 +83,7 @@ class subVF2():
 
         found_pair = False
         for tup in p:
-            if depth == 0:
+            if depth == 0 and not self.found_complete_matching:
                 print_progress_bar(self.i, len(self.large_g.nodes), prefix = 'Estimated progress:', suffix = 'Aligning {} and {}'.format( self.small_g.id, self.large_g.id ), length = 50)
                 self.i += 1
 
@@ -111,6 +115,8 @@ class subVF2():
             scoring.score()
 
             self.append_result_subgraph( scoring.get_best_result() )
+            print_progress_bar(len(self.large_g.nodes), len(self.large_g.nodes), prefix = 'Estimated progress:', suffix = 'Aligning {} and {}'.format( self.small_g.id, self.large_g.id ), length = 50)
+                
             return
 
 
@@ -388,6 +394,28 @@ class subVF2():
 
         self.result_graphs.append( result_graph )
         self.results.append( (result_graph.nodes,result[1]) )
+
+
+    def get_real_result_graph( self, incompl_graph ):
+        incompl_graph = self.generate_graph_bools( incompl_graph )
+        return incompl_graph.create_undirected_edges()
+    
+    
+    def generate_graph_bools( self, graph ):
+        if not list(graph.nodes)[0].label == "":
+            graph.nodes_are_labelled = True
+
+        if len(graph.nodes) > 1:
+            try:
+                if not list(graph.edges)[0].label == "":
+                    graph.edges_are_labelled = True
+            except: #graph has no edges
+                graph.nodes_are_labelled = False
+
+        if edges_contain_doubles( graph.edges ):
+            graph.is_directed = True
+
+        return graph
 
 
 

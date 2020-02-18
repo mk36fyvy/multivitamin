@@ -80,12 +80,10 @@ class Scoring():
 
                 graph_score += node_score
 
-            gap_node_amount = self.large_graph_nodes_len-mapped
+            gap_node_amount = self.large_graph_nodes_len + self.small_graph_nodes_len - (2 * mapped)
             graph_score += self.gap_score * gap_node_amount * node_label_len * mapping_label_len
 
-            self.res_scores[tuple(sorted(res.items()))] = int(graph_score/len(res))
-
-        return
+            self.res_scores[tuple(sorted(res.items()))] = int(graph_score/(node_label_len + mapping_label_len + 0.1))
 
 
     def score_with_matrix( self ):
@@ -128,9 +126,9 @@ class Scoring():
                     node_score += self.gap_score * node_label_len * mapping_label_len
 
                 graph_score += node_score
-            gap_node_amount = self.large_graph_nodes_len-mapped
-            graph_score += self.gap_score*gap_node_amount*node_label_len*mapping_label_len
-            self.res_scores[tuple(sorted(res.items()))] = int(graph_score/(self.large_graph_nodes_len+self.small_graph_nodes_len-(2*mapped)))
+            gap_node_amount = self.large_graph_nodes_len + self.small_graph_nodes_len - (2 * mapped)
+            graph_score += self.gap_score*gap_node_amount * node_label_len * mapping_label_len
+            self.res_scores[tuple(sorted(res.items()))] = int(graph_score/(node_label_len + mapping_label_len + 0.1))
 
 
     def get_best_result( self ):
