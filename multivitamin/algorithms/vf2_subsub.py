@@ -397,8 +397,8 @@ class subVF2():
     def get_real_result_graph( self ):
         result = self.result_graphs[1]
         result = self.generate_graph_bools( result )
-        return result.create_undirected_edges()
-    
+        result.create_undirected_edges()
+        return result
     
     def generate_graph_bools( self, graph ):
         if not list(graph.nodes)[0].label == "":
