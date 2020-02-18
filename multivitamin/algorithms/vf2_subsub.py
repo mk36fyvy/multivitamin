@@ -397,8 +397,25 @@ class subVF2():
 
     def get_real_result_graph( self ):
         result = self.result_graphs[1]
-        
+        result = self.generate_graph_bools( result )
         return result.create_undirected_edges()
+    
+    
+    def generate_graph_bools( self, graph ):
+        if not list(graph.nodes)[0].label == "":
+            graph.nodes_are_labelled = True
+
+        if len(graph.nodes) > 1:
+            try:
+                if not list(graph.edges)[0].label == "":
+                    graph.edges_are_labelled = True
+            except: #graph has no edges
+                graph.nodes_are_labelled = False
+
+        if edges_contain_doubles( graph.edges ):
+            graph.is_directed = True
+
+        return graph
 
 if __name__ == "__main__":
 
