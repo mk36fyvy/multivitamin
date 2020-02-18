@@ -1,2 +1,3 @@
 #ignore pyc files everywhere
 **/*.pyc
+multivitamin/custom.py
