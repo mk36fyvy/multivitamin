@@ -25,7 +25,7 @@ def write_graph(graph, path, out_name):
 
     for node in (graph.nodes):
         mult_id_label = ""
-        for id in node.mult_id:
+        for id in node.node_id():
             mult_id_label += id
             mult_id_label += "°"
         mult_id_label = mult_id_label[:-1]
@@ -46,10 +46,10 @@ def write_graph(graph, path, out_name):
 
     if not graph.edges_are_labelled:
         for edge in graph.edges:
-            f.write("{};{}\n".format( edge.node1.mult_id, edge.node2.mult_id ))
+            f.write("{};{}\n".format( edge.node1.node_id(), edge.node2.node_id() ))
     else:
         for edge in graph.edges:
-            f.write("{};{};{}\n".format( edge.node1.mult_id, edge.node2.mult_id, edge.label ))
+            f.write("{};{};{}\n".format( edge.node1.node_id(), edge.node2.node_id(), edge.label ))
 
     f.close()
 
