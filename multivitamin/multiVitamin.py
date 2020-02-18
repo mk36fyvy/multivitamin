@@ -49,7 +49,7 @@ def main():
         if graph_is_double( graphs ):
             raise InterruptedError("You provided at least one graph twice which is not allowed. Please rename one file if you wish to include a self-match. ")
 
-        multalign = Multalign( graphs, args.algorithm, args.mult, args.save_all, args.table )
+        multalign = Multalign( graphs, args.algorithm, args.mult, args.save_all, args.table, args.local_align )
         print("Calculating multiple alignment with {} algorithm...".format( args.algorithm ))
         multalign.multalign()
         print(multalign)

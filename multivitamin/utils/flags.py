@@ -106,6 +106,8 @@ group2 = parser.add_argument_group(
 -r, --representation                show interactive representation of the result graph
                                       with 3Djs. This representation is saved as .html file
                                       in the results directory
+-u, --local-align                   look for local alignment, i.e. forbid further alignment
+                                      if it would not be connected
 '''
 )
 
@@ -177,11 +179,19 @@ opt.add_argument(
     help=argparse.SUPPRESS
 )
 
-# not fully implemented yet
 opt.add_argument(
     '-r',
     '--representation',
     dest='representation',
+    action='store_true',
+    # help='show interactive representation of the result graph in XXX. This representation is saved as .html file in the results directory'
+    help=argparse.SUPPRESS
+)
+
+opt.add_argument(
+    '-u',
+    '--local_align',
+    dest='local_align',
     action='store_true',
     # help='show interactive representation of the result graph in XXX. This representation is saved as .html file in the results directory'
     help=argparse.SUPPRESS

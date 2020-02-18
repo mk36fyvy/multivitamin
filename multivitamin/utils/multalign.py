@@ -22,7 +22,8 @@ class Multalign():
         algorithm,
         method,
         save_all,
-        scoring_matrix=None
+        scoring_matrix=None,
+        local_align=False
     ):
 
         self.algorithm = algorithm
@@ -39,6 +40,7 @@ class Multalign():
 
         self.scoring_matrix = scoring_matrix if scoring_matrix else "-1"
 
+        self.local_align = local_align
 
     def multalign( self ):
         '''
@@ -298,7 +300,7 @@ class Multalign():
             return max(vf2.results)
 
         elif self.algorithm == "SUBVF2":
-            subvf2 = subVF2( graph1, graph2, self.scoring_matrix )
+            subvf2 = subVF2( graph1, graph2, self.scoring_matrix, self.local_align )
             subvf2.match()
             return subvf2.results
 

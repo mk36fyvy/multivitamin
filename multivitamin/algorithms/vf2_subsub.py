@@ -12,7 +12,7 @@ from multivitamin.utils.parser import edges_contain_doubles
 
 class subVF2():
 
-    def __init__(self, g, h, scoring_matrix=None):
+    def __init__(self, g, h, scoring_matrix=None, local_align=False):
 
 
         if g.int_size() > h.int_size():
@@ -23,6 +23,9 @@ class subVF2():
             self.large_g = h
 
         self.scoring_matrix = scoring_matrix if scoring_matrix else '-1'
+        
+        self.local_align = local_align
+        self.is_locally_aligned = False
 
 
         # if the graph is undirected, the inverse edges (1,2 -> 2,1) are
@@ -143,8 +146,11 @@ class subVF2():
         elif all(( td['in_l'], td['in_s'] )):
             return self.cart_p1(self.in_l,  self.legal_max(self.in_s))
 
-        elif not any((td["in_l"], td["in_s"], td["out_l"], td["out_s"])):
-
+        elif not any((td["in_l"], td["in_s"], td["out_l"], td["out_s"])) and not self.is_locally_aligned:
+            
+            if self.local_align:
+                self.is_locally_aligned = True
+            
             # all mapped nodes are in m_l (large_g) or m_s (small_g)
             m_l = {n for n in self.core_l if self.core_l[n]}
             m_s = {n for n in self.core_s if self.core_s[n]}
