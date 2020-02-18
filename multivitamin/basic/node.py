@@ -1,5 +1,8 @@
 """ Node object with an id (str), a label (str) and neighbours (set) """
 import copy
+# from functools import lru_cache
+
+
 class Node():
 
 
@@ -28,6 +31,10 @@ class Node():
         '''remove a neighbour from the neighbours set of the node'''
         self.neighbours.remove(node)
 
+
+#     @lru_cache(maxsize=128)
+    def get_neighbours(self):
+        return self.neighbours
 
     def get_label( self ):
         label_copy = copy.deepcopy(self.label)

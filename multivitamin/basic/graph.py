@@ -69,6 +69,8 @@ class Graph():
                 self.edges.add(rev_edge)
 
 
+
+
     '''allow comparing graphs (number of nodes!) to each other ( ==, >=, <=, <, > )'''
     def __eq__( self, other):
         if not isinstance(other, Graph):
