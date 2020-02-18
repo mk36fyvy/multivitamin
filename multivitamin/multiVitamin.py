@@ -107,14 +107,23 @@ def main():
             raise Exception("Invalid algorithm name!")
 
     elif args.view:
-        # print(args.view)
-        if isinstance(args.view, list): #this happens when parsing files from a directory
-            for i in range(len(args.view)):
-                print("Displaying {}...".format(args.view[i].id))
-            create_graph( args.view )
+        if args.representation:
+            path = get_results_dir()
+            if isinstance(args.view, list): #this happens when parsing files from a directory
+                for i in range(len(args.view)):
+                    print("Generate HTML-Representation {}...".format(args.view[i].id))
+                    generate_html_vis( path, args.view[i] )
+            else:
+                print("Generate HTML-Representation {}...".format(args.view.id))
+                generate_html_vis( path, args.view )
         else:
-            print("Displaying {}...".format(args.view.id))
-            create_graph( args.view )
+            if isinstance(args.view, list): #this happens when parsing files from a directory
+                for i in range(len(args.view)):
+                    print("Displaying {}...".format(args.view[i].id))
+                create_graph( args.view )
+            else:
+                print("Displaying {}...".format(args.view.id))
+                create_graph( args.view )
 
     elif args.view_multiple:
             # print(args.view_multiple)
