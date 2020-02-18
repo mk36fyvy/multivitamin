@@ -13,7 +13,6 @@ class Scoring():
         scoring_matrix = None
     ):
         self.results = results
-        self.null_n = Node("-1", [])
 
         self.small_graph_nodes_len = small_graph_nodes_len
         self.large_graph_nodes_len = large_graph_nodes_len
@@ -55,16 +54,16 @@ class Scoring():
             node_label_len = len(next(iter(res.keys())).mult_id) # label length of nodes from smaller graph
             mapping_label_len = 0
             for mapping in res.values():
-                if mapping != self.null_n:
+                if mapping:
                     mapping_label_len = len(mapping.mult_id) # label length of nodes from larger graph
                     break
 
             for node, mapping in res.items():
 
                 node_labels = node.get_label()
-                mapping_labels = mapping.get_label()
+                mapping_labels = mapping.get_label() if mapping else []
                 node_score = 0
-                if mapping != self.null_n:
+                if mapping:
                     mapped += 1
 
                     for el1 in node_labels:
@@ -101,16 +100,16 @@ class Scoring():
             node_label_len = len(next(iter(res.keys())).mult_id) # label length of nodes from smaller graph
             mapping_label_len = 0
             for mapping in res.values():
-                if mapping != self.null_n:
+                if mapping:
                     mapping_label_len = len(mapping.mult_id) # label length of nodes from larger graph
                     break
 
             for node, mapping in res.items():
 
                 node_labels = node.get_label()
-                mapping_labels = mapping.get_label()
+                mapping_labels = mapping.get_label() if mapping else []
                 node_score = 0
-                if mapping != self.null_n:
+                if mapping:
                     mapped += 1
                     for el1 in node_labels:
                         for el2 in mapping_labels:

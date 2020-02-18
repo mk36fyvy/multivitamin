@@ -395,6 +395,10 @@ class subVF2():
         self.results.append( (result_graph.nodes,result[1]) )
 
 
+    def get_real_result_graph( self ):
+        result = self.result_graphs[1]
+        
+        return result.create_undirected_edges()
 
 if __name__ == "__main__":
 
