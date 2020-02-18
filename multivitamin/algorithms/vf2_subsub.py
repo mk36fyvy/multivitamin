@@ -7,6 +7,7 @@ from multivitamin.basic.graph import Graph
 from multivitamin.utils.parser import parse_graph
 from multivitamin.utils.scoring import Scoring
 from multivitamin.supp.progress_bar import print_progress_bar
+from multivitamin.utils.parser import edges_contain_doubles
 
 
 class subVF2():
