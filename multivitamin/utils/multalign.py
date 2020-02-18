@@ -1,5 +1,6 @@
 import sys
 import pprint
+import numpy as np #consideration
 from ete3 import Tree
 
 from multivitamin.basic.node import Node
@@ -49,6 +50,7 @@ class Multalign():
 
         elif self.method == "PROGRESSIVE":
             raise AttributeError("This is not yet implemented, sorry! Please use the default setting.")
+            self.progressive_alignment()
 
         else:
             print("Aligning along the provided guide tree...")
@@ -147,6 +149,92 @@ class Multalign():
         self.newick = gt.root.graph.newick
 
 
+    def progressive_alignment( self ): #consider renaming this to UPGMA or give user choice of additional linking methods (NJ, SL, CL, WPGMA)
+
+        #warn user of asumptions of UPGMA
+        print('"Warning: executing UPGMA algorithm with graph distances. Be aware of the strong assumptions of UPGMA, namely, that for any thwo input pairs, a "parent" graph may be constructed with equivalent distance to both input graphs and preserving distance to all other graphs. Since this may not be a reasonable assumption for our present way of aligning and scoring graphs, be careful with the output of UPGMA clustering.')
+
+        dist = np.zeroes((len( self.graph_list ),len( self.graph_list ))) #square distace matrix
+
+        #check scoring matrix here
+        print("\nScoring Matrix:\n{}\n".format(self.scoring_matrix))
+        if self.scoring_matrix == -1: #no scoring given
+            pass #create some reasonable default values here
+        else: #user specified scoring
+            scoremin = min(self.scoring_matrix.items())
+            scoremax = max(self.scoring_matrix.items())
+            if scoremin == scoremax: #should not be possible
+                raise(AttributeError("Scoring Matrix seems broken: {}".format(self.scoring_matrix)))
+            elif scoremax <= 0 and scoremin < scoremax: #negative valued distance measure assumed, zero for identity assumed
+                pass #negative should be a metric, warn for conversion
+            elif scoremin >= 0 and scoremax > scoremin: #gotta check for gap value to determine similarity or distance measure
+                pass #inform user about conversion
+            else: #mixed scoring, most likely positive matches, negative mismatches, neutral gap
+                pass #convert to a proper metric!
+
+        #fill matrix initially
+        for i1, i2 in zip(range(len(self.graph_list)), range(len(self.graph_list))): #assuming that graph_list is indeed a list
+            g1 = self.graph_list[i1]
+            g2 = self.graph_list[i2]
+            if i1==i2:
+                dist[i1, i2] = 0
+            elif (g1, g2) in self.already_done:
+                dist[i1, i2] = self.already_done[( g1, g2 )][1] #note to michel: abuse of tuple indexing is almost criminal here
+            else:
+                max_alignment = self.apply_algorithm( g1, g2 )[0]
+                self.already_done[( g1, g2 )] = self.already_done[( g2, g1 )] = max_alignment
+                dist[i1, i2] = self.already_done[( g1, g2 )][1]
+
+        while len( self.graph_list ) > 1:
+            #find indices of highest score, if the highest score occurs twice, choice is arbitrary
+            i1, i2 = np.unravel_index(np.argmax(dist, axis=None), dist.shape) #(g1,g2)
+            g1 = self.graph_list[i1]
+            g2 = self.graph_list[i2]
+
+            #compute alignment if not already present
+            if not ( g1, g2 ) in self.already_done:
+                max_alignment = self.apply_algorithm( g1, g2 )[0]
+                self.already_done[( g1, g2 )] = self.already_done[( g2, g1 )] = max_alignment
+
+            #if max_alignment[1] > maximum_score: #subVF2 #necessary?
+            alignment = Graph( "{}-{}".format( g1.abbrev, g2.abbrev ), self.already_done[( g1, g2 )][0] )
+            alignment.abbrev = alignment.id
+            alignment.newick = "({},{})".format( g1.newick, g2.newick)
+
+            if Node("null", []) in alignment.nodes and self.algorithm == "VF2":
+                raise Exception("VF2 could not produce a multiple alignment of all the given graphs. \n The classical VF2 algorithm can only process *graph-subgraph*-isomorphism. \n Please consider using subVF2 algorithm instead.")
+
+            #remove old graphs
+            self.graph_list.remove(g1)
+            self.graph_list.remove(g2)
+            self.remove_element( self.already_done, ( g1, g2 ) )
+            self.remove_element( self.already_done, ( g2, g1 ) )
+
+            #generate alignment graph and add to list
+            alignment_graph = self.make_graph_real( alignment )
+            alignment_graph = self.generate_graph_bools( alignment_graph )
+            self.graph_list.append( alignment_graph ) #appends at the end?
+            self.intermediates.append( alignment_graph )
+
+            #calculate distances according to algo (UPGMA for now), drop rows/columns from dist table and append new row for alignement graph
+            computed_distances = [(dist[k,i1]+dist[k,i2])/2 for k in range(dist.shape[0]) if not any( k == i1 , k == i2)]#this is actually WPGMA, find and normalize by alignment size of graphs
+            np.delete(dist, [i1,i2], axis = 0)
+            np.delete(dist, [i1,i2], axis = 1)
+            #probably need to transpose one of those
+            np.append(dist, computed_distances, axis = 0)
+            np.append(dist, np.append(computed_distances, 0), axis = 1)
+
+        #alignment should be done now
+        try:
+            res = self.graph_list[0]
+        except:
+            return
+
+        res.edges = set()
+        res.create_undirected_edges()
+        self.result = res
+        self.newick = self.graph_list[0].newick
+        return
 
 
     # ---- HELPER METHODS ------------------------------------------------------------------------------------
@@ -294,4 +382,3 @@ class Multalign():
         r += self.result.newick
         r += "\n********************************************************************\n\n"
         return r
-
