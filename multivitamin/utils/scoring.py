@@ -1,6 +1,7 @@
 import pprint
 
 from multivitamin.basic.node import Node
+from builtins import AssertionError
 
 
 class Scoring():
@@ -82,8 +83,11 @@ class Scoring():
 
             gap_node_amount = self.large_graph_nodes_len + self.small_graph_nodes_len - (2 * mapped)
             graph_score += self.gap_score * gap_node_amount * node_label_len * mapping_label_len
-
-            self.res_scores[tuple(sorted(res.items()))] = int(graph_score/max(node_label_len + mapping_label_len , 1 ))
+            
+            if node_label_len == 0 or mapping_label_len == 0:
+                raise AssertionError("Fatal error while scoring, tried to score a matching of zero-length nodes\n\tGraphs in smaller alignment: {}\n\tGraphs in larger alignment: {}\n\tMapping: {}".format(node_label_len,mapping_label_len,res.items()))
+            
+            self.res_scores[tuple(sorted(res.items()))] = int(graph_score/(node_label_len * mapping_label_len))
 
 
     def score_with_matrix( self ):
@@ -128,7 +132,11 @@ class Scoring():
                 graph_score += node_score
             gap_node_amount = self.large_graph_nodes_len + self.small_graph_nodes_len - (2 * mapped)
             graph_score += self.gap_score*gap_node_amount * node_label_len * mapping_label_len
-            self.res_scores[tuple(sorted(res.items()))] = int(graph_score/(max(node_label_len + mapping_label_len, 1)))
+            
+            if node_label_len == 0 or mapping_label_len == 0:
+                raise AssertionError("Fatal error while scoring, tried to score a matching of zero-length nodes\n\tGraphs in smaller alignment: {}\n\tGraphs in larger alignment: {}\n\tMapping: {}".format(node_label_len,mapping_label_len,res.items()))
+            
+            self.res_scores[tuple(sorted(res.items()))] = int(graph_score/(node_label_len * mapping_label_len))
 
 
     def get_best_result( self ):
