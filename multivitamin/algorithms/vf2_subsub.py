@@ -395,7 +395,7 @@ class subVF2():
 
 
     def get_real_result_graph( self ):
-        result = self.result_graphs[1]
+        result = self.result_graphs[0]
         result = self.generate_graph_bools( result )
         result.create_undirected_edges()
         return result
