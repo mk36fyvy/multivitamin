@@ -11,8 +11,8 @@ from multivitamin.supp.molecule_dicts import atomic_number_to_element, get_size_
 
 def write_graph(graph, path, out_name):
     if out_name == None:
-        out_name = graph.id
-    f = open("{}{}{}.graph".format( os.getcwd(), path, out_name ), 'w+')
+        out_name = graph.id + '.graph'
+    f = open(os.path.join(path, out_name), 'w+')
     f.write("// {}\n".format( graph.newick ))
     f.write("AUTHOR: {}\n".format( getpass.getuser() ))
     f.write("#nodes;{}\n".format( len(graph.nodes) ))
@@ -57,7 +57,7 @@ def write_graph(graph, path, out_name):
 
 
 def write_shorter_graph( graph, path ):
-    f = open("{}{}{}.shorter.graph".format( os.getcwd(), path, graph.id ), 'w+')
+    f = open(os.path.join(path, graph.id + '.shorter.graph' ), 'w+')
     f.write("// {}\n".format( graph.newick ))
     f.write("AUTHOR: {}\n".format( getpass.getuser() ))
     f.write("#nodes;{}\n".format( len(graph.nodes) ))
@@ -74,7 +74,6 @@ def write_shorter_graph( graph, path ):
         if node.label == []:
             f.write("{}\n".format( node.id ))
         else:
-            dir_path = os.path.dirname(os.path.realpath(__file__))
             f.write("{};".format( node.id ))
             label_string = ""
             for el in node.label:
@@ -154,12 +153,9 @@ def __consensus__(node, is_element_numbered):
 
 def generate_html_vis( path, graph ):
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    if os.name == 'nt': # if you are using Windows
-        template = open("{}{}\\template.html".format( dir_path ), 'r')
-    else:
-        template = open("{}//template.html".format( dir_path ), 'r')
+    template = open(os.path.join(dir_path, 'template.html'), 'r')
     try:
-        vis = open("{}{}{}.visualization.html".format( os.getcwd(), path, graph.id ), 'w+')
+        vis = open(os.path.join(path, graph.id + '.visualization.html'), 'w+')
         for line in template.readlines():
             if line.startswith('{DATASET}'):
                 vis.write(write_to_json(graph))
