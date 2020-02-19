@@ -106,9 +106,10 @@ group2 = parser.add_argument_group(
 -r, --representation                show interactive representation of the result graph
                                       with 3Djs. This representation is saved as .html file
                                       in the results directory
--u, --local-align                   look for local alignment, i.e. forbid further alignment
-                                      if it would not be connected
 '''
+# -u, --local-align                   look for local alignment, i.e. forbid further alignment
+#                                       if it would not be connected
+
 )
 
 opt = group2.add_argument_group()

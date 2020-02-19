@@ -300,7 +300,7 @@ class Multalign():
             return max(vf2.results)
 
         elif self.algorithm == "SUBVF2":
-            subvf2 = subVF2( graph1, graph2, self.scoring_matrix, self.local_align )
+            subvf2 = subVF2( graph1, graph2, self.scoring_matrix )
             subvf2.match()
             return subvf2.results
 

@@ -45,7 +45,8 @@ class Scoring():
         '''
 
         self.gap_score = 0
-        exact_match_score = 1
+        exact_match_score = 3
+
         for res in self.results:
 
             graph_score = 0
@@ -127,7 +128,7 @@ class Scoring():
                 graph_score += node_score
             gap_node_amount = self.large_graph_nodes_len + self.small_graph_nodes_len - (2 * mapped)
             graph_score += self.gap_score*gap_node_amount * node_label_len * mapping_label_len
-            self.res_scores[tuple(sorted(res.items()))] = int(graph_score/(node_label_len + mapping_label_len + 0.1))
+            self.res_scores[tuple(sorted(res.items()))] = int(graph_score/(max(node_label_len + mapping_label_len, 1)))
 
 
     def get_best_result( self ):

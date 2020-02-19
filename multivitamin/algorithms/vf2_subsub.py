@@ -12,7 +12,7 @@ from multivitamin.utils.parser import edges_contain_doubles
 
 class subVF2():
 
-    def __init__(self, g, h, scoring_matrix=None, local_align=False):
+    def __init__(self, g, h, scoring_matrix=None):
 
 
         if g.int_size() > h.int_size():
@@ -23,9 +23,6 @@ class subVF2():
             self.large_g = h
 
         self.scoring_matrix = scoring_matrix if scoring_matrix else '-1'
-        
-        self.local_align = local_align
-        self.is_locally_aligned = False
 
 
         # if the graph is undirected, the inverse edges (1,2 -> 2,1) are
@@ -76,7 +73,7 @@ class subVF2():
 
             self.append_result_subgraph( scoring.get_best_result() )
             self.restore_ds( last_mapped[0], last_mapped[1], depth )
-            
+
             return
 
         td = self.set_inout( last_mapped[0], last_mapped[1], depth )
@@ -117,7 +114,7 @@ class subVF2():
 
             self.append_result_subgraph( scoring.get_best_result() )
             print_progress_bar(len(self.large_g.nodes), len(self.large_g.nodes), prefix = 'Estimated progress:', suffix = 'Aligning {} and {}'.format( self.small_g.id, self.large_g.id ), length = 50)
-                
+
             return
 
 
@@ -146,11 +143,8 @@ class subVF2():
         elif all(( td['in_l'], td['in_s'] )):
             return self.cart_p1(self.in_l,  self.legal_max(self.in_s))
 
-        elif not any((td["in_l"], td["in_s"], td["out_l"], td["out_s"])) and not self.is_locally_aligned:
-            
-            if self.local_align:
-                self.is_locally_aligned = True
-            
+        elif not any((td["in_l"], td["in_s"], td["out_l"], td["out_s"])):
+
             # all mapped nodes are in m_l (large_g) or m_s (small_g)
             m_l = {n for n in self.core_l if self.core_l[n]}
             m_s = {n for n in self.core_s if self.core_s[n]}
@@ -158,7 +152,7 @@ class subVF2():
             # In diff_l are all nodes that are in the large graph, but not mapping
             diff_l = set(self.large_g.nodes) - m_l
             diff_s = set(self.small_g.nodes) - m_s  # see above
-            
+
             return self.cart_p2(diff_l, max(diff_s))
         return set()
 
@@ -268,7 +262,7 @@ class subVF2():
     def cart_p2( self, node_dict, max_free_node ):
             """
             creates the cartesian product of the node set in node_dict that are not in the
-            current mapping and not in terminal sets (which means they are mapped to None 
+            current mapping and not in terminal sets (which means they are mapped to None
             while it is made sure, that all terminal sets are empty).
             It is made impossible that the first candidate pair is a forbidden matching
             (from label point of view).
@@ -285,7 +279,7 @@ class subVF2():
         max_node = None
         for node in t_dict:
             if t_dict[node] > 0 and self.core_s[node]:
-                continue    
+                continue
             elif node > max_node or not max_node:
                 max_node = node
         return max_node
@@ -405,7 +399,7 @@ class subVF2():
         result = self.generate_graph_bools( result )
         result.create_undirected_edges()
         return result
-    
+
     def generate_graph_bools( self, graph ):
         if not list(graph.nodes)[0].label == "":
             graph.nodes_are_labelled = True
