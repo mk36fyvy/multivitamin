@@ -65,8 +65,6 @@ class subVF2():
 
     def match( self, last_mapped=(None, None), depth=0 ):
         if self.s_in_small_g():
-#             if not self.found_complete_matching:
-#                 print_progress_bar(len(self.large_g.nodes), len(self.large_g.nodes), prefix = 'Estimated progress:', suffix = 'Aligning {} and {}'.format( self.small_g.id, self.large_g.id ), length = 50)
             self.found_complete_matching = True
             scoring = Scoring( len(self.small_g.nodes), len(self.large_g.nodes), [self.core_s], self.scoring_matrix )
             scoring.score()
@@ -76,7 +74,6 @@ class subVF2():
 
             return
 
-        td = self.set_inout( last_mapped[0], last_mapped[1], depth )
         p = self.compute_p( depth )
 
         found_pair = False
@@ -85,7 +82,7 @@ class subVF2():
                 print_progress_bar(self.i, len(self.large_g.nodes), prefix = 'Estimated progress:', suffix = 'Aligning {} and {}'.format( self.small_g.id, self.large_g.id ), length = 50)
                 self.i += 1
 
-            if self.is_feasible(tup[0], tup[1], depth, td):
+            if self.is_feasible( tup[0], tup[1], depth ):
                 found_pair = True
                 self.compute_s_( tup[0], tup[1] )
 
@@ -166,7 +163,7 @@ class subVF2():
             return self.cart_p2(diff_l, max(diff_s))
 
 
-    def is_feasible( self, n ,m, depth, td):
+    def is_feasible( self, n ,m, depth ):
         '''
         first, checks zero_look ahead (if there are neighbours of the candidate pair that
         are in the current mapping, they have to be mapped to each other) then, checks some
@@ -201,61 +198,11 @@ class subVF2():
         if any((not n, not m)):
             raise(Exception("None restored"))
 
-        self.restore_terminals(self.in_l, "in_l", self.core_l, depth)
-        self.restore_terminals(self.out_l, "out_l", self.core_l, depth)
-        self.restore_terminals(self.in_s, "in_s", self.core_s, depth)
-        self.restore_terminals(self.out_s, "out_s", self.core_s, depth)
-
         self.core_l[n] = None
         self.core_s[m] = None
 
 
 # HELPER FUNCTIONS ------------------------------------------------------------
-    def set_inout(self, n, m, depth):
-        '''
-        Saves number of nodes for each terminal set in td and sets ssr /
-        recursion depth, if not set. Used for computing candidate set p.
-        '''
-
-        td = {"in_l": 0, "out_l": 0, "in_s": 0, "out_s": 0}
-
-        # makes sure, the first selected node gets depth
-        try:  # This is needed, because the very first try will fail (None not in in_l)
-            if self.in_l[n] == 0 and self.out_l[n] == 0:
-                self.in_l[n] = depth
-                self.out_l[n] = depth
-
-            if self.in_s[m] == 0 and self.out_s[m] == 0:
-                self.in_s[m] = depth
-                self.out_s[m] = depth
-        except:
-            return td
-
-        # Compute terminal_dicts and length for the large graph
-        for v in n.neighbours:
-            if self.core_l[v]:
-                continue
-
-            if v in n.in_neighbours:
-                # saves current depth for terminal node in case it hasn't depth yet
-                if self.in_l[v] == 0: self.in_l[v] = depth
-
-            if v in n.out_neighbours :
-                if self.out_l[v] == 0: self.out_l[v] = depth
-
-        # compute terminal_dicts for the small graph
-        for v in m.neighbours:
-            if self.core_s[v]:
-                continue
-
-            if v in m.in_neighbours:
-                if self.in_s[v] == 0: self.in_s[v] = depth
-
-            if v in m.out_neighbours:
-                if self.out_s[v] == 0: self.out_s[v] = depth
-
-        return td
-
 
     def cart_p1( self, node_dict, t_max ):
         """
@@ -315,11 +262,6 @@ class subVF2():
                 return False
         return True
 
-
-    def restore_terminals(self, t_dict, dict_key, core, depth):
-        for node in t_dict:
-            if not core[node] and t_dict[node] == depth:
-                t_dict[node] = 0
 
 
 # RESULT PROCESSING -----------------------------------------------------------
