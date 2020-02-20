@@ -8,7 +8,6 @@ from multivitamin.utils.parser import parse_graph
 from multivitamin.utils.scoring import Scoring
 from multivitamin.supp.progress_bar import print_progress_bar
 from multivitamin.utils.parser import edges_contain_doubles
-from black import diff
 
 
 class subVF2():
@@ -158,7 +157,7 @@ class subVF2():
                         diff_l.add(neigh)
     
             diff_s = set()
-            for node in m_l:
+            for node in m_s:
                 for neigh in node.neighbours:
                     if not self.core_s[neigh]:
                         diff_s.add(neigh)
