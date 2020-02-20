@@ -77,7 +77,7 @@ class subVF2():
             return
 
         td = self.set_inout( last_mapped[0], last_mapped[1], depth )
-        p = self.compute_p(td)
+        p = self.compute_p()
 
         found_pair = False
         for tup in p:
