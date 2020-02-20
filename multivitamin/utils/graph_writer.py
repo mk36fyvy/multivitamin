@@ -24,11 +24,8 @@ def write_graph(graph, path, out_name):
     f.write("\n")
 
     for node in (graph.nodes):
-        mult_id_label = ""
-        for id in node.node_id():
-            mult_id_label += id
-            mult_id_label += "°"
-        mult_id_label = mult_id_label[:-1]
+        nid = node.node_id()
+        mult_id_label = "°".join(nid) if type(nid) == list else nid
 
         node.mult_id = mult_id_label # this is only done because the graph is not used any further internally
 
