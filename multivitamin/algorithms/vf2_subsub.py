@@ -32,9 +32,6 @@ class subVF2():
         if not self.small_g.is_directed:
             self.small_g.create_fake_directions()
 
-        # converts the nodes' neighbours to in and out neighbours
-        self.large_g.get_inout_neighbours()
-        self.small_g.get_inout_neighbours()
 
         # Initializing the two core dictionaries that store each node of the
         # Corresponding graph as key and the node of the other graph where it maps
@@ -42,13 +39,6 @@ class subVF2():
         self.core_s = self.small_g.gen_dict( None )
         self.core_l = self.large_g.gen_dict( None )
 
-        # initialiazing the terminal sets for each graph. These are dictionaries
-        # that store the node as values and the recursion depth as keys where the
-        # nodes entered the corresponding set. For now we initialiazing them with 0 '''
-        self.in_s = self.small_g.gen_dict( 0 )
-        self.out_s = self.small_g.gen_dict( 0 )
-        self.in_l = self.large_g.gen_dict( 0 )
-        self.out_l = self.large_g.gen_dict( 0 )
 
         self.result_graphs = []
         self.results = []
@@ -98,7 +88,7 @@ class subVF2():
             elif depth == self.max_depth_matching:
                 self.biggest_matches.append(self.core_s.copy())
 
-        if depth > 0:
+        if depth > 1:
             self.restore_ds( last_mapped[0], last_mapped[1], depth )
 
 
