@@ -85,7 +85,7 @@ mxg.add_argument(
 group2 = parser.add_argument_group(
     title='Optional arguments',
     description='''
--a, --algorithm <BK|VF2|subVF2>     indicate an alignment-algorithm (default: BK)
+-a, --algorithm <BK|VF2|subVF2>     indicate an alignment-algorithm (default: subVF2)
                                       Warning: VF2 is only suited if there is true
                                       graph-subgraph isomorphism!
 -m, --mult <GREEDY|file>            indicate the multiple alignment method. "greedy"

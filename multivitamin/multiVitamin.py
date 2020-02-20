@@ -156,16 +156,16 @@ def save_results( multalign ):
     path = get_results_dir()
 
     # create results directory
-    if not os.path.isdir("{}{}".format( os.getcwd(), path )): # if results/ does not exist
+    if not os.path.isdir(os.path.join( path )): # if results/ does not exist
         try:
-            os.mkdir("{}{}".format( os.getcwd(), path ) )
+            os.mkdir(os.path.join( path ) )
         except:
             print ("Creation of the directory %s failed" % path)
         else:
-            print ("Successfully created the directory {}{}\n All files will be saved here.".format( os.getcwd(), path ))
+            print ("Successfully created the directory {}\n All files will be saved here.".format( os.path.join(os.getcwd(), path) ))
             print()
     else:
-        print("\nAll files will be saved in {}{} \n".format( os.getcwd(), path ))
+        print("\nAll files will be saved in {} \n".format( os.path.join(path) ))
 
     # save result graph
     write_graph( multalign.result, path, args.output )
@@ -184,7 +184,7 @@ def save_results( multalign ):
         write_shorter_graph( multalign.result, path )
 
     # save graph abbreviations used for identifying original nodes in node ids
-    f = open("{}{}{}".format( os.getcwd(), path, "graph_abbreviations.txt" ), 'w+')
+    f = open(os.path.join( os.getcwd(), path, "graph_abbreviations.txt" ), 'w+')
     for abbrev, id in multalign.graph_abbreviations.items():
         f.write("{}\t{}\n".format( abbrev, id))
     f.close()
@@ -194,8 +194,8 @@ def save_results( multalign ):
 
     # save newick tree in easily parseable txt file
     if args.save_guide:
-        f = open("{}{}{}".format( os.getcwd(), path, "newick.txt" ), 'w+')
-        f.write("{}\n".format(multalign.newick))
+        f = open(os.path.join( os.getcwd(), path, "newick.txt" ), 'w+')
+        f.write("{};\n".format(multalign.newick))
         f.close
 
         print("Saved the alignment tree in Newick format as newick.txt\n")
