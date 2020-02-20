@@ -149,6 +149,14 @@ def __consensus__(node, is_element_numbered):
 
 
 def generate_html_vis( path, graph ):
+    if not os.path.isdir(os.path.join( path )): # if results/ does not exist
+        try:
+            os.mkdir(os.path.join( path ) )
+        except:
+            print ("Creation of the directory %s failed" % path)
+        else:
+            print ("Successfully created the directory {}\n All files will be saved here.".format( os.path.join(os.getcwd(), path) ))
+            print()
     dir_path = os.path.dirname(os.path.realpath(__file__))
     template = open(os.path.join(dir_path, 'template.html'), 'r')
     try:
