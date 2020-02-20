@@ -130,31 +130,32 @@ class subVF2():
         return True
 
 
-    def compute_p(self, td):
+    def compute_p( self ):
         '''
         computes the candidate pairs from terminal sets. If all the terminal
         are empty, candidate pairs are computed from the sets of non-mapped
         nodes.
         '''
 
-        if all( ( td["out_l"] ,td["out_s"] ) ):
-            return self.cart_p1(self.out_l, self.legal_max(self.out_s))
+        # all mapped nodes are in m_l (large_g) or m_s (small_g)
+        m_l = [n for n in self.core_l if self.core_l[n]]
+        m_s = [n for n in self.core_s if self.core_s[n]]
 
-        elif all(( td['in_l'], td['in_s'] )):
-            return self.cart_p1(self.in_l,  self.legal_max(self.in_s))
+        
+        diff_l = set()
+        for node in m_l:
+            for neigh in node.neighbours:
+                if not self.core_l[neigh]:
+                    diff_l.add(neigh)
 
-        elif not any((td["in_l"], td["in_s"], td["out_l"], td["out_s"])):
+        diff_s = set()
+        for node in m_l:
+            for neigh in node.neighbours:
+                if not self.core_s[neigh]:
+                    diff_s.add(neigh)
 
-            # all mapped nodes are in m_l (large_g) or m_s (small_g)
-            m_l = {n for n in self.core_l if self.core_l[n]}
-            m_s = {n for n in self.core_s if self.core_s[n]}
 
-            # In diff_l are all nodes that are in the large graph, but not mapping
-            diff_l = set(self.large_g.nodes) - m_l
-            diff_s = set(self.small_g.nodes) - m_s  # see above
-
-            return self.cart_p2(diff_l, max(diff_s))
-        return set()
+        return self.cart_p2(diff_l, max(diff_s))
 
 
     def is_feasible( self, n ,m, depth, td):
@@ -164,7 +165,7 @@ class subVF2():
         semantic conditions specified in check_semantics which is imported from
         multivitamin/custom.py
         '''
-
+        
         #0-look-ahead
         if not all((
             self.zero_look_ahead(n, m, self.core_l),
