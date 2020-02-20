@@ -8,6 +8,7 @@ from multivitamin.utils.parser import parse_graph
 from multivitamin.utils.scoring import Scoring
 from multivitamin.supp.progress_bar import print_progress_bar
 from multivitamin.utils.parser import edges_contain_doubles
+from black import diff
 
 
 class subVF2():
@@ -77,7 +78,7 @@ class subVF2():
             return
 
         td = self.set_inout( last_mapped[0], last_mapped[1], depth )
-        p = self.compute_p()
+        p = self.compute_p( depth )
 
         found_pair = False
         for tup in p:
@@ -130,32 +131,40 @@ class subVF2():
         return True
 
 
-    def compute_p( self ):
+    def compute_p( self, depth ):
         '''
         computes the candidate pairs from terminal sets. If all the terminal
         are empty, candidate pairs are computed from the sets of non-mapped
         nodes.
         '''
 
-        # all mapped nodes are in m_l (large_g) or m_s (small_g)
-        m_l = [n for n in self.core_l if self.core_l[n]]
-        m_s = [n for n in self.core_s if self.core_s[n]]
-
-        
-        diff_l = set()
-        for node in m_l:
-            for neigh in node.neighbours:
-                if not self.core_l[neigh]:
-                    diff_l.add(neigh)
-
-        diff_s = set()
-        for node in m_l:
-            for neigh in node.neighbours:
-                if not self.core_s[neigh]:
-                    diff_s.add(neigh)
-
-
-        return self.cart_p2(diff_l, max(diff_s))
+        if depth == 0:
+            
+            diff_l = [n for n in self.core_l if not self.core_l[n]]
+            diff_s = [n for n in self.core_s if not self.core_s[n]]
+            
+            return self.cart_p2(diff_l, max(diff_s))
+            
+        else:
+            # all mapped nodes are in m_l (large_g) or m_s (small_g)
+            m_l = [n for n in self.core_l if self.core_l[n]]
+            m_s = [n for n in self.core_s if self.core_s[n]]
+    
+            
+            diff_l = set()
+            for node in m_l:
+                for neigh in node.neighbours:
+                    if not self.core_l[neigh]:
+                        diff_l.add(neigh)
+    
+            diff_s = set()
+            for node in m_l:
+                for neigh in node.neighbours:
+                    if not self.core_s[neigh]:
+                        diff_s.add(neigh)
+    
+    
+            return self.cart_p2(diff_l, max(diff_s))
 
 
     def is_feasible( self, n ,m, depth, td):
