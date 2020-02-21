@@ -35,10 +35,12 @@ class subVF2():
 
         # Initializing the two core dictionaries that store each node of the
         # Corresponding graph as key and the node of the other graph where it maps
-        # As soon as it mapps for now we use None as inital value
+        # As soon as it maps for now we use None as inital value
         self.core_s = self.small_g.gen_dict( None )
         self.core_l = self.large_g.gen_dict( None )
 
+        # forbidden nodes per layer, cleared when backtracked above a layer, reduces search space
+        self.forbidden_nodes =  { layer : set() for layer in range(self.large_g.int_size()) } #maximum depth
 
         self.result_graphs = []
         self.results = []
@@ -54,6 +56,7 @@ class subVF2():
 
 
     def match( self, last_mapped=(None, None), depth=0 ):
+#         print("- Entered Matching at depth {}\n".format(depth))
         if self.s_in_small_g():
             self.found_complete_matching = True
             scoring = Scoring( len(self.small_g.nodes), len(self.large_g.nodes), [self.core_s], self.scoring_matrix )
@@ -62,33 +65,40 @@ class subVF2():
             self.append_result_subgraph( scoring.get_best_result() )
             self.restore_ds( last_mapped[0], last_mapped[1], depth )
 
+#             print("<<< pop {}\n".format(last_mapped))
             return
 
-        p = self.compute_p( depth )
-
         found_pair = False
-        for tup in p:
+        for choice_l in self.free_ls( depth ): #choosen starting node for large graph, one may think about ordering those in advance to optimize searching tree
+            p = self.compute_p( choice_l, depth ) #new compute_pairs from an l_node
+    #         print("??? candidate pairs:\t{}\n".format(p))
             if depth == 0 and not self.found_complete_matching:
                 print_progress_bar(self.i, len(self.large_g.nodes), prefix = 'Estimated progress:', suffix = 'Aligning {} and {}'.format( self.small_g.id, self.large_g.id ), length = 50)
                 self.i += 1
+            for tup in p:
+                
+                if self.is_feasible( tup[0], tup[1] ):
+                    found_pair = True
+                    self.compute_s_( tup[0], tup[1] )
+    #                 print(">>> push {}\n".format(tup))
+                    self.forbidden_nodes[depth+1] = self.forbidden_nodes[depth].copy()
+                    self.match( tup, depth+1 )
+                    # self.forbidden_nodes[depth+1].clear() #correct me but I think clearing up is not necessary with the current structure
 
-            if self.is_feasible( tup[0], tup[1], depth ):
-                found_pair = True
-                self.compute_s_( tup[0], tup[1] )
-
-                self.match( tup, depth+1 )
+            self.forbidden_nodes[depth].add(choice_l) #add the node of the larger graph that was exhaustively explored to the forbidden nodes for all search trees of current or higher depth
 
         # if the matching isn't continued and the current depth is higher than/
         # equal to the max depth reached until now: save the subgraph
         if not found_pair and not self.found_complete_matching:
-            if depth > self.max_depth_matching:
-                self.max_depth_matching = depth
-                self.biggest_matches = []
-                self.biggest_matches.append(self.core_s.copy())
-            elif depth == self.max_depth_matching:
+            if depth >= self.max_depth_matching:
+                if depth > self.max_depth_matching:
+#                     print("\n!!! clearing max matchings, new max_depth {}".format(depth))
+                    self.max_depth_matching = depth
+                    self.biggest_matches = []
+#                 print("\n+ added new max matching:\n{}\n".format(self.core_s))
                 self.biggest_matches.append(self.core_s.copy())
 
-        if depth > 1:
+        if depth > 0: #totally not sure if this is still correct, left it for now
             self.restore_ds( last_mapped[0], last_mapped[1], depth )
 
 
@@ -102,7 +112,9 @@ class subVF2():
             self.append_result_subgraph( scoring.get_best_result() )
             print_progress_bar(len(self.large_g.nodes), len(self.large_g.nodes), prefix = 'Estimated progress:', suffix = 'Aligning {} and {}'.format( self.small_g.id, self.large_g.id ), length = 50)
 
+#             print("<<< pop {}\n".format(last_mapped))
             return
+#         print("<<< pop {}\n".format(last_mapped))
 
 
     def s_in_small_g(self):
@@ -117,57 +129,87 @@ class subVF2():
         return True
 
 
-    def compute_p( self, depth ):
-        '''
-        computes the candidate pairs from terminal sets. If all the terminal
-        are empty, candidate pairs are computed from the sets of non-mapped
-        nodes.
-        '''
-
+    def free_ls( self, depth ):
         if depth == 0:
-            
-            diff_l = [n for n in self.core_l if not self.core_l[n]]
-            diff_s = [n for n in self.core_s if not self.core_s[n]]
-            
-            return self.cart_p2(diff_l, max(diff_s))
-            
+            _ls = self.large_g.nodes # if no matching was present yet, all nodes of a can be choosen
+
         else:
-            # all mapped nodes are in m_l (large_g) or m_s (small_g)
-            m_l = [n for n in self.core_l if self.core_l[n]]
-            m_s = [n for n in self.core_s if self.core_s[n]]
-    
-            
-            diff_l = set()
-            for node in m_l:
+            _ls = set() # if an alignment was present, compute all neighbours in a
+            for node in [n for n in self.core_l if self.core_l[n]]: # current matching
                 for neigh in node.neighbours:
-                    if not self.core_l[neigh]:
-                        diff_l.add(neigh)
-    
-            diff_s = set()
-            for node in m_s:
-                for neigh in node.neighbours:
-                    if not self.core_s[neigh]:
-                        diff_s.add(neigh)
-    
-    
-            return self.cart_p2(diff_l, max(diff_s))
+                    if not self.core_l[neigh]: # neighbours of currently matched l_nodes that are not in the matching themselves
+                        _ls.add(neigh)
+
+        return [node for node in _ls if node not in self.forbidden_nodes[depth]] # the things computed above minus currently forbidden nodes
 
 
-    def is_feasible( self, n ,m, depth ):
+    def compute_p( self, l_node, depth ):
+        '''
+        computes possible candidates for matching with a given node from the larger graph
+        '''
+        if depth == 0:
+            return self.cart_p2(l_node, self.small_g.nodes) # all of the smaller graph is available at the start
+
+        else:
+             diff_s = set()
+             for node in [n for n in self.core_s if self.core_s[n]]:
+                 for neigh in node.neighbours:
+                     if not self.core_s[neigh]:
+                         diff_s.add(neigh)
+
+             return self.cart_p2(l_node, diff_s)
+
+        #    def compute_p( self, depth ):
+        # here stands the old compute_p, commented out because I decided to get the candidate pairs in a 2-step fashion for easier computation of forbidden nodes
+        # '''
+        # computes the candidate pairs from terminal sets. If all the terminal
+        # are empty, candidate pairs are computed from the sets of non-mapped
+        # nodes.
+        # '''
+        #
+        # if depth == 0:
+        #     print("handed over starting values")
+        #     return self.start
+        #
+        # else:
+        #     # all mapped nodes are in m_l (large_g) or m_s (small_g)
+        #     m_l = [n for n in self.core_l if self.core_l[n]]
+        #     m_s = [n for n in self.core_s if self.core_s[n]]
+        #
+        #
+        #     diff_l = set()
+        #     for node in m_l:
+        #         for neigh in node.neighbours:
+        #             if not self.core_l[neigh]:
+        #                 diff_l.add(neigh)
+        #
+        #     diff_s = set()
+        #     for node in m_s:
+        #         for neigh in node.neighbours:
+        #             if not self.core_s[neigh]:
+        #                 diff_s.add(neigh)
+        #
+        #
+        #     return self.cart_p2(diff_l, diff_s)
+
+
+
+    def is_feasible( self, n ,m ):
+
         '''
         first, checks zero_look ahead (if there are neighbours of the candidate pair that
         are in the current mapping, they have to be mapped to each other) then, checks some
         semantic conditions specified in check_semantics which is imported from
         multivitamin/custom.py
         '''
-        
+
         #0-look-ahead
         if not all((
             self.zero_look_ahead(n, m, self.core_l),
-            self.zero_look_ahead(m, n, self.core_s) ) ):
+            self.zero_look_ahead(m, n, self.core_s) ) ): #is this symmetric for undirected graphs? I left it here until now because I'm not sure
             return False
 
-        return check_semantics( n, m ) # this function is imported from multivitamin/custom.py
+        return True #moved check_semantics to explicit calls where candidate pairs are generated
 
 
     def compute_s_(self, n, m):
@@ -188,36 +230,22 @@ class subVF2():
         if any((not n, not m)):
             raise(Exception("None restored"))
 
+
         self.core_l[n] = None
         self.core_s[m] = None
 
 
+
 # HELPER FUNCTIONS ------------------------------------------------------------
 
-    def cart_p1( self, node_dict, t_max ):
-        """
-        creates the cartesian product of the node set in node_dict that are in terminal sets
-        (which means they are mapped to None in core and do not have a depth of 0)
-        """
+    def cart_p2( self, l_node, s_nodes ):
+        '''cartesian product of l_node with all available s_nodes'''
         cp = set()
-        for node in node_dict:
-            if not self.core_l[node] and not node_dict[node] == 0:
-                cp.add( (node, t_max) )
+        for s_node in s_nodes:
+            # if not self.core_s[s_nodes]: # redundant because compute_p checks for nodes not in core_s
+            if check_semantics(l_node, s_node):
+                cp.add( (l_node, s_node) )
         return cp
-
-    def cart_p2( self, node_dict, max_free_node ):
-            """
-            creates the cartesian product of the node set in node_dict that are not in the
-            current mapping and not in terminal sets (which means they are mapped to None
-            while it is made sure, that all terminal sets are empty).
-            It is made impossible that the first candidate pair is a forbidden matching
-            (from label point of view).
-            """
-            cp = set()
-            for node in node_dict:
-                if not self.core_l[node]:
-                    cp.add( (node, max_free_node) )
-            return cp
 
 
     def legal_max(self, t_dict):
@@ -234,22 +262,19 @@ class subVF2():
     def zero_look_ahead( self, n, m, core ):
         '''every neighbour of n has to be mapped to a neighbour of m'''
         for n_ in n.neighbours:
-
             m_ = core[n_] # Mapping of v
-
             if not m_ : # If mapping doesn't exist, proceed
                 continue
-
-            # If n_ is an in neighbour of n m_ must be an in neighbour of m
-            elif n_ in n.in_neighbours:
-                if not m_ in m.in_neighbours:
-                    return False
-
-            # Since we're only contemplating neighbours of n n_ has to be an in
-            # or an out neighbour, it is sufficient to only check it m_ is out
-            # Neighbour of m
-            elif n_ in n.out_neighbours and not  m_ in m.out_neighbours:
+            # If n_ is a neighbour of n m_ must be a neighbour of m
+            if not m_ in m.neighbours: # this checks for induced subgraphs: every mapped neigbour of n must be mapped to a neighbour of m
                 return False
+
+        #     if m_ in m.neighbours: # this would check for (less than induced) subgraphs: at least one mapped neigbour of n must be mapped to a neighbour of m
+        #         return True
+        # return False
+
+
+        # I shortened this section because we're not dealing with directed graphs anymore. if one was to generalize the algo to directed graphs again, in and out neighbours should be checked seperately again
         return True
 
 
@@ -341,6 +366,7 @@ class subVF2():
         result.create_undirected_edges()
         return result
 
+
     def generate_graph_bools( self, graph ):
         if not list(graph.nodes)[0].label == "":
             graph.nodes_are_labelled = True
@@ -356,6 +382,8 @@ class subVF2():
             graph.is_directed = True
 
         return graph
+
+
 
 if __name__ == "__main__":
 
@@ -390,3 +418,4 @@ if __name__ == "__main__":
         print("")
         counter += 1
     print("")
+
