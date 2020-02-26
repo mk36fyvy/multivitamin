@@ -128,4 +128,4 @@ You can also forbid the alignment of nodes with specific labels. Check [`custom.
 
 ## Further reading
 
-More information on how to use the module can be found [here](multivitaminReadme.pdf).
+More information on how to use the module can be found [here](multivitaminReadme.pdf). (Unfortunately, the Readme is outdated at the moment.)
