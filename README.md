@@ -12,13 +12,12 @@ to view graphical representations of graphs.
 Sounds exciting, so let's get started!
 
 
-## Comments for practical course
+## Notes
 
 #### Changes from 18.02
 - If you want to create an interactive representation of a graph without (re)running an alignment, simply run `multiVitamin -rV <graph file>`. The html file will be generated in your results directory without opening a popup (in order to facilitate automization)
 
 #### Changes from 07.02 to 11.02
-- **Important**: Please reinstall `multiVitamin` after pulling.
 - added `-r`, a new dynamic, interactive *graph representation* of the consensus graph (example: `multiVitamin -ri <g1.graph> <g2.graph>` ). The script takes the string which appears most often in the label list. The nodes are colour coded: `multiVitamin` recognizes elements and atomic numbers and gives them appropriate colours. If an element occurs more often in a node label, the node's colour gets more dark. If an element is missing (i.e. it is displayed as a black node), simply add it in multivitamin/supp/molecule_dicts.py. Double/triple/... bonds are not supported as of now. Hovering over a node displays its original label list
 - Added a *progress bar* to `subVF2` that gives (little) indication on the estimated progress (it counts how many times VF2 has returned to 0 depth, that is, has rechosen the first two mapped nodes).
 - added support for *custom guide_trees*. Simply write a file which contains the guide tree in the first line in Newick format. Example: `(((g1,g2),(g3,g4)),g5);` Then use the `-m` flag and indicate your file path and name. The program will parse the file and show you a graphical representation of the guide tree in order for you to verify its structure.
