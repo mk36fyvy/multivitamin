@@ -11,7 +11,7 @@ from multivitamin.utils.modular_product_class import MP
 from multivitamin.utils.scoring import Scoring
 from multivitamin.algorithms.bk_pivot_class import BK
 from multivitamin.algorithms.vf2_beauty import VF2
-from multivitamin.algorithms.vf2_subsub import subVF2
+from multivitamin.algorithms.vf2_subsub import SubVF2
 
 
 class Multalign():
@@ -300,7 +300,7 @@ class Multalign():
             return max(vf2.results)
 
         elif self.algorithm == "SUBVF2":
-            subvf2 = subVF2( graph1, graph2, self.scoring_matrix )
+            subvf2 = SubVF2( graph1, graph2, self.scoring_matrix )
             subvf2.match()
             return subvf2.results
 

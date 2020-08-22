@@ -14,7 +14,7 @@ from multivitamin.supp.view_graph import create_graph
 from multivitamin.supp.view_graph import create_graphs
 from multivitamin.algorithms.bk_pivot_class import BK
 from multivitamin.algorithms.vf2_beauty import VF2
-from multivitamin.algorithms.vf2_subsub import subVF2
+from multivitamin.algorithms.vf2_subsub import SubVF2
 
 
 
@@ -96,7 +96,7 @@ def main():
             save_results( fake_align )
 
         elif args.algorithm == "SUBVF2":
-            subvf2 = subVF2( graphs[0], graphs[1] )
+            subvf2 = SubVF2( graphs[0], graphs[1] )
             subvf2.match()
             for result_graph in subvf2.result_graphs:
                 result_graph.create_undirected_edges()
